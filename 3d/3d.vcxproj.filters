@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="3rd">
+      <UniqueIdentifier>{93101509-933a-471f-a714-b4ead315a4a8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\Math.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Image.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\FreeImage.h">
+      <Filter>3rd</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Raster.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Math.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="src\Raster.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\res\1.jpg">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\bg.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\colorKey.bmp">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\colorKey.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\grass.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\scale.jpg">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\res\test.bmp">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\bg.psd">
+      <Filter>res</Filter>
+    </None>
+  </ItemGroup>
+</Project>
