@@ -6,6 +6,10 @@
   - [向量的数乘](#向量的数乘)
   - [向量的线性组合](#向量的线性组合)
   - [向量张成的空间](#向量张成的空间)
+  - [线性变换](#线性变换)
+- [矩阵](#矩阵)
+  - [复合变换](#复合变换)
+  - [矩阵乘法](#矩阵乘法)
 
 ### 向量
 
@@ -67,3 +71,95 @@ $\left[\begin{array}{c} 3 \\ -2 \end{array}\right] = 3 \cdot \hat{i} - 2 \cdot \
 2. 在二维情况下，只要基向量不共线，它们张成的空间就覆盖平面上所有的点。
 3. 如果基向量共线，它们张成的空间就只有一条线；
 4. 如果基向量都是零向量，它们张成的空间就只有一个点。
+
+#### 线性变换
+
+线性变换(Linear Transformation): 接受一个向量并输出一个向量的变换。
+1. 线性(Linear)指空间中的所有直线在变换后仍然是直线，且原点的位置没有发生改变，并且网格线平行且等距分布。
+2. 变换(Transformation)本质上是函数(function)，但与函数不同的是，变换暗示你可以用可视化的运动来思考这个过程。
+   
+比如下面就不是:
+
+![alt text](img/linear_transformation1.png)
+
+在线性变换中，只要确定基向量的变换后位置，就能确定其他所有向量的变换后位置。
+
+![alt text](img/linear_transformation2.png)
+
+举例来说，对于向量
+
+$
+\vec{v} = \left[\begin{array}{c} x \\ y \end{array}\right] = x \cdot \hat{i} + y \cdot \hat{j}
+$
+
+变化后
+
+$
+\vec{v'} = x \cdot \hat{i'} + y \cdot \hat{j'}
+$
+
+例如:
+
+$
+\hat{i'} = \begin{bmatrix} 1 \\ -2 \end{bmatrix}, \quad \hat{j'} = \begin{bmatrix} 3 \\ 0 \end{bmatrix}
+$
+
+得出:
+
+$
+\begin{aligned}
+\vec{v'} &= x \cdot \hat{i'} + y \cdot \hat{j'} \\
+&= x \begin{bmatrix} 1 \\ -2 \end{bmatrix} + y \begin{bmatrix} 3 \\ 0 \end{bmatrix} \\
+&= \begin{bmatrix} x + 3y \\ -2x \end{bmatrix}
+\end{aligned}
+$
+
+把基向量变换后的向量作为列排成 $2 \times 2$ 的矩阵 $\begin{bmatrix} 1 & 3 \\ -2 & 0 \end{bmatrix}$，此时矩阵乘以向量 $\vec{v} = \begin{bmatrix} x \\ y \end{bmatrix}$，就是
+
+$
+\begin{bmatrix} 1 & 3 \\ -2 & 0 \end{bmatrix}
+\begin{bmatrix} x \\ y \end{bmatrix}
+= \begin{bmatrix} x + 3y \\ -2x \end{bmatrix}
+= \vec{v'}
+$
+
+**矩阵本质上是对空间操纵的描述，用于定义一个线性变换的函数**。
+
+**矩阵中的各列依次代表线性变换中，各基向量在变换后的结果(位置)**。矩阵对应的线性变换将**原基向量张成的空间**映射(求函数)到**变换后基向量张成的空间**。
+
+### 矩阵
+
+#### 复合变换
+
+矩阵是对空间线性变换的描述函数，依次两个线性变换称为**复合变换**(Composition of Transformations)。
+
+一个向量依次经历两个矩阵的线性变换得到的结果，等价于其经过一个复合变换的结果，如下图所示:
+
+![alt text](img/compose_transformation1.png)
+
+![alt text](img/compose_transformation2.png)
+
+#### 矩阵乘法
+
+我的理解，i帽和j帽经过M1线性变化后对应的是M1矩阵第一列和M2矩阵线性变化第二列，同理，再次经过M2线性变化，i帽撇为:
+
+![alt text](img/matrix_multiplication1.png)
+
+j帽撇为:
+
+![alt text](img/matrix_multiplication2.png)
+
+性质:
+
+1. 矩阵乘法不满足交换律，即 $AB \neq BA$
+
+![alt text](img/matrix_multiplication3.png)
+
+![alt text](img/matrix_multiplication4.png)
+
+2. 矩阵乘法满足结合律，即 $(AB)C = A(BC)$
+  
+**只从线性变换的角度上思考，两个公式本质上都描述了先进行C变换，再进行B变换，最后进行A变换，因此没有区别**。
+
+![alt text](img/matrix_multiplication5.png)
+
