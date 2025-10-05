@@ -14,6 +14,8 @@
   - [矩阵行列式](#矩阵行列式)
   - [线性方程组](#线性方程组)
   - [秩和列空间](#秩和列空间)
+- [向量点积](#向量点积)
+- [向量叉积](#向量叉积)
 
 ### 向量
 
@@ -265,3 +267,122 @@ $
 <span style="color:red">我的理解就是，对于3阶矩阵而言，行列式不为零，说明该矩阵对应的空间线性变化没有降低维度，也就是满秩。对应的列空间就是3维空间中所有的向量集合。</span>
 
 当矩阵满秩时，只有零向量会被映射为零向量。当矩阵不满秩时，意味着有些非零向量被映射成零向量，这些原空间中的非零向量张成的空间被称为**零空间**(Null Space)或者**核**(Kernel)。
+
+
+### 向量点积
+
+$\vec{v}$ 和 $\vec{w}$ 的**点积**(dot products)，在几何上等价于先将 $\vec{w}$ 投影(Project)到 $\vec{v}$ 的方向上，然后投影得到的长度乘以 $\vec{v}$ 的长度。
+
+$
+\vec{v} \cdot \vec{w} = \|\vec{v}\| \|\vec{w}\| \cos\theta = \sum_{i=1}^n v_i w_i
+$
+
+求模公式: 
+
+$
+\|\vec{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}
+$
+
+![alt text](img/dot_product1.png)
+
+![alt text](img/dot_product2.png)
+
+![alt text](img/dot_product3.png)
+
+![alt text](img/dot_product4.png)
+
+![alt text](img/dot_product5.png)
+
+**点积的结果和顺序无关**
+
+$
+\vec{v} \cdot \vec{w} = \vec{w} \cdot \vec{v}
+$
+
+![alt text](img/dot_product6.png)
+
+### 向量叉积
+
+$\vec{v} \times \vec{w}$ 叉积，在几何上是向量张成的平行四边形的面积，其符号当 $\vec{v}$ 在  $\vec{w}$ 的右侧时数值为正，反之则为负
+
+![alt text](img/cross_product1.png)
+
+和点积不同的是，叉积的数值是不满足交换律的，有 
+
+$
+\vec{v} \times \vec{w} = - \vec{w} \times \vec{v}
+$
+
+![alt text](img/cross_product2.png)
+
+**对于二维空间，叉积的计算方式和行列式的计算方式类似，结果应该是一个标量**，如下公式：
+
+$
+\begin{bmatrix} a \\ b \end{bmatrix}
+\times
+\begin{bmatrix} c \\ d \end{bmatrix}
+= \det \begin{bmatrix} a & c \\ b & d \end{bmatrix}
+= ad - bc
+$
+
+写作如下形式也是可以的，因为矩阵的转置并不会改变行列式的值：
+
+$
+\begin{bmatrix} a \\ c \end{bmatrix}
+\times
+\begin{bmatrix} b \\ d \end{bmatrix}
+= \det \begin{bmatrix} a & b \\ c & d \end{bmatrix}
+= ad - bc
+$
+
+你可以认为 $\begin{bmatrix} a \\ b \end{bmatrix}$ 和 $\begin{bmatrix} c \\ d \end{bmatrix}$ 是基向量 $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ 和 $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 经过某线性变换之后得到的向量，那么此时，如果我们专注于 $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ 和 $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 围成的平行四边形的面积 —— 变换前为1，而变换后为 ，此时该线性变换的面积就是行列式 ，其正负号与行列式一章中行列式的正负号含义一致。
+
+![alt text](img/cross_product3.png)
+
+**对于三维空间，叉积的结果是一个向量，该向量垂直于 $\vec{v}$ 和 $\vec{w}$ 张成的平面，方向根据右手定则确定，长度等于 $\vec{v}$ 和 $\vec{w}$ 张成的面积。**
+
+![alt text](img/cross_product4.png)
+
+![alt text](img/cross_product5.png)
+
+计算公式：
+
+$
+\begin{bmatrix} v1 \\ v2 \\ v3 \end{bmatrix}
+\times
+\begin{bmatrix} w1 \\ w2 \\ w3 \end{bmatrix}
+= \begin{bmatrix} v2 w3 - w2 v3 \\ v3 w1 - w3 v1 \\ v1 w2 - w1 v2 \end{bmatrix}
+$
+
+该公式可以写作一个更易于记忆的行列式写法：
+
+$
+\begin{bmatrix} v1 \\ v2 \\ v3 \end{bmatrix}
+\times
+\begin{bmatrix} w1 \\ w2 \\ w3 \end{bmatrix}
+= \begin{bmatrix} \hat i & v1 & w1 \\ \hat j & v2 & w2 \\ \hat k & v3 & w3 \end{bmatrix}
+$
+
+同样地，写作如下形式也是可以的，因为矩阵的转置并不会改变行列式的值：
+
+$
+\begin{bmatrix} v1 \\ v2 \\ v3 \end{bmatrix}
+\times
+\begin{bmatrix} w1 \\ w2 \\ w3 \end{bmatrix}
+= \begin{bmatrix} \hat i & \hat j & \hat k \\ v1 & v2 & v3 \\ w1 & w2 & w3 \end{bmatrix}
+$
+
+展开行列式：
+
+$
+\det \begin{pmatrix} 
+\hat i & v1 & w1 \\ 
+\hat j & v2 & w2 \\ 
+\hat k & v3 & w3 
+\end{pmatrix} 
+= \hat i \cdot \det \begin{pmatrix} v2 & w2 \\ v3 & w3 \end{pmatrix} - \hat j \cdot \det \begin{pmatrix} v1 & w1 \\ v3 & w3 \end{pmatrix} + \hat k \cdot \det \begin{pmatrix} v1 & w1 \\ v2 & w2 \end{pmatrix}
+= \hat i (v2 w3 - w2 v3) - \hat j (v3 w1 - w3 v1) + \hat k (v1 w2 - w1 v2)
+$
+
+
+![alt text](img/cross_product6.png)
