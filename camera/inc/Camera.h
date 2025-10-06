@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Math.h"
 
@@ -7,21 +7,21 @@ namespace szmath
     class Camera
     {
     public:
-        // ÉãÏñÍ·Î»ÖÃ
+        // æ‘„åƒæœºä½ç½®
         float3 _eye;
-        // ÉãÏñ»úËù×¢ÊÓµÄÄ¿±êµã
+        // æ‘„åƒæœºæ‰€æ³¨è§†çš„ç›®æ ‡ç‚¹
         float3 _target;
-        // ÉãÏñ»ú¾Ö²¿×ø±êÏµÖĞµÄ+YÖá
+        // æ‘„åƒæœºå±€éƒ¨åæ ‡ç³»ä¸­çš„+Yè½´
         float3 _up;
-        // Ïñ»ú¾Ö²¿×ø±êÏµµÄ+XÖá
+        // æ‘„åƒæœºå±€éƒ¨åæ ‡ç³»çš„+Xè½´
         float3 _right;
-        // ÉãÏñ»ú¾Ö²¿×ø±êÏµµÄ-ZÖá
+        // æ‘„åƒæœºå±€éƒ¨åæ ‡ç³»çš„-Zè½´
         float3 _dir;
-        // ¹Û²ì¾ØÕó
+        // è§‚å¯ŸçŸ©é˜µ
         matrix4 _matView;
-        // Í¶Ó°¾ØÕó
+        // æŠ•å½±çŸ©é˜µ
         matrix4 _matProj;
-        // ÊÓ¿ÚµÄ´óĞ¡
+        // è§†å£çš„å¤§å°
         float2 _viewSize;
 
     public:
@@ -121,7 +121,7 @@ namespace szmath
             _matProj = szmath::perspective<float>(fovy, aspect, zNear, zFar);
         }
 
-        // ÊÀ½ç×ø±ê×ª»¯Îª´°¿Ú×ø±ê
+        // ä¸–ç•Œåæ ‡è½¬åŒ–ä¸ºçª—å£åæ ‡
         bool project(const float4& world, float4& screen) noexcept
         {
             screen = (_matProj * _matView) * world;
@@ -130,8 +130,8 @@ namespace szmath
                 return false;
             }
 
-            // ¶ÔÓÚÍ¸ÊÓÍ¶Ó°¾ØÕó(¼ô²ÃÍ¶Ó°¾ØÕó)×ªµ½NDC£¬Õı½»Í¶Ó°¾ØÕów¶¼ÊÇ1
-            // Ö÷ÒªÊÇ±£³ÖÆë´Î¾ØÕóµÄĞÔÖÊ
+            // å¯¹äºé€è§†æŠ•å½±çŸ©é˜µ(å‰ªè£æŠ•å½±çŸ©é˜µ)è½¬åˆ°NDCï¼Œæ­£äº¤æŠ•å½±çŸ©é˜µwéƒ½æ˜¯1
+            // ä¸»è¦æ˜¯ä¿æŒé½æ¬¡çŸ©é˜µçš„æ€§è´¨
             screen.x /= screen.w;
             screen.y /= screen.w;
             screen.z /= screen.w;
@@ -156,7 +156,7 @@ namespace szmath
             return float2(screens.x, screens.y);
         }
 
-        // ´°¿Ú×ø±ê×ª»¯ÎªÊÀ½ç×ø±ê
+        // çª—å£åæ ‡è½¬åŒ–ä¸ºä¸–ç•Œåæ ‡
         bool unProject(const float4& screen, float4& world) noexcept
         {
             float4 v;
@@ -203,20 +203,20 @@ namespace szmath
             return float3(world.x, world.y, world.z);
         }
 
-        // ÈÃÉãÏñ»úÈÆ×ÅÊÀ½ç×ø±êÏµµÄYÖáĞı×ª
+        // è®©æ‘„åƒæœºç»•ç€ä¸–ç•Œåæ ‡ç³»çš„Yè½´æ—‹è½¬
         void rotateViewY(float angle) noexcept
         {
             _dir = rotateY<float>(_dir, angle);
             _up = rotateY<float>(_up, angle);
             _right = normalize(cross(_dir, _up));
-            // ¼ÆËãÉãÏñ»úµ±Ç°µ½Ä¿±êµÄ¾àÀë¡£Õâ¸ö¾àÀëÔÚĞı×ª¹ı³ÌÖĞÊÇ±£³Ö²»±äµÄ£¬ÒÔÈ·±£ÉãÏñ»ú²»»áÀëÄ¿±ê¸ü½ü»ò¸üÔ¶
+            // è®¡ç®—æ‘„åƒæœºå½“å‰åˆ°ç›®æ ‡çš„è·ç¦»ã€‚è¿™ä¸ªè·ç¦»åœ¨æ—‹è½¬è¿‡ç¨‹ä¸­æ˜¯ä¿æŒä¸å˜çš„ï¼Œä»¥ç¡®ä¿æ‘„åƒæœºä¸ä¼šç¦»ç›®æ ‡æ›´è¿‘æˆ–æ›´è¿œ
             float len = length(_eye - _target);
-            // ¸ù¾İĞÂµÄ¹Û²ì·½Ïò_dirºÍÖ®Ç°¼ÆËãµÄ¾àÀëlen£¬ÖØĞÂ¼ÆËãÉãÏñ»úµÄĞÂÎ»ÖÃ_eye
+            // æ ¹æ®æ–°çš„è§‚å¯Ÿæ–¹å‘_dirå’Œä¹‹å‰è®¡ç®—çš„è·ç¦»lenï¼Œé‡æ–°è®¡ç®—æ‘„åƒæœºçš„æ–°ä½ç½®_eye
             _eye = _target - _dir * len;
             _matView = lookAt(_eye, _target, _up);
         }
 
-        // ÉãÏñ»úÈÆ×Å×Ô¼ºµÄ¾Ö²¿ÓÒÖá_rightĞı×ª
+        // æ‘„åƒæœºç»•ç€è‡ªå·±çš„å±€éƒ¨å³è½´_rightæ—‹è½¬
         void rotateViewX(float angle) noexcept
         {
             matrix4 mat(1);

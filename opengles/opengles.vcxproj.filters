@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="3rd">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="3rd\angle">
+      <UniqueIdentifier>{07735bfd-fd49-4ef0-b734-d29181735003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\EGL">
+      <UniqueIdentifier>{8963aabf-55e2-476d-864c-adb6413308b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\GLES">
+      <UniqueIdentifier>{dcbd99f4-d574-451b-8160-e24e596128ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\GLES2">
+      <UniqueIdentifier>{c1b6e06e-1dd7-446c-a4cb-22fda2349f00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\GLES3">
+      <UniqueIdentifier>{7410ab23-833c-49d6-8f80-d7514525a32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\GLSLANG">
+      <UniqueIdentifier>{3e8cea2d-9ef5-4b25-ab41-8d653ace9ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\KHR">
+      <UniqueIdentifier>{99d3119f-2c05-4b45-9964-04c5441d2fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\platform">
+      <UniqueIdentifier>{0e82a32e-c800-40e8-900b-fcc1caa7ce37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\vulkan">
+      <UniqueIdentifier>{95141490-0ecb-494c-834c-af228cbc0658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\WGL">
+      <UniqueIdentifier>{a73a48b5-5f77-4921-99b9-628f7b96aab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\angle\CL">
+      <UniqueIdentifier>{18493dc4-742f-48ac-86b4-f8c514bcc704}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3rd\angle\include\angle_cl.h">
+      <Filter>3rd\angle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\angle_gl.h">
+      <Filter>3rd\angle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\angle_windowsstore.h">
+      <Filter>3rd\angle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\export.h">
+      <Filter>3rd\angle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_d3d10.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_d3d11.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_dx9_media_sharing.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_dx9_media_sharing_intel.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_egl.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_ext.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_ext_intel.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_gl.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_gl_ext.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_half.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_icd.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_layer.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_platform.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_va_api_media_sharing_intel.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\cl_version.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\CL\opencl.h">
+      <Filter>3rd\angle\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\EGL\egl.h">
+      <Filter>3rd\angle\EGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\EGL\eglext.h">
+      <Filter>3rd\angle\EGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\EGL\eglext_angle.h">
+      <Filter>3rd\angle\EGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\EGL\eglplatform.h">
+      <Filter>3rd\angle\EGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES\egl.h">
+      <Filter>3rd\angle\GLES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES\gl.h">
+      <Filter>3rd\angle\GLES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES\glext.h">
+      <Filter>3rd\angle\GLES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES\glplatform.h">
+      <Filter>3rd\angle\GLES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES2\gl2.h">
+      <Filter>3rd\angle\GLES2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES2\gl2ext.h">
+      <Filter>3rd\angle\GLES2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES2\gl2ext_angle.h">
+      <Filter>3rd\angle\GLES2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES2\gl2platform.h">
+      <Filter>3rd\angle\GLES2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES3\gl3.h">
+      <Filter>3rd\angle\GLES3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES3\gl3platform.h">
+      <Filter>3rd\angle\GLES3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES3\gl31.h">
+      <Filter>3rd\angle\GLES3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLES3\gl32.h">
+      <Filter>3rd\angle\GLES3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLSLANG\ShaderLang.h">
+      <Filter>3rd\angle\GLSLANG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\GLSLANG\ShaderVars.h">
+      <Filter>3rd\angle\GLSLANG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\KHR\khrplatform.h">
+      <Filter>3rd\angle\KHR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\WGL\wgl.h">
+      <Filter>3rd\angle\WGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\vulkan\vulkan_fuchsia_ext.h">
+      <Filter>3rd\angle\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\Feature.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\FeaturesD3D_autogen.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\FeaturesGL_autogen.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\FeaturesMtl_autogen.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\FeaturesVk_autogen.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\FrontendFeatures_autogen.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\Platform.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\angle\include\platform\PlatformMethods.h">
+      <Filter>3rd\angle\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="GLESContext.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\3rd\angle\include\CL\.clang-format">
+      <Filter>3rd\angle\CL</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\CL\README.md">
+      <Filter>3rd\angle\CL</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\EGL\.clang-format">
+      <Filter>3rd\angle\EGL</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\GLES\.clang-format">
+      <Filter>3rd\angle\GLES</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\GLES\README.md">
+      <Filter>3rd\angle\GLES</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\GLES2\.clang-format">
+      <Filter>3rd\angle\GLES2</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\GLES3\.clang-format">
+      <Filter>3rd\angle\GLES3</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\KHR\.clang-format">
+      <Filter>3rd\angle\KHR</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\WGL\.clang-format">
+      <Filter>3rd\angle\WGL</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\d3d_features.json">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\frontend_features.json">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\gen_features.py">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\gl_features.json">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\mtl_features.json">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+    <None Include="..\3rd\angle\include\platform\vk_features.json">
+      <Filter>3rd\angle\platform</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.cpp" />
+  </ItemGroup>
+</Project>
