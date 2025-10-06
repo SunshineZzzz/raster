@@ -38,6 +38,9 @@ int APIENTRY WinMain(
     winClass.cbWndExtra = 0;
     RegisterClassExA(&winClass);
 
+    int nWidth = 480;
+    int nHeight = 320;
+
     auto hWnd = CreateWindowEx(
         NULL,
         TEXT("opengles"),
@@ -45,8 +48,8 @@ int APIENTRY WinMain(
         WS_OVERLAPPEDWINDOW,
         100,
         100,
-        480,
-        320,
+        nWidth,
+        nHeight,
         0,
         0,
         hInstance,
@@ -80,6 +83,11 @@ int APIENTRY WinMain(
         {
             // 执行清除操作时，用来填充绘图缓冲区的颜色
             glClearColor(1, 0, 0, 1);
+            // 设置视口，左下角坐标为(0,0)，视口宽度为nWidth，高度为nHeight。
+            // 方便NDC映射到屏幕坐标系。
+            // opengl约定是右手坐标系，但是NDC是左手坐标系，屏幕内是Z轴正方向，越向屏幕内越远离摄像机。
+            glViewport(0, 0, nWidth, nHeight);
+            // glMatrixMode(GL_PROJECTION);
             // 执行​​清除操作，将整个颜色缓冲区填充为设定的清除颜色
             glClear(GL_COLOR_BUFFER_BIT);
             // 交换缓冲区

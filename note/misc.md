@@ -21,6 +21,19 @@
   - [正交投影矩阵](#正交投影矩阵)
   - [透视投影](#透视投影)
   - [透视投影矩阵](#透视投影矩阵)
+- [渲染管线](#渲染管线)
+  - [顶点数据](#顶点数据)
+  - [三维变化](#三维变化)
+     - [顶点着色器](#顶点着色器)
+     - [曲面细分着色器](#曲面细分着色器)
+     - [几何着色器](#几何着色器)
+  - [图元装配](#图元装配)
+  - [剪裁剔除](#剪裁剔除)
+  - [光栅化](#光栅化)
+  - [片元着色器](#片元着色器)
+  - [混合与测试](#混合与测试)
+- [光栅化](#光栅化)
+  - [基本单元](#基本单元)
 
 ### OpenGL 
 
@@ -407,3 +420,72 @@ n & 0 & 0 & 0 \\
 0 & 0 & -1 & 0
 \end{pmatrix}
 $$
+
+### 渲染管线
+
+[渲染管线梳理1](https://www.bilibili.com/video/BV1rV411X7vZ)
+
+[渲染管线梳理2](https://www.bilibili.com/video/BV13T4y1h7HX)
+
+[细说渲染管线](https://positiveczp.github.io/%E7%BB%86%E8%AF%B4%E5%9B%BE%E5%BD%A2%E5%AD%A6%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF.pdf)
+
+渲染管线，通过给定虚拟相机、3D场景物体以及光源等场景要素来产生或者渲染一副2D的图像。
+
+![alt text](img/render_pipeline1.png)
+
+![alt text](img/render_pipeline1_1.png)
+
+#### 顶点数据
+
+顶点数据(vertex data)，用来为后面的顶点着色器等阶段提供处理的数据。是渲染管线的数据主要来源。送入到渲染管线的数据包括顶点坐标、纹理坐标、顶点法线和顶点颜色等顶点属性。
+
+为了让OpenGL明白顶点数据构成的是什么图元，我们需要在绘制指令中传递相对应的图元信息。常见的图元包括：点(GL_POINTS)、线(GL_LINES)、线条(GL_LINE_STRIP)、三角面(GL_TRIANGLES)。
+
+![alt text](img/render_pipeline2.png)
+
+#### 三维变化
+
+![alt text](img/render_pipeline3.png)
+
+##### 顶点着色器
+
+顶点着色器(vertex shader)，**可编程​**，主要功能是进行坐标变换。将输入的局部坐标变换到世界坐标、观察坐标和裁剪坐标。虽然我们也会在顶点着色器进行光照计算(称作高洛德着色)，然后经
+过光栅化插值得到各个片段的颜色，但由于这种方法得到的光照比较不自然，所以一般在片段着色器进行光照计算。
+
+##### 曲面细分着色器
+
+曲面细分控制着色器 (tessellation control shader)，曲面细分评估着色器 (tessellation evaluation shader)，**可选**，**可编程​**，利用镶嵌化处理技术对三角面进行细分，以此来增加物体表面的三角面的数量。
+
+![alt text](img/render_pipeline3_1.png)
+
+##### 几何着色器
+
+几何着色器(geometry shader)，**可选**，**可编程​**，核心目的是在GPU上实现几何体的动态、运行时修改和生成，从而提高渲染的灵活性和效率。
+
+#### 图元装配
+
+图元组装(primitive setup)，将输入的顶点组装成指定的图元。
+
+![alt text](img/render_pipeline4.png)
+
+#### 剪裁剔除
+
+剪裁剔除(culling and clipping)，裁剪和背面剔除相关的优化，以减少进入光栅化的图元的数量，加速渲染过程。
+
+![alt text](img/render_pipeline5.png)
+
+#### 光栅化
+
+光栅化(rasterization)，经过图元组装以及屏幕映射阶段后，我们将物体坐标变换到了窗口坐标。光栅化是个离散化的过程，将3D连续的物体转化为离散屏幕像素点的过程。包括三角形组装和三角形遍历两个阶段。光栅化会确定图元所覆盖的片段，利用顶点属性插值得到片段的属性信息。
+
+![alt text](img/render_pipeline6.png)
+
+#### 片元着色器
+
+片元着色(fragment shader)，**可编程​**，用来决定屏幕上像素的最终颜色。在这个阶段会进行光照计算以及阴影处理，是渲染管线高级效果产生的地方。
+
+![alt text](img/render_pipeline7.png)
+
+#### 混合与测试
+
+![alt text](img/render_pipeline8.png)
