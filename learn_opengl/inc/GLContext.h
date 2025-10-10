@@ -31,6 +31,8 @@ public:
     void BeginShader();
 	// 结束使用Shader
 	void EndShader();
+    // 设置uniform float变量
+    void SetUniformFloat(const std::string& name, float value);
 
 private:
     // GL初始化

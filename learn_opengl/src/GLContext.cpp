@@ -49,7 +49,6 @@ bool GLContext::PrepareShader(const char* vertexPath, const char* fragmentPath)
     return m_shader->isInitialized();
 }
 
-
 void GLContext::BeginShader() 
 {
     m_shader->Begin();
@@ -58,6 +57,11 @@ void GLContext::BeginShader()
 void GLContext::EndShader()
 {
     m_shader->End();
+}
+
+void GLContext::SetUniformFloat(const std::string& name, float value)
+{
+    m_shader->SetUniformFloat(name, value);
 }
 
 void GLContext::setup()
