@@ -31,7 +31,7 @@ GLContext::~GLContext()
 {
     // 保证析构顺序
     m_shader.reset();
-    m_texture.reset();
+    m_vTextures.resize(0);
 
     shutdown();
 }
@@ -53,10 +53,31 @@ bool GLContext::PrepareShader(const char* vertexPath, const char* fragmentPath)
     return m_shader->IsInitialized();
 }
 
-bool GLContext::PrepareTexture(const std::string& path, unsigned int unit)
+bool GLContext::PrepareTexture(const std::vector<std::string>& vPaths, const std::vector<unsigned int>& vUnits)
 {
-    m_texture = std::make_unique<Texture>(path, unit);
-	return m_texture->IsInitialized();
+    if (vPaths.size() != vUnits.size())
+    {
+        SDL_Log("vPaths size != vUnits size");
+        return false;
+    }
+    for (int i = 0; i < vPaths.size(); i++)
+	{
+        m_vTextures.emplace_back(std::make_unique<Texture>(vPaths[i], vUnits[i]));
+	}
+    bool ok = true;
+    for (auto& t : m_vTextures)
+	{
+        if (!t->IsInitialized())
+        {
+            ok = false;
+			break;
+        }
+	}
+    if (!ok)
+	{
+        m_vTextures.resize(0);
+	}
+    return ok;
 }
 
 void GLContext::BeginShader() 

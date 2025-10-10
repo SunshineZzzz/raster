@@ -2,14 +2,18 @@
 out vec4 FragColor;
 in vec3 color;
 in vec2 uv;
-uniform sampler2D sampler;
-uniform float time;
-
+uniform sampler2D grassSampler;
+uniform sampler2D landSampler;
+uniform sampler2D noiseSampler;
 void main()
 {
-	// ​​控制纹理滚动的速度，正负数可以改变滚动方向
-	float deltaU = time * -0.3;
-	vec2 fraguv = vec2(uv.x + deltaU, uv.y);
+	vec4 grassColor = texture(grassSampler, uv);
+	vec4 landColor = texture(landSampler, uv);
+	vec4 noiseColor = texture(noiseSampler, uv);
+	float weight = noiseColor.r;
 
-	FragColor = texture(sampler, fraguv);
+	// vec4 finalColor = grassColor * (1.0 - weight) + landColor * weight;
+	vec4 finalColor = mix(grassColor, landColor,weight);
+
+	FragColor = vec4(finalColor.rgb, 1.0);
 }

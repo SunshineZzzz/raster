@@ -127,7 +127,18 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	// 准备VAO
 	PrepareVAO();
 	// 准备纹理
-	if (!glcontext->PrepareTexture("assets/textures/hinata.jpg", 0))
+	if (!glcontext->PrepareTexture(
+		{ 
+			"assets/textures/grass.jpg",
+			"assets/textures/land.jpg",
+			"assets/textures/noise.jpg"
+		}, 
+		{ 
+			0,
+			1,
+			2,
+		}
+	))
 	{
 		SDL_Log("couldn't prepare texture error");
 		return SDL_APP_FAILURE;
@@ -169,7 +180,9 @@ void render()
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
 	
 	// 纹理采样器设置为纹理单元0
-	glcontext->SetUniformInt("sampler", 0);
+	glcontext->SetUniformInt("grassSampler", 0);
+	glcontext->SetUniformInt("landSampler", 1);
+	glcontext->SetUniformInt("noiseSampler", 2);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));

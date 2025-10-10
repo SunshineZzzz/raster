@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include <vector>
 #include <memory>
 
 class GLContext
@@ -31,7 +32,7 @@ public:
     // 准备Shader
     bool PrepareShader(const char* vertexPath, const char* fragmentPath);
     // 准备texture
-    bool PrepareTexture(const std::string& path, unsigned int unit);
+    bool PrepareTexture(const std::vector<std::string>& vPaths, const std::vector<unsigned int>& vUnits);
     // 开始使用Shader
     void BeginShader();
 	// 结束使用Shader
@@ -56,6 +57,6 @@ private:
     bool m_initialized = false;
     // 封装的gl着色器对象
     std::unique_ptr<Shader> m_shader = nullptr;
-    // 封装的gl纹理对象
-    std::unique_ptr<Texture> m_texture = nullptr;
+    // 封装的gl纹理对象们
+    std::vector<std::unique_ptr<Texture>> m_vTextures;
 };
