@@ -131,6 +131,7 @@ void render()
 	glcontext->BeginShader();
 
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
+	glcontext->SetUniformFloat("speed", 10.0f);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
