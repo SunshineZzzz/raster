@@ -8,8 +8,8 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 	~Shader();
 
-	// 是否初始化成功
-	bool isInitialized() const;
+	// 是否已经初始化过
+	bool IsInitialized() const;
 	// 开始使用当前Shader
 	void Begin();
 	// 结束使用当前Shader
@@ -24,6 +24,8 @@ private:
 	// 检测shader错误
 	const std::string checkShaderErrors(GLuint target, std::string type);
 
+	// 是否已经初始化过
 	bool m_initialized = false;
+	// 着色器程序Id
 	GLuint m_program{ 0 };
 };

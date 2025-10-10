@@ -1,10 +1,8 @@
 ﻿
 #define SDL_MAIN_USE_CALLBACKS 1
-#define STB_IMAGE_IMPLEMENTATION 1
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <stb/stb_image.h>
 
 #include <memory>
 #include <filesystem>
@@ -94,40 +92,6 @@ void PrepareVAO()
 	glBindVertexArray(0);
 }
 
-// 准备纹理
-void PrepareTexture() 
-{
-	int width, height, channels;
-	// 反转y轴
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("assets/textures/hinata.jpg", &width, &height, &channels, STBI_rgb_alpha);
-
-	// 创建纹理对象
-	glGenTextures(1, &glcontext->m_texture);
-	// 激活纹理单元
-	glActiveTexture(GL_TEXTURE0);
-	// 绑定纹理对象
-	glBindTexture(GL_TEXTURE_2D, glcontext->m_texture);
-	// 纹理对象glcontext->m_texture就被映射到了纹理单元GL_TEXTURE0
-	// 开辟显存，并上传数据
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	
-	// 释放数据
-	stbi_image_free(data);
-
-	// 设置纹理的过滤方式
-	// 需要的像素比实际纹理对象像素多，采用线性过滤
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// 需要的像素比实际纹理对象像素少，采用临近过滤
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	// 设置纹理的包裹方式
-	// u纹理坐标超出[0,1]范围，采用重复模式
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	// v纹理坐标超出[0,1]范围，采用重复模式
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-}
-
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
     if (!GLContext::InitGLAttributes())
@@ -153,17 +117,21 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     GL_CALL(glViewport(0, 0, nWidth, nHeight));
 	// 设置清除颜色
 	GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+	// 1.准备各种数据
 	// 准备shader
     if (!glcontext->PrepareShader("assets/shaders/vertex.glsl", "assets/shaders/fragment.glsl"))
 	{
 		SDL_Log("couldn't prepare shader error");
 		return SDL_APP_FAILURE;
 	}
-	// 1.准备各种数据
 	// 准备VAO
 	PrepareVAO();
 	// 准备纹理
-	PrepareTexture();
+	if (!glcontext->PrepareTexture("assets/textures/hinata.jpg", 0))
+	{
+		SDL_Log("couldn't prepare texture error");
+		return SDL_APP_FAILURE;
+	}
 
 	return SDL_APP_CONTINUE;
 }
@@ -199,6 +167,8 @@ void render()
 	glcontext->BeginShader();
 
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
+	
+	// 纹理采样器设置为纹理单元0
 	glcontext->SetUniformInt("sampler", 0);
 
 	// 2.绑定VAO

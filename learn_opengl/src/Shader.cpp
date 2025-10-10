@@ -116,10 +116,11 @@ Shader::~Shader()
 	if (glIsProgram(m_program)) 
 	{
 		glDeleteProgram(m_program);
+		m_program = 0;
 	}
 }
 
-bool Shader::isInitialized() const
+bool Shader::IsInitialized() const
 {
 	return m_initialized;
 }

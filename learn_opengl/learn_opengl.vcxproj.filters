@@ -46,6 +46,9 @@
     <ClCompile Include="src\GLContext.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL.h">
@@ -320,6 +323,9 @@
     </ClInclude>
     <ClInclude Include="..\3rd\stb\stb_image.h">
       <Filter>3rd\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Texture.h">
+      <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

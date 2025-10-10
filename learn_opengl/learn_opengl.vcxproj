@@ -134,6 +134,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="src\GLContext.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\glad\glad.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="inc\CheckRstErr.h" />
     <ClInclude Include="inc\GLContext.h" />
     <ClInclude Include="inc\Shader.h" />
+    <ClInclude Include="inc\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fragment.glsl" />

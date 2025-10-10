@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "Shader.h"
+#include "Texture.h"
 
 #include <memory>
 
@@ -14,12 +15,12 @@ public:
     static bool InitGLAttributes();
 
 public:
+    // 各种gl对象
     GLuint m_vao = 0;
     GLuint m_interleavedVbo = 0;
     GLuint m_posVbo = 0;
     GLuint m_colorVbo = 0;
     GLuint m_uvVbo = 0;
-    GLuint m_texture = 0;
     GLuint m_ebo = 0;
     
     GLContext(SDL_Window* window);
@@ -29,6 +30,8 @@ public:
     void SwapWindow();
     // 准备Shader
     bool PrepareShader(const char* vertexPath, const char* fragmentPath);
+    // 准备texture
+    bool PrepareTexture(const std::string& path, unsigned int unit);
     // 开始使用Shader
     void BeginShader();
 	// 结束使用Shader
@@ -45,8 +48,14 @@ private:
     // GL销毁
     void shutdown();
 
+    // SDL窗口指针
     SDL_Window* m_window = nullptr;
+    // gl上下文
     SDL_GLContext m_glcontext = nullptr;
+    // 是否已经初始化过
     bool m_initialized = false;
+    // 封装的gl着色器对象
     std::unique_ptr<Shader> m_shader = nullptr;
+    // 封装的gl纹理对象
+    std::unique_ptr<Texture> m_texture = nullptr;
 };

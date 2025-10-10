@@ -1,4 +1,4 @@
-#include "../inc/GLContext.h"
+ï»¿#include "../inc/GLContext.h"
 
 bool GLContext::InitGLAttributes()
 {
@@ -29,6 +29,10 @@ GLContext::GLContext(SDL_Window* window)
 
 GLContext::~GLContext()
 {
+    // ä¿è¯ææ„é¡ºåº
+    m_shader.reset();
+    m_texture.reset();
+
     shutdown();
 }
 
@@ -46,7 +50,13 @@ void GLContext::SwapWindow()
 bool GLContext::PrepareShader(const char* vertexPath, const char* fragmentPath)
 {
     m_shader = std::make_unique<Shader>(vertexPath, fragmentPath);
-    return m_shader->isInitialized();
+    return m_shader->IsInitialized();
+}
+
+bool GLContext::PrepareTexture(const std::string& path, unsigned int unit)
+{
+    m_texture = std::make_unique<Texture>(path, unit);
+	return m_texture->IsInitialized();
 }
 
 void GLContext::BeginShader() 
@@ -81,7 +91,7 @@ void GLContext::SetUniformInt(const std::string& name, int value)
 
 void GLContext::setup()
 {
-    // ´´½¨GLÉÏÏÂÎÄ
+    // åˆ›å»ºGLä¸Šä¸‹æ–‡
     m_glcontext = SDL_GL_CreateContext(m_window);
     if (!m_glcontext)
     {
@@ -89,14 +99,14 @@ void GLContext::setup()
         return;
     }
 
-    // ¼¤»îGLÉÏÏÂÎÄ£¬Ê¹Æä³ÉÎªµ±Ç°Ïß³ÌµÄ»æÍ¼Ä¿±ê
+    // æ¿€æ´»GLä¸Šä¸‹æ–‡ï¼Œä½¿å…¶æˆä¸ºå½“å‰çº¿ç¨‹çš„ç»˜å›¾ç›®æ ‡
     if (!SDL_GL_MakeCurrent(m_window, m_glcontext))
     {
         SDL_Log("setup SDL_GL_MakeCurrent error,%s", SDL_GetError());
         return;
     }
 
-    // ¼ÓÔØGLAD
+    // åŠ è½½GLAD
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
         SDL_Log("gladLoadGLLoader Errors: %s", SDL_GetError());
@@ -134,12 +144,6 @@ void GLContext::shutdown()
     {
         glDeleteBuffers(1, &m_uvVbo);
         m_uvVbo = 0;
-    }
-
-    if (glIsTexture(m_texture))
-    {
-        glDeleteTextures(1, &m_texture);
-        m_texture = 0;
     }
 
     if (glIsBuffer(m_ebo))
