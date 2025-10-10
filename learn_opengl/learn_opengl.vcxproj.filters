@@ -334,5 +334,8 @@
     <Image Include="assets\textures\goku.jpg">
       <Filter>assets\textures</Filter>
     </Image>
+    <Image Include="assets\textures\hinata.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

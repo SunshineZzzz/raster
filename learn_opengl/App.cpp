@@ -22,26 +22,30 @@ void PrepareVAO()
 	{
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f,
+		0.5f,  0.5f, 0.0f,
 	};
 
 	float colors[] = 
 	{
 		1.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f
+		0.0f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.5f
 	};
 
-	float uvs[] = 
+	float uvs[] =
 	{
 		0.0f, 0.0f,
 		1.0f, 0.0f,
-		0.5f, 1.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f,
 	};
 
 	unsigned int indices[] = 
 	{
-		0, 1, 2
+		0, 1, 2,
+		2, 1, 3
 	};
 
 	// 创建VBO
@@ -96,7 +100,7 @@ void PrepareTexture()
 	int width, height, channels;
 	// 反转y轴
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("assets/textures/goku.jpg", &width, &height, &channels, STBI_rgb_alpha);
+	unsigned char* data = stbi_load("assets/textures/hinata.jpg", &width, &height, &channels, STBI_rgb_alpha);
 
 	// 创建纹理对象
 	glGenTextures(1, &glcontext->m_texture);
@@ -195,14 +199,13 @@ void render()
 	glcontext->BeginShader();
 
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
-	glcontext->SetUniformFloat("speed", 10.0f);
 	glcontext->SetUniformInt("sampler", 0);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
 	
 	// 3.发出绘制指令
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	// 4.解绑VAO
 	glBindVertexArray(0);
