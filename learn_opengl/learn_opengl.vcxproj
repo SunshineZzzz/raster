@@ -236,7 +236,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\goku.jpg" />
+    <Image Include="assets\textures\grass.jpg" />
     <Image Include="assets\textures\hinata.jpg" />
+    <Image Include="assets\textures\land.jpg" />
+    <Image Include="assets\textures\noise.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

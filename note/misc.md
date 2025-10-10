@@ -57,6 +57,9 @@
     - [纹理包裹](#纹理包裹)
     - [纹理混合](#纹理混合)
 - [多级渐远纹理](#多级渐远纹理)
+    - [多级渐远纹理产生的原理](#多级渐远纹理产生的原理)
+       - [滤波](#滤波)
+       - [采样](#采样)
 
 ### OpenGL 
 
@@ -746,4 +749,47 @@ UV坐标是二维纹理映射坐标系，以U(水平)、V(垂直)轴定位图像
 
 ### 多级渐远纹理
 
-多级渐远纹理(Mipmap)，
+多级渐远纹理(Mipmap)，是一种**纹理优化技术**，用于在渲染过程中根据物体与相机的距离，自动选择不同级别的纹理进行渲染。
+
+下图应该用的是**GL_LINEAR**过滤方式
+
+![alt text](img/mipmap1.png)
+
+![alt text](img/mipmap2.png)
+
+![alt text](img/mipmap3.png)
+
+![alt text](img/mipmap4.png)
+
+#### 多级渐远纹理产生的原理
+
+![alt text](img/mipmap_gen_theory1.png)
+
+1. 产生同样大小图片的滤波图片
+2. 采样成不同大小的图片
+
+##### 滤波
+
+均值滤波(Mean Filter)，通过计算一个像素周围邻域内(比如周围9个像素)所有像素的平均值，并将这个平均值作为该像素新的颜色或亮度值。
+
+![alt text](img/mipmap_gen_theory2.png)
+
+高斯滤波(Gaussian Filter)， 核心思想是用**正态分(Normal Distribution)**，即高斯函数，来定义一个加权平均的模板。它也被广泛称为**高斯模糊(Gaussian Blur)**。
+
+中心权重最大： 距离中心像素越近的像素，在计算平均值时所占的权重越大。
+
+边缘权重最小： 距离中心像素越远的像素，权重呈指数级衰减，对结果的影响越小。
+
+![alt text](img/mipmap_gen_theory3.png)
+
+![alt text](img/mipmap_gen_theory4.png)
+
+##### 采样
+
+二分下采样(Decimation by Two)，它的核心目的是减小图像或纹理的尺寸，通常用于生成Mipmap的下一级纹理。
+
+![alt text](img/mipmap_gen_theory5.png)
+
+计算统计值采样
+
+![alt text](img/mipmap_gen_theory6.png)

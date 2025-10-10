@@ -31,9 +31,13 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	stbi_image_free(data);
 
 	// 设置纹理的过滤方式
-	// 需要的像素比实际纹理对象像素多，采用线性过滤
+	// GL_TEXTURE_MAG_FILTER (放大过滤)
+	// 发生时机：屏幕像素 > 纹理像素 (纹理被拉伸)
+	// 描述：屏幕上需要的像素比实际纹理对象像素多，采用线性过滤
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// 需要的像素比实际纹理对象像素少，采用临近过滤
+	// GL_TEXTURE_MIN_FILTER (缩小过滤)
+	// 发生时机：屏幕像素 < 纹理像素 (纹理被压缩)
+	// 描述：屏幕上需要的像素比实际纹理对象像素少，采用临近过滤
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	// 设置纹理的包裹方式

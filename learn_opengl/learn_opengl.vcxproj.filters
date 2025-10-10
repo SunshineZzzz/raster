@@ -343,5 +343,14 @@
     <Image Include="assets\textures\hinata.jpg">
       <Filter>assets\textures</Filter>
     </Image>
+    <Image Include="assets\textures\grass.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
+    <Image Include="assets\textures\land.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
+    <Image Include="assets\textures\noise.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
