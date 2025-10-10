@@ -3,6 +3,8 @@
 - [EGL](#egl)
 - [ANGLE](#angle)
 - [GLFW](#glfw)
+- [SDL](#sdl)
+- [GLAD](#glad)
 - [标准化设备坐标系](#标准化设备坐标系)
 - [坐标系](#坐标系)
   - [笛卡尔坐标系](#笛卡尔坐标系)
@@ -32,8 +34,21 @@
   - [光栅化](#光栅化)
   - [片元着色器](#片元着色器)
   - [混合与测试](#混合与测试)
-- [光栅化](#光栅化)
-  - [基本单元](#基本单元)
+- [GPU工作流程解析](#gpu工作流程解析)
+- [VBO](#vbo)
+- [VAO](#vao)
+- [EBO](#ebo)
+- [Shader](#shader)
+- [GLSL语言](#glsl语言)
+  - [Vertex Shader](#vertex-shader)
+  - [Fragment Shader](#fragment-shader)
+  - [Shader的编译与链接](#shader的编译与链接)
+  - [VBO绘制流程](#vbo绘制流程)
+- [EBO](#ebo)
+- [GLSL语法](#glsl语法)
+    - [变量类型](#变量类型)
+    - [向量使用方式](#向量使用方式)
+    - [变量分类](#变量分类)
 
 ### OpenGL 
 
@@ -49,7 +64,7 @@
 
 ### EGL
 
-`EGL`(Embedded-System Graphics Library)是`​​Khronos Group​`制定和维护，能够统一不同平台`OpenGL ES`的初始化以及将`OpenGL ES`和所在平台的`UI`框架用统一的方式对接起来。这样你就可以在不同平台使用相同的`API`去初始化及使用`OpenGL ES`。
+`EGL`(Embedded-System Graphics Library)，嵌入式系统图形库，是​`OpenGL ES`渲染`API`与设备原生窗口系统之间的一个中间接口层​​。它主要由系统制造商实现，充当了图形渲染`API`与不同平台本地窗口系统(如 Android、Linux、Windows 等)之间的​​桥梁​
 
 ### ANGLE
 
@@ -62,6 +77,22 @@
 ### GLFW
 
 `GLFW`是一个开源的、跨平台库，用于在桌面平台上进行`OpenGL`、`OpenGL ES`和`Vulkan`开发。它提供了一个简单的`API`，用于创建窗口、上下文和表面，以及接收输入和事件。
+
+### SDL
+
+`SDL`(Simple DirectMedia Layer)，直译为**简单直接媒体层库**是一套开放源代码的跨平台多媒体开发库，使用C语言写成。通过OpenGL/Direct3D/Metal/Vulkan接口提供对音频、键盘、鼠标、摇杆及图形硬件的底层访问。
+
+### GLAD
+
+`GLAD`(OpenGL Loader And API for Developers)是一个专门用于​​简化OpenGL函数指针加载过程​​的开源库。它的核心作用是解决不同平台和显卡驱动下OpenGL函数地址的动态获取问题，让你能更轻松、更安全地使用OpenGL进行图形开发。
+
+在现代OpenGL/OpenGL ES编程中，你不能直接调用gl*函数，因为这些函数的实际执行代码位于显卡驱动程序内部，它们的内存地址在程序运行时才能确定。
+
+![alt text](img/glad1.png)
+
+![alt text](img/glad2.png)
+
+https://glad.dav1d.de/
 
 ### 标准化设备坐标系
 
@@ -431,6 +462,8 @@ $$
 
 渲染管线，通过给定虚拟相机、3D场景物体以及光源等场景要素来产生或者渲染一副2D的图像。
 
+渲染管线可以被划分为两个主要部分：第一部分把你的3D坐标转换为2D坐标，第二部分是把2D坐标转变为实际的有颜色的像素。
+
 ![alt text](img/render_pipeline1.png)
 
 ![alt text](img/render_pipeline1_1.png)
@@ -438,8 +471,6 @@ $$
 #### 顶点数据
 
 顶点数据(vertex data)，用来为后面的顶点着色器等阶段提供处理的数据。是渲染管线的数据主要来源。送入到渲染管线的数据包括顶点坐标、纹理坐标、顶点法线和顶点颜色等顶点属性。
-
-为了让OpenGL明白顶点数据构成的是什么图元，我们需要在绘制指令中传递相对应的图元信息。常见的图元包括：点(GL_POINTS)、线(GL_LINES)、线条(GL_LINE_STRIP)、三角面(GL_TRIANGLES)。
 
 ![alt text](img/render_pipeline2.png)
 
@@ -489,3 +520,148 @@ $$
 #### 混合与测试
 
 ![alt text](img/render_pipeline8.png)
+
+### GPU工作流程解析
+
+图形渲染本质上，就是CPU端的C++程序控制GPU行为的过程，控制过程包括**数据传输**与**指令发送**
+
+![alt text](img/gpu_workflow1.png)
+
+CPU对三角形数据处理，分为**顶点处理**与**片元处理**
+
+顶点与片元处理，统一通过**着色器程序(Shader)**进行; 它是我们自己编写的运行在GPU端的程序。
+
+![alt text](img/gpu_workflow2.png)
+
+### VBO
+
+VBO(Vertex Buffer Object)，顶点缓冲对象，表示了在GPU显存上的一段存储空间对象。
+
+VBO在C++中，表现为一个 unsigned int 类型变量，理解为GPU端内存对象的一个ID编号。
+
+![alt text](img/vbo1.png)
+
+![alt text](img/vbo2.png)
+
+![alt text](img/vbo3.png)
+
+![alt text](img/vbo4.png)
+
+![alt text](img/vbo5.png)
+
+### VAO
+
+VAO(Vertex Array Object)，顶点数组对象，用来存储一个Mesh网格所有的**顶点属性描述信息**。
+
+![alt text](img/vao1.png)
+
+![alt text](img/vao2.png)
+
+![alt text](img/vao3.png)
+
+![alt text](img/vao4.png)
+
+![alt text](img/vao5.png)
+
+![alt text](img/vao6.png)
+
+![alt text](img/vao7.png)
+
+![alt text](img/vao8.png)
+
+![alt text](img/vao9.png)
+
+![alt text](img/vao10.png)
+
+![alt text](img/vao11.png)
+
+![alt text](img/vao12.png)
+
+### Shader
+
+Shader(着色器程序)，一种运行在GPU端的程序，用来处理顶点数据以及决定像素片元最终着色。
+
+Shader主要分为顶点着色器(vertex shader)和片元着色器(fragment shader)。
+
+![alt text](img/shader1.png)
+
+### GLSL语言
+
+GLSL语言(Graphic Library Shader Language)，是OpenGL的着色器语言，用来编写顶点着色器和片元着色器。
+
+1. GLSL程序本质是一种**输入转化为输出**的程序。
+2. GLSL程序是一种非常独立的程序，彼此之间**无法通信**，只能通过**输入输出相互承接**。
+
+#### Vertex Shader
+
+下面是一个简单的顶点着色器示例，就是把输入的顶点坐标直接输出，交由图元装配(Primitive Assembly)阶段处理
+
+![alt text](img/vertex_shader1.png)
+
+![alt text](img/vertex_shader2.png)
+
+![alt text](img/vertex_shader3.png)
+
+#### Fragment Shader
+
+下面是一个简单的片元着色器示例，直接将vec4(1.0f, 0.5f, 2.0f, 1.0f)，交由混合与测试(Blend and Test)阶段处理
+
+![alt text](img/fragment_shader1.png)
+
+#### Shader的编译与链接
+
+![alt text](img/shader_compile1.png)
+
+#### VBO绘制流程
+
+![alt text](img/glsl_render1.png)
+
+![alt text](img/glsl_render2.png)
+
+![alt text](img/glsl_render3.png)
+
+![alt text](img/glsl_render4.png)
+
+![alt text](img/glsl_render5.png)
+
+![alt text](img/glsl_render6.png)
+
+### EBO
+
+EBO(Element/Index Buffer Object)，元素缓冲对象/索引缓冲对象，用来存储**顶点绘制顺序索引号**的GPU显存区域。
+
+![alt text](img/ebo1.png)
+
+![alt text](img/ebo2.png)
+
+![alt text](img/ebo3.png)
+
+#### EBO的绘制流程
+
+![alt text](img/ebo_render1.png)
+
+### GLSL语法
+
+#### 变量类型
+
+![alt text](img/glsl_syntax_type1.png)
+
+#### 向量使用方式
+
+![alt text](img/glsl_syntax_vector_use_type1.png)
+
+#### 变量分类
+
+![alt text](img/glsl_syntax_type_class1.png)
+
+![alt text](img/glsl_syntax_type_class2.png)
+
+#### uniform变量
+
+![alt text](img/glsl_syntax_uniform1.png)
+
+![alt text](img/glsl_syntax_uniform2.png)
+
+![alt text](img/glsl_syntax_uniform3.png)
+
+![alt text](img/glsl_syntax_uniform4.png)

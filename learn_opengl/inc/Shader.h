@@ -1,0 +1,26 @@
+﻿#pragma once
+
+#include <glad/glad.h>
+#include<string>
+
+class Shader {
+public:
+	Shader(const char* vertexPath, const char* fragmentPath);
+	~Shader();
+
+	// 是否初始化成功
+	bool isInitialized() const;
+	// 开始使用当前Shader
+	void Begin();
+	// 结束使用当前Shader
+	void End();
+	// 设置uniform float变量
+	void SetUniformFloat(const std::string& name, float value);
+
+private:
+	// 检测shader错误
+	const std::string checkShaderErrors(GLuint target, std::string type);
+
+	bool m_initialized = false;
+	GLuint m_program{ 0 };
+};
