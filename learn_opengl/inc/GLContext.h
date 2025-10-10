@@ -18,8 +18,10 @@ public:
     GLuint m_interleavedVbo = 0;
     GLuint m_posVbo = 0;
     GLuint m_colorVbo = 0;
+    GLuint m_uvVbo = 0;
+    GLuint m_texture = 0;
     GLuint m_ebo = 0;
-
+    
     GLContext(SDL_Window* window);
     ~GLContext();
 
@@ -31,8 +33,11 @@ public:
     void BeginShader();
 	// 结束使用Shader
 	void EndShader();
-    // 设置uniform float变量
+    // 设置uniform变量
     void SetUniformFloat(const std::string& name, float value);
+    void SetUniformVector3(const std::string& name, float x, float y, float z);
+    void SetUniformVector3(const std::string& name, const float* values);
+    void SetUniformInt(const std::string& name, int value);
 
 private:
     // GL初始化

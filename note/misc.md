@@ -49,6 +49,12 @@
     - [变量类型](#变量类型)
     - [向量使用方式](#向量使用方式)
     - [变量分类](#变量分类)
+    - [uniform变量](#uniform变量)
+- [纹理](#纹理)
+    - [UV坐标](#uv坐标)
+    - [纹理单元](#纹理单元)
+    - [纹理过滤](#纹理过滤)
+    - [纹理包裹](#纹理包裹)
 
 ### OpenGL 
 
@@ -665,3 +671,61 @@ EBO(Element/Index Buffer Object)，元素缓冲对象/索引缓冲对象，用�
 ![alt text](img/glsl_syntax_uniform3.png)
 
 ![alt text](img/glsl_syntax_uniform4.png)
+
+### 纹理
+
+纹理(Texture)，在绘制三角形的过程中，将图片贴到三角形上进行显示的过程，即纹理贴图的过程。
+
+![alt text](img/texture1.png)
+
+#### UV坐标
+
+UV坐标是二维纹理映射坐标系，以U(水平)、V(垂直)轴定位图像像素并将其映射至三维模型表面，其坐标范围通常标准化为[0,1]。
+
+我们通常在I**三角形的顶点**上规定uv坐标具体数值，作为**顶点属性**，通过**插值算法**到达每个片元像素。
+
+![alt text](img/uv1.png)
+
+![alt text](img/uv2.png)
+
+![alt text](img/uv3.png)
+
+![alt text](img/uv4.png)
+
+![alt text](img/uv5.png)
+
+![alt text](img/uv6.png)
+
+![alt text](img/uv7.png)
+
+#### 纹理单元
+
+![alt text](img/texture_unit1.png)
+
+![alt text](img/texture_unit2.png)
+
+![alt text](img/texture_unit3.png)
+
+![alt text](img/texture_unit4.png)
+
+#### 纹理过滤
+
+![alt text](img/texture_filter1.png)
+
+![alt text](img/texture_filter2.png)
+
+![alt text](img/texture_filter3.png)
+
+![alt text](img/texture_filter4.png)
+
+#### 纹理包裹
+
+![alt text](img/texture_wrap1.png)
+
+![alt text](img/texture_wrap2.png)
+
+![alt text](img/texture_wrap3.png)
+
+![alt text](img/texture_wrap4.png)
+
+![alt text](img/texture_wrap5.png)

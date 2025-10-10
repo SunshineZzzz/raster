@@ -223,6 +223,7 @@
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL_version.h" />
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL_video.h" />
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL_vulkan.h" />
+    <ClInclude Include="..\3rd\stb\stb_image.h" />
     <ClInclude Include="inc\CheckRstErr.h" />
     <ClInclude Include="inc\GLContext.h" />
     <ClInclude Include="inc\Shader.h" />
@@ -230,6 +231,9 @@
   <ItemGroup>
     <None Include="assets\shaders\fragment.glsl" />
     <None Include="assets\shaders\vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\goku.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -28,6 +28,12 @@
     <Filter Include="assets\shaders">
       <UniqueIdentifier>{914b0b6d-3f4c-4752-9bf3-a09861a15c0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rd\stb">
+      <UniqueIdentifier>{999fde0e-9018-483b-80e9-4c8c06272923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\textures">
+      <UniqueIdentifier>{8de82bba-a212-4232-a671-53a231dd81c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -312,6 +318,9 @@
     <ClInclude Include="inc\CheckRstErr.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\3rd\stb\stb_image.h">
+      <Filter>3rd\stb</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fragment.glsl">
@@ -320,5 +329,10 @@
     <None Include="assets\shaders\vertex.glsl">
       <Filter>assets\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\goku.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

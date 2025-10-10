@@ -150,6 +150,24 @@ void Shader::SetUniformFloat(const std::string& name, float value)
 	GL_CALL(glUniform1f(location, value));
 }
 
+void Shader::SetUniformVector3(const std::string& name, float x, float y, float z)
+{
+	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
+	GL_CALL(glUniform3f(location, x, y, z));
+}
+
+void Shader::SetUniformVector3(const std::string& name, const float* values)
+{
+	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
+	GL_CALL(glUniform3fv(location, 1, values));
+}
+
+void Shader::SetUniformInt(const std::string& name, int value)
+{
+	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
+	GL_CALL(glUniform1i(location, value));
+}
+
 const std::string Shader::checkShaderErrors(GLuint target, std::string type) 
 {
 	int success = 0;

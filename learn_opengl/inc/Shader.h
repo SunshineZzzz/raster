@@ -14,8 +14,11 @@ public:
 	void Begin();
 	// 结束使用当前Shader
 	void End();
-	// 设置uniform float变量
+	// 设置uniform变量
 	void SetUniformFloat(const std::string& name, float value);
+	void SetUniformVector3(const std::string& name, float x, float y, float z);
+	void SetUniformVector3(const std::string& name, const float* values);
+	void SetUniformInt(const std::string& name, int value);
 
 private:
 	// 检测shader错误

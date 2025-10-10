@@ -64,6 +64,21 @@ void GLContext::SetUniformFloat(const std::string& name, float value)
     m_shader->SetUniformFloat(name, value);
 }
 
+void GLContext::SetUniformVector3(const std::string& name, float x, float y, float z)
+{
+    m_shader->SetUniformVector3(name, x, y, z);
+}
+
+void GLContext::SetUniformVector3(const std::string& name, const float* values)
+{
+    m_shader->SetUniformVector3(name, values);
+}
+
+void GLContext::SetUniformInt(const std::string& name, int value)
+{
+    m_shader->SetUniformInt(name, value);
+}
+
 void GLContext::setup()
 {
     // 创建GL上下文
@@ -114,6 +129,18 @@ void GLContext::shutdown()
 		glDeleteBuffers(1, &m_colorVbo);
         m_colorVbo = 0;
 	}
+
+    if (glIsBuffer(m_uvVbo))
+    {
+        glDeleteBuffers(1, &m_uvVbo);
+        m_uvVbo = 0;
+    }
+
+    if (glIsTexture(m_texture))
+    {
+        glDeleteTextures(1, &m_texture);
+        m_texture = 0;
+    }
 
     if (glIsBuffer(m_ebo))
     {
