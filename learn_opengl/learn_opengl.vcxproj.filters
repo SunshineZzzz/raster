@@ -352,5 +352,8 @@
     <Image Include="assets\textures\noise.jpg">
       <Filter>assets\textures</Filter>
     </Image>
+    <Image Include="assets\textures\wall.jpg">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

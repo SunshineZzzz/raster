@@ -240,6 +240,7 @@
     <Image Include="assets\textures\hinata.jpg" />
     <Image Include="assets\textures\land.jpg" />
     <Image Include="assets\textures\noise.jpg" />
+    <Image Include="assets\textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

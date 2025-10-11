@@ -60,6 +60,8 @@
     - [多级渐远纹理产生的原理](#多级渐远纹理产生的原理)
        - [滤波](#滤波)
        - [采样](#采样)
+    - [OpenGL如何判定使用哪一级Mipmap?](#opengl如何判定使用哪一级mipmap)
+    - [手动测试mipmap](#手动测试mipmap)
 
 ### OpenGL 
 
@@ -715,6 +717,10 @@ UV坐标是二维纹理映射坐标系，以U(水平)、V(垂直)轴定位图像
 
 #### 纹理过滤
 
+采样(Sampling)： 动作。是从纹理或场景中读取一个或多个点的数据的过程。
+
+过滤(Filtering)： 方法/处理。是根据采样的点和预设的算法（如平均、插值）来计算出一个最终颜色的过程。
+
 ![alt text](img/texture_filter1.png)
 
 ![alt text](img/texture_filter2.png)
@@ -793,3 +799,217 @@ UV坐标是二维纹理映射坐标系，以U(水平)、V(垂直)轴定位图像
 计算统计值采样
 
 ![alt text](img/mipmap_gen_theory6.png)
+
+#### OpenGL如何判定使用哪一级Mipmap?
+
+通过GLSL中的**求偏导函数**计算变化量决定使用哪一级Mipmap。
+
+![alt text](img/mipmap_judgement1.png)
+
+![alt text](img/mipmap_judgement2.png)
+
+![alt text](img/mipmap_judgement3.png)
+
+我的理解：
+
+现代GPU不是一次处理一个像素，而是将屏幕空间划分为2×2或4×4的块进行并行处理。
+
+片段0：位于(x,y)
+
+片段1：位于(x+1,y)（x方向相邻）
+
+片段2：位于(x,y+1)（y方向相邻）
+
+片段3：位于(x+1,y+1)
+
+**上图中和左边图理解：**
+
+**上图就是假设FS每次只处理2x2片元，片段0和片段1而言，只关注uv属性，片段0/片段1的uv肯定是x在[0,1]范围内的数值，y在[0,1]范围内的数值，并且两者y相同。记作Puv0Vec2和Puv1Vec2，求出对应到纹理坐标的uv值，记作Tuv0Vec2和Tuv1Vec2，同样两者y相同。片段0和片段2一样的道理。总结来说，就是当我们沿着屏幕x轴和y轴精确移动1个像素时，纹理坐标(uv)在u和v方向上移动了多少。这个值就是纹理在当前屏幕区域的拉伸或压缩程度变化率，也就是偏导数**
+
+**上图中和右边图理解：**
+
+**GPU使用偏导数来近似计算屏幕像素在纹理上覆盖的面积，并用这个面积来决定使用哪个Mipmap级别LOD(Level of Detail，细节级别)。**
+
+**LOD ≈ log2​(max(∣dFdx(uv)∣,∣dFdy(uv)∣))**
+
+**dFdx(test)=dFdx(uv×2.0)=dFdx(uv)×2.0，L≈log2​(2R)=log2​(2)+log2​(R)=1+log2​(R)，乘以2.0的目的就是校正Mipmap级别。它告诉GPU："这个纹理坐标已经人为地被缩放了2倍，请你将正常的Mipmap 级别再往上(更模糊)推一级(L→L+1)，才能成功地平滑(消除了)重复贴图所引入的额外高频细节，从而消除了远处纹理的闪烁和走样问题(摩尔纹)。"**
+
+LOD(Level of Detail)和Mipmap是概念与实现的关系。LOD是一个概念或目标，而Mipmap是在纹理领域实现这个目标的一种具体技术。
+
+下面这个图很少的说明了上图
+
+![alt text](img/mipmap_judgement4.png)
+ 
+```GLSL
+// fragment shader
+
+// vec2 - 包含2个float分量的向量
+// textureWidth - 纹理宽度
+// textureHeight - 纹理高度
+// uv - 插值得到的纹理坐标[0,1]^2
+// 计算得出
+// location - 实际纹理坐标[x[0,textureWidth-1], y[0,textureHeight-1]]
+vec2 location = uv * vec2(textureWidth, textureHeight);
+
+// 以location当前像素为中心，向它的水平方向跨出一步(2x2片元)对应的像素location'，可以计算出location处的偏导数(变化率)
+// 本质：在屏幕上水平移动1步，纹理上水平移动了多少步(偏导数，变化率，以纹理像素为单位)，它表示纹理坐标在u和v两个方向上同时发生的变化率。如果斜着贴纹理，u和v方向上的变化率都存在。
+vec2 dx = dFdx(location);
+// 同上
+vec2 dy = dFdy(location);
+
+// dot(dx,dx) - |dx|^2 = dx.x^2 + dx.y^2 - 向量到标量，为什么要dot呢，有可能同时有u和v两个方向上的变化率，点积目的把方向扔掉，只留大小
+// dot(dy,dy) - |dy|^2 = dy.x^2 + dy.y^2 - 向量到标量，同上
+// 找出最大
+// 开方 - 得到最大的变化率
+// 本质：当前屏幕像素移动1步(水平或垂直的方向)，在纹理空间(水平或者垂直的方向)中 覆盖的最长边有多长 (最大变化率，以纹理像素为单位)
+float maxDelta = sqrt(max(dot(dx,dx), dot(dy,dy)));
+// 取对数 - 得到LOD(Level of Detail)
+float L = log2(maxDelta);
+
+// maxDelta < 1 => L < 0，取LOD0 => 屏幕像素 > 纹理像素，纹理图片被放大，那就选择该纹理，GL_LINEAR滤波方式
+// 1 < maxDelta < 2 => 0 < L < 1，L > 0.5，就取LOD1，L < 0.5，就取LOD0。
+// 
+// maxDelta = 2 => L = 1, 取LOD1 => 屏幕1x1像素2x2纹理像素，选择LOD1对应纹理
+// ...
+// maxDelta = 8 => L = 3，取LOD3 => 屏幕1x1像素8x8纹理像素，选择LOD3对应纹理
+// 
+// 就上面规范，L大于xxx.5, 就取xxx+1，否则就取xxx
+int level = max(int(L+0.5), 0);
+FragColor = textureLod(Sampler, uv, level);
+```
+
+![alt text](img/mipmap_judgement5.png)
+
+![alt text](img/mipmap_judgement6.png)
+
+#### 手动测试mipmap
+
+![alt text](img/mipmap_manua1_test1.png)
+
+![alt text](img/mipmap_manua1_test2.png)
+
+![alt text](img/mipmap_manua1_test3.png)
+
+![alt text](img/mipmap_manua1_test4.png)
+
+```C++
+Texture::Texture(const std::string& path, unsigned int unit) 
+{
+	m_unit = unit;
+
+	int channels;
+	// 反转y轴
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load(path.c_str(), &m_width, &m_height, &channels, STBI_rgb_alpha);
+	if (!data)
+	{
+		SDL_Log("stbi_load error,%s,%s", stbi_failure_reason(), path.c_str());
+		return;
+	}
+
+	// 创建纹理对象
+	glGenTextures(1, &m_texture);
+	// 激活纹理单元
+	glActiveTexture(GL_TEXTURE0 + m_unit);
+	// 绑定纹理对象
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	// 纹理对象m_texture就被对应到了纹理单元GL_TEXTURE0+m_unit
+	// 开辟显存，并上传数据
+	// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	int width = m_width, height = m_height;
+	// 遍历每个mipmap的层级，为每个级别的mipmap填充图片数据
+	for (int level = 0; true; ++level) 
+	{
+		// 1.将当前级别的mipmap对应的数据发往gpu端
+		glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+		// 2.判断是否退出循环
+		if (width == 1 && height == 1) 
+		{
+			break;
+		}
+
+		// 3.计算下一次循环的宽度/高度，除以2
+		width = width > 1 ? width / 2 : 1;
+		height = height > 1 ? height / 2 : 1;
+	}
+
+	// 释放数据
+	stbi_image_free(data);
+
+	// 设置纹理的过滤方式
+	// 采样(Sampling)： 动作。是从纹理或场景中读取一个或多个点的数据的过程。
+	// 过滤(Filtering)： 方法/处理。是根据采样的点和预设的算法（如平均、插值）来计算出一个最终颜色的过程。
+	// 
+	// GL_TEXTURE_MAG_FILTER (放大过滤)
+	// 发生时机：屏幕像素 > 纹理像素 (纹理被拉伸)
+	// 描述：屏幕上需要的像素比实际纹理对象像素多，采用线性过滤
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// GL_TEXTURE_MIN_FILTER (缩小过滤)
+	// 发生时机：屏幕像素 < 纹理像素 (纹理被压缩)
+	// 描述：屏幕上需要的像素比实际纹理对象像素少，采用临近过滤
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	// GL_LINEAR_MIPMAP_LINEAR: 在单个mipmap上采用线性采样，在两层mipmap LOD之间(比如L=1.3,L1,L2之间)采用线性过滤来获取纹理像素
+	// GL_NEAREST_MIPMAP_NEAREST: 在单个mipmap上采用临近采样，在两层mipmap LOD之间(比如L=1.3,L1,L2之间)采用临近过滤来获取纹理像素
+	// 还有其他的组合方式，比如GL_LINEAR_MIPMAP_NEAREST，GL_NEAREST_MIPMAP_LINEAR等
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// 注释掉上面的目的是，我们将在fs中手动实现自动选择mipmap
+
+	// 设置纹理的包裹方式
+	// u纹理坐标超出[0,1]范围，采用重复模式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	// v纹理坐标超出[0,1]范围，采用重复模式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	m_initialized = true;
+}
+```
+
+```GLSL
+// fragment shader
+
+#version 460 core
+out vec4 FragColor;
+in vec3 color;
+in vec2 uv;
+uniform sampler2D sampler;
+uniform float width;
+uniform float height;
+void main()
+{
+	// vec2 - 包含2个float分量的向量
+	// textureWidth - 纹理宽度
+	// textureHeight - 纹理高度
+	// uv - 插值得到的纹理坐标[0,1]^2
+	// 计算得出
+	// location - 实际纹理坐标[x[0,textureWidth-1], y[0,textureHeight-1]]
+	vec2 location = uv * vec2(width, height);;
+
+	// 以location当前像素为中心，向它的水平方向跨出一步(2x2片元)对应的像素location'，可以计算出location处的偏导数(变化率)
+	// 本质：在屏幕上水平移动1步，纹理上水平移动了多少步(偏导数，变化率，以纹理像素为单位)，它表示纹理坐标在u和v两个方向上同时发生的变化率。如果斜着贴纹理，u和v方向上的变化率都存在。
+	vec2 dx = dFdx(location);
+	// 同上
+	vec2 dy = dFdy(location);
+
+	// dot(dx,dx) - |dx|^2 = dx.x^2 + dx.y^2 - 向量到标量，为什么要dot呢，有可能同时有u和v两个方向上的变化率，点积目的把方向扔掉，只留大小
+	// dot(dy,dy) - |dy|^2 = dy.x^2 + dy.y^2 - 向量到标量，同上
+	// 找出最大
+	// 开方 - 得到最大的变化率
+	// 本质：当前屏幕像素移动1步(水平或垂直的方向)，在纹理空间(水平或者垂直的方向)中 覆盖的最长边有多长 (最大变化率，以纹理像素为单位)
+	float maxDelta = sqrt(max(dot(dx,dx), dot(dy,dy)));
+	// 取对数 - 得到LOD(Level of Detail)
+	float L = log2(maxDelta);
+
+	// maxDelta < 1 => L < 0，取LOD0 => 屏幕像素 > 纹理像素，纹理图片被放大，那就选择该纹理，GL_LINEAR滤波方式
+	// 1 < maxDelta < 2 => 0 < L < 1，L > 0.5，就取LOD1，L < 0.5，就取LOD0。
+	// 
+	// maxDelta = 2 => L = 1, 取LOD1 => 屏幕1x1像素2x2纹理像素，选择LOD1对应纹理
+	// ...
+	// maxDelta = 8 => L = 3，取LOD3 => 屏幕1x1像素8x8纹理像素，选择LOD3对应纹理
+	// 
+	// 就上面规范，L大于xxx.5, 就取xxx+1，否则就取xxx
+	int level = max(int(L + 0.5), 0);
+	FragColor = textureLod(sampler, uv, level);
+}
+```

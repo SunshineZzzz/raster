@@ -19,11 +19,13 @@ public:
 private:
 	// 纹理对象
 	GLuint m_texture{ 0 };
-	// 纹理宽高
-	int m_width{ 0 };
-	int m_height{ 0 };
 	// 纹理单元号
 	unsigned int m_unit{ 0 };
 	// 是否已经初始化过
 	bool m_initialized = false;
+
+public:
+	// 纹理宽高
+	int m_width{ 0 };
+	int m_height{ 0 };
 };

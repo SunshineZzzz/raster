@@ -57,6 +57,8 @@ private:
     bool m_initialized = false;
     // 封装的gl着色器对象
     std::unique_ptr<Shader> m_shader = nullptr;
+
+public:
     // 封装的gl纹理对象们
     std::vector<std::unique_ptr<Texture>> m_vTextures;
 };

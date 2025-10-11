@@ -20,8 +20,7 @@ void PrepareVAO()
 	{
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f,
-		0.5f,  0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f,
 	};
 
 	float colors[] = 
@@ -29,21 +28,18 @@ void PrepareVAO()
 		1.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.5f
 	};
 
-	float uvs[] =
+	float uvs[] = 
 	{
 		0.0f, 0.0f,
 		1.0f, 0.0f,
-		0.0f, 1.0f,
-		1.0f, 1.0f,
+		0.5f, 1.0f,
 	};
 
 	unsigned int indices[] = 
 	{
 		0, 1, 2,
-		2, 1, 3
 	};
 
 	// 创建VBO
@@ -129,14 +125,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	// 准备纹理
 	if (!glcontext->PrepareTexture(
 		{ 
-			"assets/textures/grass.jpg",
-			"assets/textures/land.jpg",
-			"assets/textures/noise.jpg"
+			"assets/textures/wall.jpg",
 		}, 
 		{ 
 			0,
-			1,
-			2,
 		}
 	))
 	{
@@ -178,17 +170,16 @@ void render()
 	glcontext->BeginShader();
 
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
-	
+	glcontext->SetUniformFloat("width", (float)glcontext->m_vTextures[0]->m_width);
+	glcontext->SetUniformFloat("height", (float)glcontext->m_vTextures[0]->m_height);
 	// 纹理采样器设置为纹理单元0
-	glcontext->SetUniformInt("grassSampler", 0);
-	glcontext->SetUniformInt("landSampler", 1);
-	glcontext->SetUniformInt("noiseSampler", 2);
+	glcontext->SetUniformInt("sampler", 0);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
 	
 	// 3.发出绘制指令
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 	// 4.解绑VAO
 	glBindVertexArray(0);
