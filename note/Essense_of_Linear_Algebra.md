@@ -8,12 +8,32 @@
   - [向量张成的空间](#向量张成的空间)
   - [线性相关和线性无关](#线性相关和线性无关)
   - [线性变换](#线性变换)
+  - [向量补充](#向量补充)
+      - [向量的长度](#向量的长度)
+      - [向量点积性质](#向量点积性质)
+      - [向量点积应用](#向量点积应用)
+        - [计算向量a在b上的投影向量](#计算向量a在b上的投影向量)
+        - [判断两个向量是否同向](#判断两个向量是否同向)
+      - [向量叉积](#向量叉积)
+        - [三维下产生向量的模等于二者模的乘积与夹角正弦值乘积](#三维下产生向量的模等于二者模的乘积与夹角正弦值乘积)
+        - [向量叉积应用](#向量叉积应用)
+          - [两个向量叉乘可以产生垂直于二者的法向量](#两个向量叉乘可以产生垂直于二者的法向量)
+          - [判断点是否在三角形内](#判断点是否在三角形内)
 - [矩阵](#矩阵)
   - [复合变换](#复合变换)
   - [矩阵乘法](#矩阵乘法)
   - [矩阵行列式](#矩阵行列式)
   - [线性方程组](#线性方程组)
   - [秩和列空间](#秩和列空间)
+  - [矩阵补充](#矩阵补充)
+    - [什么是矩阵](#什么是矩阵)
+    - [单位矩阵](#单位矩阵)
+    - [矩阵加法](#矩阵加法)
+    - [矩阵乘法规则](#矩阵乘法规则)
+    - [矩阵转置](#矩阵转置)
+    - [逆矩阵](#逆矩阵)
+    - [行列式图](#行列式图)
+    - [任意轴旋转推导](#任意轴旋转推导)
 - [向量点积](#向量点积)
 - [向量叉积](#向量叉积)
 
@@ -136,6 +156,42 @@ $
 **矩阵本质上是对空间操纵的描述，用于定义一个线性变换的函数**。
 
 **矩阵中的各列依次代表线性变换中，各基向量在变换后的结果(位置)**。矩阵对应的线性变换将**原基向量张成的空间**映射(求函数)到**变换后基向量张成的空间**。
+
+### 向量补充
+
+#### 向量的长度 
+
+![alt text](img/vector_length1.png)
+
+#### 向量点积性质
+
+![alt text](img/vector_dot_product_property1.png)
+
+#### 向量点积应用
+
+##### 计算向量a在b上的投影向量
+
+![alt text](img/vector_dot_product_apply1.png)
+
+##### 判断两个向量是否同向
+
+![alt text](img/vector_dot_product_apply2.png)
+
+#### 向量叉积
+
+##### 三维下产生向量的模等于二者模的乘积与夹角正弦值乘积
+
+![alt text](img/vector_cross_product1.png)
+
+#### 向量叉积应用
+
+##### 两个向量叉乘可以产生垂直于二者的法向量
+
+![alt text](img/vector_cross_product_apply1.png)
+
+##### 判断点是否在三角形内
+
+![alt text](img/vector_cross_product_apply2.png)
 
 ### 矩阵
 
@@ -267,6 +323,163 @@ $
 <span style="color:red">我的理解就是，对于3阶矩阵而言，行列式不为零，说明该矩阵对应的空间线性变化没有降低维度，也就是满秩。对应的列空间就是3维空间中所有的向量集合。</span>
 
 当矩阵满秩时，只有零向量会被映射为零向量。当矩阵不满秩时，意味着有些非零向量被映射成零向量，这些原空间中的非零向量张成的空间被称为**零空间**(Null Space)或者**核**(Kernel)。
+
+
+#### 矩阵补充
+
+##### 什么是矩阵
+
+![alt text](img/what_matrix1.png)
+
+##### 单位矩阵
+
+![alt text](img/unit_matrix1.png)
+
+##### 矩阵加法
+
+![alt text](img/matrix_addition1.png)
+
+##### 矩阵乘法规则
+
+![alt text](img/matrix_multiplication_rule1.png)
+
+##### 矩阵转置
+
+![alt text](img/matrix_transpose1.png)
+
+![alt text](img/matrix_transpose2.png)
+
+##### 逆矩阵
+
+![alt text](img/matrix_inverse1.png)
+
+![alt text](img/matrix_inverse2.png)
+
+##### 行列式图
+
+![alt text](img/matrix_columnandrow1.png)
+
+![alt text](img/matrix_columnandrow2.png)
+
+##### 任意轴旋转推导
+
+已知任意旋转轴 $\hat{\mathbf{u}}$，$\vec{v}$ 围绕其旋转 $\theta$ 角度，求旋转后的向量 $\vec{v}'$。如下图所示:
+
+![alt text](img/matrix_arbitrary_axis_rotation1.png)
+
+(1) 把 $\vec{v}$ 分解为 $\vec{v} = \vec{v}\parallel + \vec{v}\perp$，其中 $\vec{v}\parallel$ 是 $\vec{v}$ 投影到 $\hat{\mathbf{u}}$ 上的向量，$\vec{v}\perp$ 是 $\vec{v}$ 投影到 $\hat{\mathbf{u}}$ 垂直的向量。 如下图所示：
+
+![alt text](img/matrix_arbitrary_axis_rotation2.png)
+
+(2) 对 $\vec{v}\perp$ 进行旋转 $\theta$ 角度，得到 $\vec{v}\perp'$。
+
+(3) $\vec{v}\parallel$ + $\vec{v}\perp'$ 就是旋转后的向量 $\vec{v}'$。如下图所示：
+
+![alt text](img/matrix_arbitrary_axis_rotation3.png)
+
+$$
+\vec{v}\parallel = (\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}}
+$$
+
+$$
+\vec{v}\perp = \vec{v} - (\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}}
+$$
+
+$$
+可以理解为，任意旋转轴 \hat{\mathbf{u}} 视为z轴，垂直于任意旋转轴的向量 \vec{v}\perp 视为x轴，构建出一个 \vec{w} 视为y轴。
+$$
+
+$$
+\vec{w} = \hat{\mathbf{u}} \times \vec{v}\perp
+$$
+
+$$
+\|\vec{w}\| = \|\hat{\mathbf{u}}\| \cdot \|\vec{v}\perp\| \cdot \sin\theta = \|\vec{v}\perp\| \cdot \sin\theta = \|\vec{v}\perp\|
+$$
+
+$$
+在由 \vec{v}\perp 和 \hat{\mathbf{u}} 张成的平面内，\vec{v}\perp 绕  \hat{\mathbf{u}} 逆时针旋转 θ 角度，得到的  \vec{v}\perp'
+可以通过这两个正交向量的线性组合来表达：
+$$
+
+$$
+\vec{v}\perp' = a \cdot \vec{v}\perp + b \cdot \vec{w} = \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot \vec{w}
+= \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v}\perp)
+$$
+
+$$
+如下图所示：
+$$
+
+![alt text](img/matrix_arbitrary_axis_rotation4.png)
+
+$$
+\vec{v}\perp' = a \cdot \vec{v}\perp + b \cdot \vec{w} = \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot \vec{w}
+= 
+\cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v}\perp)
+$$
+
+$$
+\vec{v}\perp' = a \cdot \vec{v}\perp + b \cdot \vec{w} = \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot \vec{w}
+= 
+\cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times (\vec{v} - \vec{v}\parallel))
+$$
+
+$$
+\vec{v}\perp' = a \cdot \vec{v}\perp + b \cdot \vec{w} = \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot \vec{w}
+=
+\cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v} - \hat{\mathbf{u}} \times \vec{v}\parallel)
+$$
+
+$$ 
+\hat{\mathbf{u}} 和 \vec{v}\parallel 平行的，叉乘结果为零向量
+$$
+
+$$
+\vec{v}\perp' = a \cdot \vec{v}\perp + b \cdot \vec{w} = \cos\theta \cdot \vec{v}\perp + \sin\theta \cdot \vec{w}
+=
+\cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v})
+$$
+
+$$
+求出\vec{v}'
+$$
+
+$$
+\vec{v}' = \vec{v}\parallel + \vec{v}\perp' 
+= 
+(\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}} +
+\cos\theta \cdot \vec{v}\perp + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v})
+=
+(\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}} + \cos\theta \cdot (\vec{v} - (\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}}) + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v})
+$$
+
+$$
+整理：
+$$
+
+$$
+\vec{v}' = \cos\theta \cdot (\vec{v} - (\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}}) + \sin\theta \cdot (\hat{\mathbf{u}} \times \vec{v}) + (\vec{v} \cdot \hat{\mathbf{u}}) \cdot \hat{\mathbf{u}}
+$$
+
+$$
+其实就是罗德里格旋转公式(Rodrigues' Rotation Formula)
+$$
+
+我们知道矩阵是对空间线性变换的描述函数，第一列是变换后的基向量i，第二列是变换后的基向量j，第三列是变换后的基向量k。根据上面的罗德里格旋转公式，依次计算出旋转后的向量i', j', k'。
+
+已知旋转轴 $\hat{\mathbf{u}}$, $\vec{v}$ 围绕其旋转 $ \theta $ 角度，对应的旋转矩阵：
+
+
+$$
+\mathbf{R}(\hat{\mathbf{u}}, \theta) =
+\begin{pmatrix}
+\cos\theta + u_x^2 (1 - \cos\theta) & u_x u_y (1 - \cos\theta) - u_z \sin\theta & u_x u_z (1 - \cos\theta) + u_y \sin\theta \\
+u_y u_x (1 - \cos\theta) + u_z \sin\theta & \cos\theta + u_y^2 (1 - \cos\theta) & u_y u_z (1 - \cos\theta) - u_x \sin\theta \\
+u_z u_x (1 - \cos\theta) - u_y \sin\theta & u_z u_y (1 - \cos\theta) + u_x \sin\theta & \cos\theta + u_z^2 (1 - \cos\theta)
+\end{pmatrix}
+$$
+
 
 
 ### 向量点积

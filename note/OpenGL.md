@@ -62,6 +62,7 @@
        - [采样](#采样)
     - [OpenGL如何判定使用哪一级Mipmap?](#opengl如何判定使用哪一级mipmap)
     - [手动测试mipmap](#手动测试mipmap)
+	- [OpenGL的Mipmap使用](#opengl的mipmap使用)
 
 ### OpenGL 
 
@@ -1013,3 +1014,7 @@ void main()
 	FragColor = textureLod(sampler, uv, level);
 }
 ```
+
+#### OpenGL的Mipmap使用
+
+![alt text](img/OpenGL_Mipmap1.png)

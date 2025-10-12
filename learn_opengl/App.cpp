@@ -170,8 +170,6 @@ void render()
 	glcontext->BeginShader();
 
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
-	glcontext->SetUniformFloat("width", (float)glcontext->m_vTextures[0]->m_width);
-	glcontext->SetUniformFloat("height", (float)glcontext->m_vTextures[0]->m_height);
 	// 纹理采样器设置为纹理单元0
 	glcontext->SetUniformInt("sampler", 0);
 
