@@ -1,4 +1,5 @@
 ﻿#include <SDL3/SDL.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include<string>
 #include<fstream>
@@ -167,6 +168,12 @@ void Shader::SetUniformInt(const std::string& name, int value)
 {
 	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
 	GL_CALL(glUniform1i(location, value));
+}
+
+void Shader::SetUniformMatrix4x4(const std::string& name, glm::mat4 value)
+{
+	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 const std::string Shader::checkShaderErrors(GLuint target, std::string type) 

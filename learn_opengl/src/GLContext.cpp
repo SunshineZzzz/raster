@@ -110,6 +110,11 @@ void GLContext::SetUniformInt(const std::string& name, int value)
     m_shader->SetUniformInt(name, value);
 }
 
+void GLContext::SetUniformMatrix4x4(const std::string& name, glm::mat4 value)
+{
+	m_shader->SetUniformMatrix4x4(name, value);
+}
+
 void GLContext::setup()
 {
     // 创建GL上下文

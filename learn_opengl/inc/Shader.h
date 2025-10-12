@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+
 #include<string>
 
 class Shader {
@@ -19,7 +21,7 @@ public:
 	void SetUniformVector3(const std::string& name, float x, float y, float z);
 	void SetUniformVector3(const std::string& name, const float* values);
 	void SetUniformInt(const std::string& name, int value);
-
+	void SetUniformMatrix4x4(const std::string& name, glm::mat4 value);
 private:
 	// 检测shader错误
 	const std::string checkShaderErrors(GLuint target, std::string type);

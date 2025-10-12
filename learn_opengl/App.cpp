@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
 #include <filesystem>
@@ -12,6 +13,36 @@
 
 std::unique_ptr<GLContext> glcontext = nullptr;
 SDL_Window* window = nullptr;
+
+// 绕着Z轴旋转
+glm::mat4 DoRotationZTransform(float degrees)
+{
+	return glm::rotate(glm::mat4(1.0f), glm::radians(degrees), glm::vec3(0.0, 0.0, 1.0));
+}
+
+// 平移变换
+glm::mat4 DoTranslationXTransform(float dx)
+{
+	return glm::translate(glm::mat4(1.0f), glm::vec3(dx, 0.0f, 0.0f));
+}
+
+// 缩放变换
+glm::mat4 DoScaleXYTransform(float sdx, float sdy) 
+{
+	return glm::scale(glm::mat4(1.0f), glm::vec3(sdx, sdy, 1.0f));
+}
+
+
+// 复合变换
+glm::mat4 DoComplexTransform(float degrees, float sdx, float sdy)
+{
+	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(degrees), glm::vec3(0.0, 0.0, 1.0));
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(sdx, sdy, 0.0f));
+
+	// 先放大，再旋转
+	return rotateMat * scaleMat;
+}
+
 
 // 准备VAO
 void PrepareVAO() 
@@ -125,7 +156,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	// 准备纹理
 	if (!glcontext->PrepareTexture(
 		{ 
-			"assets/textures/wall.jpg",
+			"assets/textures/goku.jpg",
 		}, 
 		{ 
 			0,
@@ -172,6 +203,11 @@ void render()
 	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
 	// 纹理采样器设置为纹理单元0
 	glcontext->SetUniformInt("sampler", 0);
+	// 设置变化矩阵
+	// glcontext->SetUniformMatrix4x4("transform", DoRotationZTransform((SDL_GetTicks() /100.0f)));
+	// glcontext->SetUniformMatrix4x4("transform", DoTranslationXTransform((SDL_GetTicks() / 1000.0f)));
+	// glcontext->SetUniformMatrix4x4("transform", DoScaleXYTransform((SDL_GetTicks() / 1000.0f), (SDL_GetTicks() / 1000.0f)));
+	glcontext->SetUniformMatrix4x4("transform", DoComplexTransform((SDL_GetTicks() / 10.0f), (SDL_GetTicks() / 1000.0f), (SDL_GetTicks() / 1000.0f)));
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));

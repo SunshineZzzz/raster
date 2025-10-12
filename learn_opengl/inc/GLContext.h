@@ -42,7 +42,7 @@ public:
     void SetUniformVector3(const std::string& name, float x, float y, float z);
     void SetUniformVector3(const std::string& name, const float* values);
     void SetUniformInt(const std::string& name, int value);
-
+    void SetUniformMatrix4x4(const std::string& name, glm::mat4 value);
 private:
     // GL初始化
     void setup();

@@ -5,6 +5,7 @@
 - [GLFW](#glfw)
 - [SDL](#sdl)
 - [GLAD](#glad)
+- [GLM](#glm)
 - [标准化设备坐标系](#标准化设备坐标系)
 - [坐标系](#坐标系)
   - [笛卡尔坐标系](#笛卡尔坐标系)
@@ -107,6 +108,14 @@
 ![alt text](img/glad2.png)
 
 https://glad.dav1d.de/
+
+### GLM
+
+`GLM`(OpenGL Mathematics)是一个专为OpenGL图形编程设计的C++数学库，它基于OpenGL Shading Language(GLSL)规范。
+
+这个项目不限于GLSL的功能。基于GLSL扩展约定的扩展系统提供扩展能力：矩阵变换，四元数，数据打包，随机数，噪声等等。
+
+https://github.com/g-truc/glm/releases
 
 ### 标准化设备坐标系
 

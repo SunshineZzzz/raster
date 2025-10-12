@@ -4,17 +4,13 @@ layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aUV;
 out vec3 color;
 out vec2 uv;
-uniform float time;
+uniform mat4 transform;
 void main()
 {
-	// 1.当前三角形的顶点，缩放的比例
-	float scale = 1.0 / time;
-	
-	// 2.使用scale对顶点位置进行缩放
-	vec3 sPos = aPos * scale;
-
-	// 3.向后传输位置信息
-	gl_Position = vec4(sPos, 1.0);
+	// aPos作为attribute(属性)传入shader，不允许更改的
+	vec4 position = vec4(aPos, 1.0);
+	position = transform * position;
+	gl_Position = position;
 	color = aColor;
 	uv = aUV;
 }
