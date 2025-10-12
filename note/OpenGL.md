@@ -117,6 +117,18 @@ https://glad.dav1d.de/
 
 https://github.com/g-truc/glm/releases
 
+**GLM标准：所有的变化都是相对于局部坐标系而言的，缩放相对于自身局部坐标系的原点，平移相对于自身局部坐标系的原点。旋转相对于自身局部坐标系的原点。**
+
+![alt text](img/glm0.png)
+
+![alt text](img/glm1.png)
+
+![alt text](img/glm2.png)
+
+**下面这个图很好的说明了"GLM标准：所有的变化都是相对于自身坐标系而言的"，缩放和不缩放都是平移相同的距离，但是物体的局部坐标系原点距离世界坐标系的距离是不同的。**
+
+![alt text](img/glm3.png)
+
 ### 标准化设备坐标系
 
 用户使用的显示器的分辨率未知，所有了标准化设备坐标系(Normalized Device Coordinates, NDC)，用[-1, 1]表示顶点的坐标。本质上就是比例。

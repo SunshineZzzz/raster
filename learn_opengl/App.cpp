@@ -13,36 +13,56 @@
 
 std::unique_ptr<GLContext> glcontext = nullptr;
 SDL_Window* window = nullptr;
+glm::mat4 originalMatrix = glm::identity<glm::mat4>();
 
 // 绕着Z轴旋转
-glm::mat4 DoRotationZTransform(float degrees)
+void DoRotationZTransform(glm::mat4& oriM)
 {
-	return glm::rotate(glm::mat4(1.0f), glm::radians(degrees), glm::vec3(0.0, 0.0, 1.0));
+	float angle = 1.0f;
+	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
 }
 
-// 平移变换
-glm::mat4 DoTranslationXTransform(float dx)
+// 先平移再叠加Z轴旋转
+void DoTranslateAndRotateZTransform(glm::mat4& oriM)
 {
-	return glm::translate(glm::mat4(1.0f), glm::vec3(dx, 0.0f, 0.0f));
+	// 第一次平移以后，旋转
+	// 第二次在第一次的基础上平移(xy轴发生变化，z轴没变，斜着平移)，再旋转
+	// ...
+	float angle = 1.0f;
+	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
+	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
 }
 
-// 缩放变换
-glm::mat4 DoScaleXYTransform(float sdx, float sdy) 
+// 先旋转再叠加平移
+void DoRotateZAndTranslateTransform(glm::mat4& oriM)
 {
-	return glm::scale(glm::mat4(1.0f), glm::vec3(sdx, sdy, 1.0f));
+	// 第一次旋转以后，平移(xy轴发成变化，z轴没变，斜着平移)
+	// 第二次在第一次的基础上旋转，再平移
+	// ...
+	float angle = 1.0f;
+	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
+	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
 }
 
-
-// 复合变换
-glm::mat4 DoComplexTransform(float degrees, float sdx, float sdy)
+void DoOnceTransform(glm::mat4& oriM)
 {
-	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(degrees), glm::vec3(0.0, 0.0, 1.0));
-	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(sdx, sdy, 0.0f));
-
-	// 先放大，再旋转
-	return rotateMat * scaleMat;
+	// 没有缩放，每次平移0.01f比较快
+	// oriM = glm::scale(oriM, glm::vec3(1.0f, 1.0f, 1.0f));
+	// 有缩放，每次平移0.01f，缩放的原因，走出屏幕比较慢，原因就是自身坐标系做的变化操作。
+	oriM = glm::scale(oriM, glm::vec3(0.5f, 1.0f, 1.0f));
 }
 
+// 先做一次缩放，再叠加平移 
+void DoScaleAndTranslateTransform(glm::mat4& oriM)
+{
+	static bool isDoOneceTransform = false;
+	if (!isDoOneceTransform)
+	{
+		DoOnceTransform(oriM);
+		isDoOneceTransform = true;
+	}
+	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
+}
 
 // 准备VAO
 void PrepareVAO() 
@@ -204,10 +224,11 @@ void render()
 	// 纹理采样器设置为纹理单元0
 	glcontext->SetUniformInt("sampler", 0);
 	// 设置变化矩阵
-	// glcontext->SetUniformMatrix4x4("transform", DoRotationZTransform((SDL_GetTicks() /100.0f)));
-	// glcontext->SetUniformMatrix4x4("transform", DoTranslationXTransform((SDL_GetTicks() / 1000.0f)));
-	// glcontext->SetUniformMatrix4x4("transform", DoScaleXYTransform((SDL_GetTicks() / 1000.0f), (SDL_GetTicks() / 1000.0f)));
-	glcontext->SetUniformMatrix4x4("transform", DoComplexTransform((SDL_GetTicks() / 10.0f), (SDL_GetTicks() / 1000.0f), (SDL_GetTicks() / 1000.0f)));
+	// DoRotationZTransform(originalMatrix);
+	// DoTranslateAndRotateZTransform(originalMatrix);
+	// DoRotateZAndTranslateTransform(originalMatrix);
+	DoScaleAndTranslateTransform(originalMatrix);
+	glcontext->SetUniformMatrix4x4("transform", originalMatrix);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
