@@ -188,7 +188,7 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 
 为什么OpenGL是右手坐标系，NDC坐标系是左手坐标系？
 
-观察坐标系​​，是一个​​右手坐标系​​。摄像机朝向​​-Z轴方向​​观看。在OpenGL中，n和f参数代表的是到相机的距离，是正数。r,l,t,b可正可负。 假设了一个场景，近平面n=10，远平面f=20，r=5,l=−5,t=5,
+
 
 这就是**OpenGL是右手坐标系，NDC坐标系是左手坐标系**的原因
 
