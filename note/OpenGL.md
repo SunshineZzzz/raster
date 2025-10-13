@@ -125,9 +125,48 @@ https://github.com/g-truc/glm/releases
 
 ![alt text](img/glm2.png)
 
-**下面这个图很好的说明了"GLM标准：所有的变化都是相对于自身坐标系而言的"，缩放和不缩放都是平移相同的距离，但是物体的局部坐标系原点距离世界坐标系的距离是不同的。**
+**下面这个图用代码来解释一下**
 
 ![alt text](img/glm3.png)
+
+```C++
+void DoOnceTransform(glm::mat4& oriM)
+{
+	// 第一进入这里，oriM是一个4x4的单位矩阵
+	oriM = glm::scale(oriM, glm::vec3(0.5f, 1.0f, 1.0f));
+	/*
+	* [1 0 0 0]  [0.5f 0    0    0]   [0.5 0 0 0]
+	* [0 1 0 0]  [0    1.0f 0    0]   [0   1 0 0]
+	* [0 0 1 0]  [0    0    1.0f 0]   [0   0 1 0]
+	* [0 0 0 1]  [0    0    0    1]   [0   0 0 1]
+	*/
+}
+
+// 先做一次缩放，再叠加平移 
+void DoScaleAndTranslateTransform(glm::mat4& oriM)
+{
+	static bool isDoOneceTransform = false;
+	if (!isDoOneceTransform)
+	{
+		DoOnceTransform(oriM);
+		isDoOneceTransform = true;
+	}
+	// 第一次进入这里，oriM：
+	/*
+	* [0.5 0 0 0]
+	* [0   1 0 0]
+	* [0   0 1 0]
+	* [0   0 0 1]
+	*/
+	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
+	/*
+	* [0.5 0 0 0]  [1 0 0 0.01]   [0.5 0 0 0.004999]
+	* [0   1 0 0]  [0 1	0    0]   [0   1 0 0]
+	* [0   0 1 0]  [0 0	1    0]   [0   0 1 0]
+	* [0   0 0 1]  [0 0	0    1]   [0   0 0 1]
+	*/
+}
+```
 
 ### 标准化设备坐标系
 

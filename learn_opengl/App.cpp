@@ -46,10 +46,14 @@ void DoRotateZAndTranslateTransform(glm::mat4& oriM)
 
 void DoOnceTransform(glm::mat4& oriM)
 {
-	// 没有缩放，每次平移0.01f比较快
-	// oriM = glm::scale(oriM, glm::vec3(1.0f, 1.0f, 1.0f));
-	// 有缩放，每次平移0.01f，缩放的原因，走出屏幕比较慢，原因就是自身坐标系做的变化操作。
+	// 第一进入这里，oriM是一个4x4的单位矩阵
 	oriM = glm::scale(oriM, glm::vec3(0.5f, 1.0f, 1.0f));
+	/*
+	* [1 0 0 0]  [0.5f 0    0    0]   [0.5 0 0 0]
+	* [0 1 0 0]  [0    1.0f 0    0]   [0   1 0 0]
+	* [0 0 1 0]  [0    0    1.0f 0]   [0   0 1 0]
+	* [0 0 0 1]  [0    0    0    1]   [0   0 0 1]
+	*/
 }
 
 // 先做一次缩放，再叠加平移 
@@ -61,7 +65,20 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 		DoOnceTransform(oriM);
 		isDoOneceTransform = true;
 	}
+	// 第一次进入这里，oriM：
+	/*
+	* [0.5 0 0 0]
+	* [0   1 0 0]
+	* [0   0 1 0]
+	* [0   0 0 1]
+	*/
 	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
+	/*
+	* [0.5 0 0 0]  [1 0 0 0.01]   [0.5 0 0 0.004999]
+	* [0   1 0 0]  [0 1	0    0]   [0   1 0 0]
+	* [0   0 1 0]  [0 0	1    0]   [0   0 1 0]
+	* [0   0 0 1]  [0 0	0    1]   [0   0 0 1]
+	*/
 }
 
 // 准备VAO
