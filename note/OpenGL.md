@@ -186,11 +186,7 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 
 **OpenGL是右手坐标系**，但是OpenGL对应的**NDC坐标系是左手坐标系**。
 
-为什么OpenGL是右手坐标系，NDC坐标系是左手坐标系？
-
-
-
-这就是**OpenGL是右手坐标系，NDC坐标系是左手坐标系**的原因
+**将[−n,−f] 映射到[−1,1]也就是NDC, -1是近平面，1是远平面。**
 
 ![alt text](img/ndc3.png)
 
@@ -365,13 +361,15 @@ $\mathbf{M}^{-1}$ 叫做视图变换矩阵(View Matrix)
 
 正交投影矩阵 = 缩放矩阵 * 平移矩阵
 
+**near 和 far 如果是坐标，可正可负。对应的正交投影矩阵：**
+
 $$
 \mathbf{M}_{\text{ortho}} = \mathbf{S}_{\text{ortho}} \mathbf{T}_{\text{ortho}}
 =
 \begin{pmatrix}
 \frac{2}{r-l} & 0 & 0 & 0 \\
 0 & \frac{2}{t-b} & 0 & 0 \\
-0 & 0 & \frac{2}{f-n} & 0 \\
+0 & 0 & \frac{2}{n-f} & 0 \\
 0 & 0 & 0 & 1
 \end{pmatrix}
 \cdot
@@ -385,10 +383,62 @@ $$
 \begin{pmatrix}
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
 0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
-0 & 0 & \frac{2}{n-f} & -\frac{n+f}{f-n} \\
+0 & 0 & \frac{2}{n-f} & -\frac{n+f}{n-f} \\
 0 & 0 & 0 & 1
 \end{pmatrix}
 $$
+
+**near 和 far 如果是距离，正数。对应的正交投影矩阵：**
+
+$$
+\mathbf{M}_{\text{ortho}} = \mathbf{S}_{\text{ortho}} \mathbf{T}_{\text{ortho}}
+=
+\begin{pmatrix}
+1& 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+\frac{2}{r-l} & 0 & 0 & 0 \\
+0 & \frac{2}{t-b} & 0 & 0 \\
+0 & 0 & \frac{2}{f-n} & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+1 & 0 & 0 & -\frac{r+l}{2} \\
+0 & 1 & 0 & -\frac{t+b}{2} \\
+0 & 0 & 1 & \frac{f+n}{2} \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+=
+\begin{pmatrix}
+1& 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+\frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
+0 & 0 & \frac{2}{f-n} & \frac{f+n}{f-n} \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
+0 & 0 & -\frac{2}{f-n} & -\frac{f+n}{f-n} \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+$$
+
+**上面-1的目的是将[−n,−f] 映射到[−1,1]也就是NDC**
+
+**无论哪一种，最终NDC都是左手坐标系，-1是近平面，1是远平面。**
 
 #### 透视投影
 
@@ -446,6 +496,8 @@ $$
 1. 近平面上的点的 Z 坐标不会变化，即 2D 画布上的值不变。
 2. 远平面上的点 Z 坐标不会变化。
 
+**near 和 far 是距离，正数。对应的压缩矩阵：**
+
 $
 \frac{Z'}{ω​'} = \frac{0X + 0Y + KZ + L}{-Z}
 $
@@ -490,6 +542,13 @@ $$
 \mathbf{M}_{\text{ortho}} = \mathbf{S}_{\text{ortho}} \mathbf{T}_{\text{ortho}}
 =
 \begin{pmatrix}
+1& 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
 \frac{2}{r-l} & 0 & 0 & 0 \\
 0 & \frac{2}{t-b} & 0 & 0 \\
 0 & 0 & \frac{2}{f-n} & 0 \\
@@ -499,14 +558,28 @@ $$
 \begin{pmatrix}
 1 & 0 & 0 & -\frac{r+l}{2} \\
 0 & 1 & 0 & -\frac{t+b}{2} \\
-0 & 0 & 1 & -\frac{n+f}{2} \\
+0 & 0 & 1 & \frac{f+n}{2} \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+=
+\begin{pmatrix}
+1& 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+\frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
+0 & 0 & \frac{2}{f-n} & \frac{f+n}{f-n} \\
 0 & 0 & 0 & 1
 \end{pmatrix}
 =
 \begin{pmatrix}
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
 0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
-0 & 0 & \frac{2}{n-f} & -\frac{n+f}{f-n} \\
+0 & 0 & -\frac{2}{f-n} & -\frac{f+n}{f-n} \\
 0 & 0 & 0 & 1
 \end{pmatrix}
 $$
@@ -517,7 +590,7 @@ $$
 \begin{pmatrix}
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\
 0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\
-0 & 0 & \frac{2}{n-f} & -\frac{n+f}{f-n} \\
+0 & 0 & -\frac{2}{f-n} & -\frac{f+n}{f-n} \\
 0 & 0 & 0 & 1
 \end{pmatrix}
 \cdot
