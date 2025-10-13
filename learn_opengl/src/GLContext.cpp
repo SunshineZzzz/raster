@@ -1,4 +1,6 @@
-﻿#include "../inc/GLContext.h"
+﻿#include <glm/gtc/matrix_transform.hpp>
+
+#include "../inc/GLContext.h"
 
 bool GLContext::InitGLAttributes()
 {
@@ -78,6 +80,16 @@ bool GLContext::PrepareTexture(const std::vector<std::string>& vPaths, const std
         m_vTextures.resize(0);
 	}
     return ok;
+}
+
+bool GLContext::PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up)
+{
+    // lookat: 生成一个viewMatrix
+    // eye: 当前摄像机所在的位置
+    // center: 当前摄像机看向的那个点
+    // up: 穹顶向量
+    m_viewMatrix = glm::lookAt(eye, center, up);
+    return true;
 }
 
 void GLContext::BeginShader() 
