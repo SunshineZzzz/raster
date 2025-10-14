@@ -34,8 +34,12 @@ public:
     bool PrepareShader(const char* vertexPath, const char* fragmentPath);
     // 准备texture
     bool PrepareTexture(const std::vector<std::string>& vPaths, const std::vector<unsigned int>& vUnits);
-    // 准备摄像机，本质就是准备视图变化矩阵
+    // 准备模型变化矩阵
+    bool PrepareModel(const glm::mat4& modelMatrix);
+    // 准备视图变化矩阵
     bool PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up);
+	// 准备投影变化矩阵
+	bool PrepareProjection(float left, float right, float bottom, float top, float zNear, float zFar);
     // 开始使用Shader
     void BeginShader();
 	// 结束使用Shader
@@ -64,6 +68,10 @@ private:
 public:
     // 封装的gl纹理对象们
     std::vector<std::unique_ptr<Texture>> m_vTextures;
+    // 模型变化矩阵
+    glm::mat4 m_modelMatrix = glm::identity<glm::mat4>();
     // 摄像机，视图变化矩阵
     glm::mat4 m_viewMatrix = glm::identity<glm::mat4>();
+    // 投影变化矩阵
+    glm::mat4 m_projectionMatrix = glm::identity<glm::mat4>();
 };

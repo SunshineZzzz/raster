@@ -13,7 +13,6 @@
 
 std::unique_ptr<GLContext> glcontext = nullptr;
 SDL_Window* window = nullptr;
-glm::mat4 originalMatrix = glm::identity<glm::mat4>();
 
 // 绕着Z轴旋转
 void DoRotationZTransform(glm::mat4& oriM)
@@ -92,9 +91,9 @@ void PrepareVAO()
 {
 	float positions[] = 
 	{
-		-0.5f, -0.5f, 1.5f,
-		0.5f, -0.5f, 1.5f,
-		0.0f, 0.5f, 1.5f,
+		-1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 	};
 
 	float colors[] = 
@@ -209,20 +208,24 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 		SDL_Log("couldn't prepare texture error");
 		return SDL_APP_FAILURE;
 	}
-	// 准备摄像机
-	// 目前没有实现透视投影或者者正交投影
-	// eye - 摄像机位置是在世界坐标中(0.5, 0.0f, 0.5f)
-	// center - 摄像机看向的位置是在世界坐标中(0.5, 0.0f, 0.0f)
-	// up - 摄像机向上的方向在世界坐标中是(0.0f, 1.0f, 0.0f)
-	// 计算得到的矩阵是摄像机变化矩阵的逆，也就是试图变化矩阵，这个矩阵会作用到世界坐标系的物体上面。
-	// 这个代码中的三角形会相反变化，在NDC中，Z坐标会-0.5f，X坐标会-0.5f，屏幕是左手坐标系，所以三角形向做移动0.5f。
-	// 并且摄像机所能看到的Z范围是[-0.5, 1.5]之间,可以试试把上面三角行的Z坐标改成1.6f或者-0.6f，会发现看不到三角形。
-	if (!glcontext->PrepareCamera(glm::vec3(0.5f, 0.0f, 0.5f), glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
+	// 准备模型变化矩阵
+	if (!glcontext->PrepareModel(glm::mat4(1.0f)))
+	{
+		SDL_Log("couldn't prepare model error");
+		return SDL_APP_FAILURE;
+	}
+	// 准备视图变化矩阵
+	if (!glcontext->PrepareCamera(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
 	{
 		SDL_Log("couldn't prepare camera error");
 		return SDL_APP_FAILURE;
 	}
-	
+	// 准备投影变化矩阵，这里是正交投影矩阵
+	if (!glcontext->PrepareProjection(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f))
+	{
+		SDL_Log("couldn't prepare projection error");
+		return SDL_APP_FAILURE;
+	}
 	return SDL_APP_CONTINUE;
 }
 
@@ -256,23 +259,24 @@ void render()
 
 	glcontext->BeginShader();
 
-	glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
+	// glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
 	// 纹理采样器设置为纹理单元0
 	glcontext->SetUniformInt("sampler", 0);
 	// 设置变化矩阵
-	// DoRotationZTransform(originalMatrix);
-	// DoTranslateAndRotateZTransform(originalMatrix);
-	// DoRotateZAndTranslateTransform(originalMatrix);
-	// DoScaleAndTranslateTransform(originalMatrix);
-	glcontext->SetUniformMatrix4x4("transform", originalMatrix);
+	// DoRotationZTransform(glcontext->m_modelMatrix);
+	// DoTranslateAndRotateZTransform(glcontext->m_modelMatrix);
+	// DoRotateZAndTranslateTransform(glcontext->m_modelMatrix);
+	// DoScaleAndTranslateTransform(glcontext->m_modelMatrix);
+	glcontext->SetUniformMatrix4x4("modelMatrix", glcontext->m_modelMatrix);
 	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
+	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
 	
 	// 3.发出绘制指令
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-
+	
 	// 4.解绑VAO
 	glBindVertexArray(0);
 

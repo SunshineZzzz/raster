@@ -82,6 +82,12 @@ bool GLContext::PrepareTexture(const std::vector<std::string>& vPaths, const std
     return ok;
 }
 
+bool GLContext::PrepareModel(const glm::mat4& modelMatrix)
+{
+    m_modelMatrix = modelMatrix;
+	return true;
+}
+
 bool GLContext::PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up)
 {
     // lookat: 生成一个viewMatrix
@@ -89,6 +95,12 @@ bool GLContext::PrepareCamera(const glm::vec3& eye, const glm::vec3& center, con
     // center: 当前摄像机看向的那个点
     // up: 穹顶向量
     m_viewMatrix = glm::lookAt(eye, center, up);
+    return true;
+}
+
+bool GLContext::PrepareProjection(float left, float right, float bottom, float top, float zNear, float zFar)
+{
+    m_projectionMatrix = glm::ortho(left, right, bottom, top, zNear, zFar);
     return true;
 }
 
