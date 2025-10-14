@@ -24,6 +24,7 @@
   - [正交投影矩阵](#正交投影矩阵)
   - [透视投影](#透视投影)
   - [透视投影矩阵](#透视投影矩阵)
+  - [正交投影和透视投影缩放逻辑不同](#正交投影和透视投影缩放逻辑不同)
 - [渲染管线](#渲染管线)
   - [顶点数据](#顶点数据)
   - [三维变化](#三维变化)
@@ -64,6 +65,7 @@
     - [OpenGL如何判定使用哪一级Mipmap?](#opengl如何判定使用哪一级mipmap)
     - [手动测试mipmap](#手动测试mipmap)
 	- [OpenGL的Mipmap使用](#opengl的mipmap使用)
+- [轨迹球相机](#轨迹球相机)
 
 ### OpenGL 
 
@@ -207,6 +209,17 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 **OpenGL是右手坐标系**
 
 #### 齐次坐标
+
+**对于向量，齐次坐标是在向量的末尾添加一个分量0，形成一个新的向量。**
+**对于点，齐次坐标是在点的末尾添加一个分量1，形成一个新的点。**
+
+点代表空间中的一个位置。当 4×4 变换矩阵作用于一个点时，我们希望平移分量（矩阵的第四列）能够影响这个点的位置。
+
+向量只有方向和长度，它没有“位置”的概念，因此​​平移它没有任何意义​​。当 4×4 变换矩阵作用于一个向量时，我们希望它只被旋转缩放剪切，而忽略平移。
+
+​​旋转​​：必然会改变向量的方向（除非旋转角是360°的整数倍）。
+​​缩放​​：如果是不均匀缩放（即x、y、z方向的缩放系数不同），会改变向量的方向。如果是均匀缩放，则方向不变，只改变长度。
+​​剪切​​：是一种会改变向量方向的变换。
 
 [齐次坐标(homogeneous coordinates)视频1](https://www.bilibili.com/video/BV1vi421Y7nP)
 
@@ -614,6 +627,10 @@ $$
 ![alt text](img/perspective_projection10.png)
 
 ![alt text](img/perspective_projection11.png)
+
+#### 正交投影和透视投影缩放逻辑不同
+
+![alt text](img/perspective_projection12.png)
 
 ### 渲染管线
 
@@ -1167,3 +1184,14 @@ void main()
 #### OpenGL的Mipmap使用
 
 ![alt text](img/OpenGL_Mipmap1.png)
+
+
+### 轨迹球相机
+
+![alt text](img/OpenGL_Trackball_Camera1.png)
+
+![alt text](img/OpenGL_Trackball_Camera2.png)
+
+![alt text](img/OpenGL_Trackball_Camera3.png)
+
+![alt text](img/OpenGL_Trackball_Camera4.png)

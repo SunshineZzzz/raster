@@ -73,6 +73,21 @@
     <ClCompile Include="..\3rd\glm\detail\glm.cpp">
       <Filter>3rd\glm\detail</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrthographicCamera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PerspectiveCamera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraControl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TrackBallCameraControl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL.h">
@@ -1214,6 +1229,21 @@
     </ClInclude>
     <ClInclude Include="..\3rd\glm\gtx\wrap.hpp">
       <Filter>3rd\glm\gtx</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Camera.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\OrthographicCamera.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PerspectiveCamera.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\CameraControl.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\TrackBallCameraControl.h">
+      <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

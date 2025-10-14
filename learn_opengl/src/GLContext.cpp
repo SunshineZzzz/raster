@@ -88,13 +88,25 @@ bool GLContext::PrepareModel(const glm::mat4& modelMatrix)
 	return true;
 }
 
-bool GLContext::PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up)
+bool GLContext::PrepareViewMatrix(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up)
 {
     // lookat: 生成一个viewMatrix
     // eye: 当前摄像机所在的位置
     // center: 当前摄像机看向的那个点
     // up: 穹顶向量
     m_viewMatrix = glm::lookAt(eye, center, up);
+    return true;
+}
+
+bool GLContext::PrepareViewMatrix(const glm::mat4& viewMatrix)
+{
+	m_viewMatrix = viewMatrix;
+	return true;
+}
+
+bool GLContext::PrepareProjection(const glm::mat4& projectionMatrix)
+{
+    m_projectionMatrix = projectionMatrix;
     return true;
 }
 
@@ -212,5 +224,7 @@ void GLContext::shutdown()
     {
         SDL_GL_DestroyContext(m_glcontext);
     }
+
+    m_window = nullptr;
 }
 

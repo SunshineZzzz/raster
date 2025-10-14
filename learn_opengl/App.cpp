@@ -10,9 +10,17 @@
 
 #include "inc/GLContext.h"
 #include "inc/CheckRstErr.h"
+#include "inc/CameraControl.h"
+#include "inc/OrthographicCamera.h"
+#include "inc/PerspectiveCamera.h"
+#include "inc/TrackBallCameraControl.h"
 
-std::unique_ptr<GLContext> glcontext = nullptr;
+auto nWidth = 800;
+auto nHeight = 600;
 SDL_Window* window = nullptr;
+std::unique_ptr<Camera> camera = nullptr;
+std::unique_ptr<CameraControl> cameraControl = nullptr;
+std::unique_ptr<GLContext> glcontext = nullptr;
 
 // 绕着Z轴旋转
 void DoRotationZTransform(glm::mat4& oriM)
@@ -84,6 +92,19 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 	* [0   0 1        0]  [0 0	1   0]  [0   0 1              0]
 	* [0   0 0        1]  [0 0	0   1]  [0   0 0              1]
 	*/
+}
+
+// 准备摄像机相关
+void PrepareCamera()
+{
+	// 准备摄像机视图变化矩阵+投影矩阵
+	float size = 6.0f;
+	camera.reset(new OrthographicCamera(-size, size, size, -size, size, -size));
+	// camera.reset(new PerspectiveCamera(60.f, (float)(nWidth / nHeight), 0.1f, 1000.0f));
+
+
+	cameraControl.reset(new TrackBallCameraControl());
+	cameraControl->SetCamera(camera.get());
 }
 
 // 准备VAO
@@ -169,9 +190,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 		return SDL_APP_FAILURE;
     }
 
-    auto nWidth = 800;
-    auto nHeight = 600;
-
     window = SDL_CreateWindow("learn opengl", nWidth, nHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (!window)
     {
@@ -193,8 +211,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 		SDL_Log("couldn't prepare shader error");
 		return SDL_APP_FAILURE;
 	}
-	// 准备VAO
-	PrepareVAO();
 	// 准备纹理
 	if (!glcontext->PrepareTexture(
 		{ 
@@ -214,19 +230,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 		SDL_Log("couldn't prepare model error");
 		return SDL_APP_FAILURE;
 	}
-	// 准备视图变化矩阵
-	if (!glcontext->PrepareCamera(glm::vec3(3.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
-	{
-		SDL_Log("couldn't prepare camera error");
-		return SDL_APP_FAILURE;
-	}
-	// 准备投影变化矩阵，这里是透视投影矩阵
-	// 视张角越小，看的的物体越大
-	if (!glcontext->PrepareProjection(glm::radians(10.0f), (float)nWidth / (float)nHeight, 0.1f, 1000.0f))
-	{
-		SDL_Log("couldn't prepare projection error");
-		return SDL_APP_FAILURE;
-	}
+	// 准备摄像机相关
+	PrepareCamera();
+	// 准备VAO
+	PrepareVAO();
+
 	return SDL_APP_CONTINUE;
 }
 
@@ -236,13 +244,44 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 	{
 		case SDL_EVENT_WINDOW_RESIZED:
 		{
-			auto nWidth = event->window.data1;
-			auto nHeight = event->window.data2;
+			nWidth = event->window.data1;
+			nHeight = event->window.data2;
 
             GL_CALL(glViewport(0, 0, nWidth, nHeight))
+
+			PrepareCamera();
 		}
         break;
         case SDL_EVENT_KEY_DOWN:
+		{
+			cameraControl->OnKey(event->key.key, true, event->key.repeat);
+		}
+		break;
+		case SDL_EVENT_KEY_UP:
+		{
+			cameraControl->OnKey(event->key.key, false, event->key.repeat);
+		}
+		break;
+		case SDL_EVENT_MOUSE_MOTION:
+		{
+			cameraControl->OnCursor(event->motion.x, event->motion.y);
+		}
+		break;
+		case SDL_EVENT_MOUSE_WHEEL:
+		{
+			cameraControl->OnScroll(event->wheel.y);
+		}
+		break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		{
+			cameraControl->OnMouse(event->button.button, true, event->button.x, event->button.y);
+		}
+		break;
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+		{
+			cameraControl->OnMouse(event->button.button, false, event->button.x, event->button.y);
+		}
+		break;
         case SDL_EVENT_QUIT:
         {
             return SDL_APP_SUCCESS;
@@ -272,6 +311,7 @@ void render()
 	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
 
+
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
 	
@@ -287,12 +327,17 @@ void render()
 
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
+	cameraControl->Update();
+	glcontext->PrepareViewMatrix(camera->GetViewMatrix());
+	glcontext->PrepareProjection(camera->GetProjectionMatrix());
 	render();
     return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
+	camera = nullptr;
+	cameraControl = nullptr;
     glcontext = nullptr;
     SDL_DestroyWindow(window);
     SDL_Quit();

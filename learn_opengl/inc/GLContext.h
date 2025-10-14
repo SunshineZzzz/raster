@@ -37,8 +37,10 @@ public:
     // 准备模型变化矩阵
     bool PrepareModel(const glm::mat4& modelMatrix);
     // 准备视图变化矩阵
-    bool PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up);
+    bool PrepareViewMatrix(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up);
+    bool PrepareViewMatrix(const glm::mat4& viewMatrix);
 	// 准备投影变化矩阵
+    bool PrepareProjection(const glm::mat4& projectionMatrix);
 	bool PrepareProjection(float left, float right, float bottom, float top, float zNear, float zFar);
     bool PrepareProjection(float fovy, float aspect, float zNear, float zFar);
     // 开始使用Shader
