@@ -609,6 +609,12 @@ n & 0 & 0 & 0 \\
 \end{pmatrix}
 $$
 
+![alt text](img/perspective_projection9.png)
+
+![alt text](img/perspective_projection10.png)
+
+![alt text](img/perspective_projection11.png)
+
 ### 渲染管线
 
 [渲染管线梳理1](https://www.bilibili.com/video/BV1rV411X7vZ)

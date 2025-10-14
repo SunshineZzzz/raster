@@ -104,6 +104,12 @@ bool GLContext::PrepareProjection(float left, float right, float bottom, float t
     return true;
 }
 
+bool GLContext::PrepareProjection(float fovy, float aspect, float zNear, float zFar)
+{
+	m_projectionMatrix = glm::perspective(fovy, aspect, zNear, zFar);
+	return true;
+}
+
 void GLContext::BeginShader() 
 {
     m_shader->Begin();

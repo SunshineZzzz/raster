@@ -40,6 +40,7 @@ public:
     bool PrepareCamera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up);
 	// 准备投影变化矩阵
 	bool PrepareProjection(float left, float right, float bottom, float top, float zNear, float zFar);
+    bool PrepareProjection(float fovy, float aspect, float zNear, float zFar);
     // 开始使用Shader
     void BeginShader();
 	// 结束使用Shader

@@ -215,13 +215,14 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 		return SDL_APP_FAILURE;
 	}
 	// 准备视图变化矩阵
-	if (!glcontext->PrepareCamera(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
+	if (!glcontext->PrepareCamera(glm::vec3(3.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)))
 	{
 		SDL_Log("couldn't prepare camera error");
 		return SDL_APP_FAILURE;
 	}
-	// 准备投影变化矩阵，这里是正交投影矩阵
-	if (!glcontext->PrepareProjection(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f))
+	// 准备投影变化矩阵，这里是透视投影矩阵
+	// 视张角越小，看的的物体越大
+	if (!glcontext->PrepareProjection(glm::radians(10.0f), (float)nWidth / (float)nHeight, 0.1f, 1000.0f))
 	{
 		SDL_Log("couldn't prepare projection error");
 		return SDL_APP_FAILURE;
