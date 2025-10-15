@@ -216,8 +216,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	if (!glcontext->PrepareTexture(
 		{ 
 			"assets/textures/goku.jpg",
+			"assets/textures/luffy.jpg",
 		}, 
 		{ 
+			// 都用的0号纹理单元，依靠各自的Bind函数来切换绑定纹理贴图
+			0,
 			0,
 		}
 	))
@@ -316,9 +319,21 @@ void render()
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
 	
+	// 第一个三角形
+	glcontext->m_vTextures[0]->Bind();
 	// 3.发出绘制指令
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 	
+	// 第二个三角行
+	glcontext->m_vTextures[1]->Bind();
+	// 两个重叠了，给第二个三角形模型变化矩阵
+	glcontext->SetUniformMatrix4x4("modelMatrix", 
+		glm::translate(glm::mat4(1.0f), glm::vec3(0.8f, 0.0f, -1.0f))
+	);
+	// 理论上第二个三角形在第一个三角形后面，但是
+	// opengl在没有设置深度测试或者深度缓存时，就算后者的深度值更大，前者的深度值更小，后绘制的物体会遮挡先绘制的物体
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+
 	// 4.解绑VAO
 	glBindVertexArray(0);
 

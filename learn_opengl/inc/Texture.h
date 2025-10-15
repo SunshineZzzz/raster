@@ -12,6 +12,7 @@ public:
 	~Texture();
 
 	// 纹理单元与纹理对象绑定
+	// 存在多个纹理对象绑定一个纹理单元的情况，该函数做切换纹理单元与纹理对象绑定
 	void Bind();
 	// 是否已经初始化过
 	bool IsInitialized() const;
