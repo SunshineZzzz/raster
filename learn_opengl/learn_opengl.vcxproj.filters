@@ -88,6 +88,9 @@
     <ClCompile Include="src\TrackBallCameraControl.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameCameraControl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL.h">
@@ -1243,6 +1246,9 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="inc\TrackBallCameraControl.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameCameraControl.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

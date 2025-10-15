@@ -38,7 +38,6 @@ void CameraControl::OnCursor(float xPos, float yPos) {}
 
 void CameraControl::OnKey(unsigned key, bool bDownOrUp, bool repeat) 
 {
-
 	// 过滤掉长按的情况
 	if (repeat) 
 	{

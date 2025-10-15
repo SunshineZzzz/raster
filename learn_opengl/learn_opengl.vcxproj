@@ -136,6 +136,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CameraControl.cpp" />
+    <ClCompile Include="src\GameCameraControl.cpp" />
     <ClCompile Include="src\GLContext.cpp" />
     <ClCompile Include="src\OrthographicCamera.cpp" />
     <ClCompile Include="src\PerspectiveCamera.cpp" />
@@ -523,6 +524,7 @@
     <ClInclude Include="inc\Camera.h" />
     <ClInclude Include="inc\CameraControl.h" />
     <ClInclude Include="inc\CheckRstErr.h" />
+    <ClInclude Include="inc\GameCameraControl.h" />
     <ClInclude Include="inc\GLContext.h" />
     <ClInclude Include="inc\OrthographicCamera.h" />
     <ClInclude Include="inc\PerspectiveCamera.h" />

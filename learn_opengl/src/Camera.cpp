@@ -6,7 +6,8 @@ Camera::Camera() {}
 
 Camera::~Camera() {}
 
-glm::mat4 Camera::GetViewMatrix() {
+glm::mat4 Camera::GetViewMatrix() 
+{
 	// 看向-Z轴
 	glm::vec3 front = glm::cross(m_up, m_right);
 	glm::vec3 center = m_position + front;

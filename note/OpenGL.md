@@ -66,6 +66,7 @@
     - [手动测试mipmap](#手动测试mipmap)
 	- [OpenGL的Mipmap使用](#opengl的mipmap使用)
 - [轨迹球相机](#轨迹球相机)
+- [视平线与地平线](#视平线与地平线)
 
 ### OpenGL 
 
@@ -1195,3 +1196,29 @@ void main()
 ![alt text](img/OpenGL_Trackball_Camera3.png)
 
 ![alt text](img/OpenGL_Trackball_Camera4.png)
+
+### 视平线与地平线
+
+[视平线与地平线是一条线吗？](https://www.bilibili.com/video/BV1kS4y1v7Sw)
+
+地平线(Horizon)，就是在无限远处，天和地相接的那条线。平行线在远处看上去会相交于一点。
+
+视平线(Eye Level)，与眼睛同高且平行于地面的一根线。在平时状态下，无论视平线多高，视平面与地平面在无限远的地方相交的一条线。
+
+**在平视时，视平线与地平线重合；在仰视或俯视时，它们会分离。​**
+
+**我觉得分离没啥问题，只是视平线以地平线分离没啥，比如俯视和仰视。如果出歪着头(ROLL)就会破坏视觉稳定性和直觉。**
+
+![alt text](img/OpenGL_HorizonAndEyeLevel1.png)
+
+![alt text](img/OpenGL_HorizonAndEyeLevel2.png)
+
+Roll，导致地平线在屏幕上倾斜，歪着头看世界
+Pitch，导致地平线在屏幕上上升或下降，抬头或低头看世界
+Yaw，导致地平线在屏幕上左右移动，左右转头看世界
+
+当你选择绕着相机自己的局部UP轴进行Yaw时(左右摇摆)，如果相机已经抬头或低头(Pitch)，就会引入歪着头(Roll)，画面发生倾斜，会破坏视觉稳定性和直觉，除非是做太空游戏或者飞行模拟。
+
+FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合人类直觉。
+
+飞行模拟、太空游戏、编辑器自由视角，会导致视角倾斜(Roll)，用户体验差。

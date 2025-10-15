@@ -14,6 +14,7 @@
 #include "inc/OrthographicCamera.h"
 #include "inc/PerspectiveCamera.h"
 #include "inc/TrackBallCameraControl.h"
+#include "inc/GameCameraControl.h"
 
 auto nWidth = 800;
 auto nHeight = 600;
@@ -99,11 +100,11 @@ void PrepareCamera()
 {
 	// 准备摄像机视图变化矩阵+投影矩阵
 	float size = 6.0f;
-	camera.reset(new OrthographicCamera(-size, size, size, -size, size, -size));
-	// camera.reset(new PerspectiveCamera(60.f, (float)(nWidth / nHeight), 0.1f, 1000.0f));
+	// camera.reset(new OrthographicCamera(-size, size, size, -size, size, -size));
+	camera.reset(new PerspectiveCamera(60.f, (float)(nWidth / nHeight), 0.1f, 1000.0f));
 
-
-	cameraControl.reset(new TrackBallCameraControl());
+	// cameraControl.reset(new TrackBallCameraControl());
+	cameraControl.reset(new GameCameraControl);
 	cameraControl->SetCamera(camera.get());
 }
 
@@ -254,12 +255,12 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         break;
         case SDL_EVENT_KEY_DOWN:
 		{
-			cameraControl->OnKey(event->key.key, true, event->key.repeat);
+			cameraControl->OnKey(event->key.scancode, true, event->key.repeat);
 		}
 		break;
 		case SDL_EVENT_KEY_UP:
 		{
-			cameraControl->OnKey(event->key.key, false, event->key.repeat);
+			cameraControl->OnKey(event->key.scancode, false, event->key.repeat);
 		}
 		break;
 		case SDL_EVENT_MOUSE_MOTION:
