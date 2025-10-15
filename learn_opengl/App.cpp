@@ -199,6 +199,12 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
 
     glcontext = std::make_unique<GLContext>(window);
+
+	// 开启深度检测
+	glEnable(GL_DEPTH_TEST);
+	// 深度检测的比较函数, GL_LESS: 当前片元深度值小于当前深度缓冲去中深度值时通过测试
+	glDepthFunc(GL_LESS);
+
     // 设置视口，左下角坐标为(0,0)，视口宽度为nWidth，高度为nHeight。
     // 方便NDC映射到屏幕坐标系。
     // opengl约定是右手坐标系，但是NDC是左手坐标系，屏幕内是Z轴正方向，越向屏幕内越远离摄像机。
@@ -298,8 +304,8 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
 void render()
 {
-	// 清除颜色缓冲区
-	GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+	// 清除颜色缓冲区(被清理为glClearColor设置的颜色)|清理深度缓冲区(被清理为1.0)
+	GL_CALL(glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
 
 	glcontext->BeginShader();
 
@@ -314,7 +320,6 @@ void render()
 	glcontext->SetUniformMatrix4x4("modelMatrix", glcontext->m_modelMatrix);
 	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
-
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_vao));
