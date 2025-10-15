@@ -75,7 +75,7 @@ Texture::~Texture()
 
 void Texture::Bind() 
 {
-	// 先切换纹理单元，然后绑定纹理对象
+	// 先激活纹理单元，然后绑定纹理对象
 	glActiveTexture(GL_TEXTURE0 + m_unit);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 }
