@@ -14,8 +14,8 @@ public:
 	static Geometry* CreateTriangle(const std::array<float,9>& arrPos, const std::array<float,9>& arrColor, const std::array<float,9>& arrUV, const std::array<unsigned int,3>& arrIndices);
 	// 创建立方体，立方体中心在原点 
 	static Geometry* CreateBox(float size);
-	// 
-	// static Geometry* createSphere(float radius);
+	// 创建球体，球体中心在原点
+	static Geometry* CreateSphere(float radius);
 
 	// 获取VAO
 	GLuint GetVao()const { return m_vao; }

@@ -677,6 +677,7 @@
     <None Include="assets\shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\earth.png" />
     <Image Include="assets\textures\goku.jpg" />
     <Image Include="assets\textures\grass.jpg" />
     <Image Include="assets\textures\hinata.jpg" />

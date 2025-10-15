@@ -1,5 +1,7 @@
 ﻿#include "../inc/Geometry.h"
 
+#include <glm/gtc/constants.hpp>
+
 #include <vector>
 
 Geometry::Geometry() {}
@@ -188,6 +190,112 @@ Geometry* Geometry::CreateBox(float size)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->m_ebo);
 
 	glBindVertexArray(0);
+
+	return geometry;
+}
+
+Geometry* Geometry::CreateSphere(float radius)
+{
+	Geometry* geometry = new Geometry();
+
+	std::vector<GLfloat> positions{};
+	std::vector<GLfloat> colors{};
+	std::vector<GLfloat> uvs{};
+	std::vector<GLuint> indices{};
+
+	// 声明纬线与经线的数量
+	int numLatLines = 60; // 纬线
+	int numLongLines = 60; // 经线
+
+	// 通过两层循环(纬线在外,经线在内)求出pos和uv
+	for (int i = 0; i <= numLatLines; i++) 
+	{
+		for (int j = 0; j <= numLongLines; j++) 
+		{
+			float phi = i * glm::pi<float>() / numLatLines;
+			float theta = j * 2 * glm::pi<float>() / numLongLines;
+
+			float y = radius * (float)cos(phi);
+			float x = radius * (float)sin(phi) * (float)cos(theta);
+			float z = radius * (float)sin(phi) * (float)sin(theta);
+
+			positions.push_back(x);
+			positions.push_back(y);
+			positions.push_back(z);
+
+			float r = (float)i / (float)numLatLines;
+			float g = (float)j / (float)numLongLines;
+			float b = 1.0f - r;
+
+			colors.push_back(r);
+			colors.push_back(g);
+			colors.push_back(b);
+
+			float u = 1.0f - (float)j / (float)numLongLines;
+			float v = 1.0f - (float)i / (float)numLatLines;
+
+			uvs.push_back(u);
+			uvs.push_back(v);
+		}
+	}
+
+
+	// 通过两层循环(这里没有=号)求出顶点索引
+	for (int i = 0; i < numLatLines; i++) 
+	{
+		for (int j = 0; j < numLongLines; j++) 
+		{
+			int p1 = i * (numLongLines + 1) + j;
+			int p2 = p1 + numLongLines + 1;
+			int p3 = p1 + 1;
+			int p4 = p2 + 1;
+
+			indices.push_back(p1);
+			indices.push_back(p2);
+			indices.push_back(p3);
+
+			indices.push_back(p3);
+			indices.push_back(p2);
+			indices.push_back(p4);
+		}
+	}
+
+	glGenBuffers(1, &geometry->m_posVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_posVbo);
+	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &geometry->m_colorVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_colorVbo);
+	glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &geometry->m_uvVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_uvVbo);
+	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(float), uvs.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &geometry->m_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->m_ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &geometry->m_vao);
+	glBindVertexArray(geometry->m_vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_posVbo);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_colorVbo);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_uvVbo);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->m_ebo);
+
+	glBindVertexArray(0);
+
+	geometry->m_indicesCount = (int)indices.size();
 
 	return geometry;
 }

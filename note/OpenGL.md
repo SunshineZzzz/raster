@@ -70,6 +70,8 @@
 - [深度检测](#深度检测)
 	- [深度测试](#深度测试)
 	- [OpenGL开启深度测试](#opengl开启深度测试)
+- [几何体](#几何体)
+	- [球体](#球体)
 
 ### OpenGL 
 
@@ -1277,3 +1279,17 @@ GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 #### opengl开启深度测试
 
 ![alt text](img/OpenGL_EnableDepthTest1.png)
+
+### 几何体
+
+#### 球体
+
+![alt text](img/OpenGL_Sphere1.png)
+
+![alt text](img/OpenGL_Sphere2.png)
+
+![alt text](img/OpenGL_Sphere3.png)
+
+![alt text](img/OpenGL_Sphere4.png)
+
+![alt text](img/OpenGL_Sphere5.png)

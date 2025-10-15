@@ -1702,6 +1702,9 @@
     <Image Include="assets\textures\luffy.jpg">
       <Filter>assets\textures</Filter>
     </Image>
+    <Image Include="assets\textures\earth.png">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\3rd\glm\CMakeLists.txt">
