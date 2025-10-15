@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Geometry.h"
 
 #include <vector>
 #include <memory>
@@ -17,19 +18,16 @@ public:
     static bool InitGLAttributes();
 
 public:
-    // 各种gl对象
-    GLuint m_vao = 0;
-    GLuint m_interleavedVbo = 0;
-    GLuint m_posVbo = 0;
-    GLuint m_colorVbo = 0;
-    GLuint m_uvVbo = 0;
-    GLuint m_ebo = 0;
+    // 几何对象
+    std::unique_ptr<Geometry> m_geometry = nullptr;
     
     GLContext(SDL_Window* window);
     ~GLContext();
 
     // 交换显卡内存缓冲区
     void SwapWindow();
+    // 准备几何体
+    bool PrepareGeometry(Geometry* gy);
     // 准备Shader
     bool PrepareShader(const char* vertexPath, const char* fragmentPath);
     // 准备texture

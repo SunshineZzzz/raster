@@ -49,6 +49,12 @@ void GLContext::SwapWindow()
     SDL_GL_SwapWindow(m_window);
 }
 
+bool GLContext::PrepareGeometry(Geometry* gy)
+{
+    m_geometry.reset(gy);
+	return true;
+}
+
 bool GLContext::PrepareShader(const char* vertexPath, const char* fragmentPath)
 {
     m_shader = std::make_unique<Shader>(vertexPath, fragmentPath);
@@ -184,41 +190,7 @@ void GLContext::setup()
 
 void GLContext::shutdown()
 {
-    if (glIsVertexArray(m_vao))
-    {
-        glDeleteVertexArrays(1, &m_vao);
-        m_vao = 0;
-    }
-
-    if (glIsBuffer(m_interleavedVbo))
-    {
-        glDeleteBuffers(1, &m_interleavedVbo);
-        m_interleavedVbo = 0;
-    }
-
-    if (glIsBuffer(m_posVbo))
-	{
-		glDeleteBuffers(1, &m_posVbo);
-        m_posVbo = 0;
-	}
-
-    if (glIsBuffer(m_colorVbo))
-	{
-		glDeleteBuffers(1, &m_colorVbo);
-        m_colorVbo = 0;
-	}
-
-    if (glIsBuffer(m_uvVbo))
-    {
-        glDeleteBuffers(1, &m_uvVbo);
-        m_uvVbo = 0;
-    }
-
-    if (glIsBuffer(m_ebo))
-    {
-        glDeleteBuffers(1, &m_ebo);
-        m_ebo = 0;
-    }
+    m_geometry.reset(nullptr);
 
     if (m_glcontext)
     {

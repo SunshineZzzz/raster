@@ -15,6 +15,7 @@
 #include "inc/PerspectiveCamera.h"
 #include "inc/TrackBallCameraControl.h"
 #include "inc/GameCameraControl.h"
+#include "inc/Geometry.h"
 
 auto nWidth = 800;
 auto nHeight = 600;
@@ -108,81 +109,6 @@ void PrepareCamera()
 	cameraControl->SetCamera(camera.get());
 }
 
-// 准备VAO
-void PrepareVAO() 
-{
-	float positions[] = 
-	{
-		-1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-	};
-
-	float colors[] = 
-	{
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-	};
-
-	float uvs[] = 
-	{
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		0.5f, 1.0f,
-	};
-
-	unsigned int indices[] = 
-	{
-		0, 1, 2,
-	};
-
-	// 创建VBO
-	glGenBuffers(1, &glcontext->m_posVbo);
-	// 绑定VBO
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_posVbo);
-	// 上传数据
-	glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &glcontext->m_colorVbo);
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_colorVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &glcontext->m_uvVbo);
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_uvVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &glcontext->m_ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glcontext->m_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// 创建VAO
-	glGenVertexArrays(1, &glcontext->m_vao);
-	// 绑定VAO
-	glBindVertexArray(glcontext->m_vao);
-
-	// 加入位置属性信息给VAO
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_posVbo);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-
-	// 加入颜色属性信息给VAO
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_colorVbo);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-
-	// 加入纹理坐标属性信息给VAO
-	glBindBuffer(GL_ARRAY_BUFFER, glcontext->m_uvVbo);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-
-	// 加入索引信息给VAO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glcontext->m_ebo);
-
-	// 解绑VAO
-	glBindVertexArray(0);
-}
-
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
     if (!GLContext::InitGLAttributes())
@@ -242,8 +168,32 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	}
 	// 准备摄像机相关
 	PrepareCamera();
-	// 准备VAO
-	PrepareVAO();
+	// 准备几何体
+	// 1.其实就是准备vao
+	if (!glcontext->PrepareGeometry(Geometry::CreateTriangle(
+		{
+			-1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+		},
+		{
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+		},
+		{
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.5f, 1.0f,
+		},
+		{
+			0, 1, 2,
+		}
+	))) 
+	{
+		SDL_Log("couldn't prepare geometry error");
+		return SDL_APP_FAILURE;
+	}
 
 	return SDL_APP_CONTINUE;
 }
@@ -322,12 +272,12 @@ void render()
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
 
 	// 2.绑定VAO
-	GL_CALL(glBindVertexArray(glcontext->m_vao));
+	GL_CALL(glBindVertexArray(glcontext->m_geometry->GetVao()));
 	
 	// 第一个三角形
 	glcontext->m_vTextures[0]->Bind();
 	// 3.发出绘制指令
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, glcontext->m_geometry->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 	
 	// 第二个三角行
 	glcontext->m_vTextures[1]->Bind();
@@ -337,7 +287,7 @@ void render()
 	);
 	// 理论上第二个三角形在第一个三角形后面，但是
 	// opengl在没有设置深度测试或者深度缓存时，就算后者的深度值更大，前者的深度值更小，后绘制的物体会遮挡先绘制的物体
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, glcontext->m_geometry->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 
 	// 4.解绑VAO
 	glBindVertexArray(0);
