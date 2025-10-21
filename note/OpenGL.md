@@ -36,6 +36,8 @@
   - [光栅化](#光栅化)
   - [片元着色器](#片元着色器)
   - [混合与测试](#混合与测试)
+	- [模板测试](#模板测试)
+	- [混合](#混合)
 - [GPU工作流程解析](#gpu工作流程解析)
 - [VBO](#vbo)
 - [VAO](#vao)
@@ -68,7 +70,7 @@
 - [轨迹球相机](#轨迹球相机)
 - [视平线与地平线](#视平线与地平线)
 - [深度检测](#深度检测)
-	- [深度测试](#深度测试)
+	- [深度缓存](#深度缓存)
 	- [OpenGL开启深度测试](#opengl开启深度测试)
 - [几何体](#几何体)
 	- [球体](#球体)
@@ -96,6 +98,8 @@
 `ANGLE`提供了`EGL 1.5`规范的实现。
 
 [懒人win包](https://medium.com/@lag945/egl-angle-windows-3d%E5%BB%BA%E7%BD%AE%E9%96%8B%E7%99%BC%E7%B4%80%E9%8C%84-eb447de17504)
+
+可以在github上搜索`build angle`
 
 ### GLFW
 
@@ -708,6 +712,87 @@ $$
 #### 混合与测试
 
 ![alt text](img/render_pipeline8.png)
+
+##### 模板测试
+
+当片段着色器处理完一个片段之后，模板测试(Stencil Test)会开始执行，和深度测试一样，它也可能会丢弃片段。接下来，被保留的片段会进入深度测试，它可能会丢弃更多的片段。模板测试是根据又一个缓冲来进行的，它叫做模板缓冲(Stencil Buffer)，我们可以在渲染的时候更新它来获得一些很有意思的效果。
+
+一个模板缓冲中，（通常）每个模板值(Stencil Value)是8位的。所以每个像素/片段一共能有256种不同的模板值。我们可以将这些模板值设置为我们想要的值，然后当某一个片段有某一个模板值的时候，我们就可以选择丢弃或是保留这个片段了。
+
+![alt text](img/OpenGL_StencilTest1.png)
+
+##### 混合
+
+OpenGL中，混合(Blending)通常是实现物体透明度(Transparency)的一种技术。透明就是说一个物体（或者其中的一部分）不是纯色(Solid Color)的，它的颜色是物体本身的颜色和它背后其它物体的颜色的不同强度结合。一个有色玻璃窗是一个透明的物体，玻璃有它自己的颜色，但它最终的颜色还包含了玻璃之后所有物体的颜色。这也是混合这一名字的出处，我们混合(Blend)（不同物体的）多种颜色为一种颜色。所以透明度能让我们看穿物体。
+
+![alt text](img/OpenGL_Blending1.png)
+
+通过在Fragment Shader中对采样的alpha值进行判断并剔除(discard)，可以实现"透明的地方不渲染"的效果：
+
+```GLSL
+#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoords;
+
+uniform sampler2D texture1;
+
+void main()
+{             
+    vec4 texColor = texture(texture1, TexCoords);
+    if(texColor.a < 0.1)
+        discard;
+    FragColor = texColor;
+}
+```
+
+虽然直接丢弃片段很好，但它不能让我们渲染半透明的图像。我们要么渲染一个片段，要么完全丢弃它。要想渲染有多个透明度级别的图像，我们需要启用混合(Blending)。
+
+OpenGL中的混合是通过下面这个方程来实现的：
+
+$$
+\overline{C}_{result} = 
+\overline{\color{green}C}_{source} * \color{green}F_{source} 
++ 
+\overline{\color{red}C}_{destination} * \color{red}F_{destination}
+$$
+
+$\overline{\color{green}C}_{source}$：源颜色向量。这是源自纹理的颜色向量。
+
+$\overline{\color{red}C}_{destination}$：目标颜色向量。这是当前储存在颜色缓冲中的颜色向量。
+
+$\color{green}F_{source}$：源因子值。指定了alpha值对源颜色的影响。
+
+$\color{red}F_{destination}$：目标因子值。指定了alpha值对目标颜色的影响。
+
+片段着色器运行完成后，并且所有的测试都通过之后，这个混合方程(Blend Equation)才会应用到片段颜色输出与当前颜色缓冲中的值（当前片段之前储存的之前片段的颜色）上。源颜色和目标颜色将会由OpenGL自动设定，但源因子和目标因子的值可以由我们来决定。我们先来看一个简单的例子：
+
+其中，0.6被称为源因子值，(1-0.6)被称为目标因子值
+
+我们有两个方形，我们希望将这个半透明的绿色方形绘制在红色方形之上。红色的方形将会是目标颜色（所以它应该先在颜色缓冲中），我们将要在这个红色方形之上绘制这个绿色方形。
+
+![alt text](img/OpenGL_Blending2.png)
+
+$$
+\overline{C}_{result} = 
+\begin{pmatrix}
+\color{red} 0.0 \\
+\color{green} 1.0 \\
+\color{blue} 0.0 \\
+\color{purple} 0.6
+\end{pmatrix} \cdot \color{green} 0.6
++ 
+\begin{pmatrix}
+\color{red} 1.0 \\
+\color{green} 0.0 \\
+\color{blue} 0.0 \\
+\color{purple} 1.0
+\end{pmatrix} \cdot \color{red} (1 - 0.6)
+$$
+
+结果就是重叠方形的片段包含了一个60%绿色，40%红色的一种脏兮兮的颜色：
+
+![alt text](img/OpenGL_Blending3.png)
 
 ### GPU工作流程解析
 
