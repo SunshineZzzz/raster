@@ -34,8 +34,8 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	stbi_image_free(data);
 
 	// 设置纹理的过滤方式
-	// 采样(Sampling)： 动作。是从纹理或场景中读取一个或多个点的数据的过程。
-	// 过滤(Filtering)： 方法/处理。是根据采样的点和预设的算法（如平均、插值）来计算出一个最终颜色的过程。
+	// 采样(Sampling)：动作。是从纹理或场景中读取一个或多个点的数据的过程。
+	// 过滤(Filtering)：方法/处理。是根据采样的点和预设的算法（如平均、插值）来计算出一个最终颜色的过程。
 	// 
 	// GL_TEXTURE_MAG_FILTER (放大过滤)
 	// 发生时机：屏幕像素 > 纹理像素 (纹理被拉伸)
