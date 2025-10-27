@@ -14,7 +14,6 @@ void main()
 	// 测试
 	// 摄像机视线
 	vec3 viewDir = normalize(worldPosition - cameraPosition);
-	// 每一个分量确定在[0~1]之间
 	viewDir = clamp(viewDir, 0.0, 1.0);
 	FragColor = vec4(viewDir, 1.0);
 }

@@ -259,7 +259,7 @@ void render()
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
 	glcontext->SetUniformVector3("lightDirection", lightDirection);
 	glcontext->SetUniformVector3("lightColor", lightColor);
-
+	glcontext->SetUniformVector3("cameraPosition", camera->m_position);
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_geometry->GetVao()));
 	

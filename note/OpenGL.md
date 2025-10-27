@@ -1447,12 +1447,22 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ### 高光反射
 
-高光反射(Specular Reflection)，是指光线照射到物体表面后，光线按照一定的方向反射的现象。高光反射使得物体表面呈现出明亮的光斑，从而增强了物体的立体感和质感。
+高光反射(Specular Reflection)，镜面反射，是指光线照射到物体表面后，光线按照一定的方向反射的现象。高光反射使得物体表面呈现出明亮的光斑，从而增强了物体的立体感和质感。
 
 ![alt text](img/OpenGL_Light_Specular1.png)
+
+![alt text](img/OpenGL_Light_Specular1_1.png)
+
+![alt text](img/OpenGL_Light_Specular1_2.png)
+
+![alt text](img/OpenGL_Light_Specular1_3.png)
+
+![alt text](img/OpenGL_Light_Specular1_4.png)
 
 ![alt text](img/OpenGL_Light_Specular2.png)
 
 ![alt text](img/OpenGL_Light_Specular3.png)
 
 ![alt text](img/OpenGL_Light_Specular4.png)
+
+
