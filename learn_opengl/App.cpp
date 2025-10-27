@@ -25,9 +25,11 @@ std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
 
 // 平行光源方向
-glm::vec3 lightDirection = glm::vec3(-1.0f, -1.0f, -1.0f);
+glm::vec3 lightDirection = glm::vec3(-1.0f, 0.0f, -1.0f);
 // 平行光颜色
 glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+// 镜面反射光斑亮度
+float specularIntensity = 0.5f;
 
 // 绕着Z轴旋转
 void DoRotationZTransform(glm::mat4& oriM)
@@ -260,6 +262,8 @@ void render()
 	glcontext->SetUniformVector3("lightDirection", lightDirection);
 	glcontext->SetUniformVector3("lightColor", lightColor);
 	glcontext->SetUniformVector3("cameraPosition", camera->m_position);
+	glcontext->SetUniformFloat("specularIntensity", specularIntensity);
+
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_geometry->GetVao()));
 	

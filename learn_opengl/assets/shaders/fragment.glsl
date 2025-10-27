@@ -7,11 +7,9 @@ uniform sampler2D sampler;
 // 光源参数
 uniform vec3 lightDirection;
 uniform vec3 lightColor;
-// 
-uniform vec3 ambientColor;
-//相机世界位置
+// 相机世界位置
 uniform vec3 cameraPosition;
-// 
+// 光斑亮的程度
 uniform float specularIntensity;
 void main()
 {
@@ -40,8 +38,10 @@ void main()
 	vec3 lightReflect = normalize(reflect(lightDirN, normalN));
 	// 观察方向与反射方向夹角的余弦值，为1的时候就重合了，最亮
 	float specular = max(dot(lightReflect, -viewDir), 0.0);
+	// 控制光斑大小
+	specular = pow(specular, 64);
 	// 不需要计算objectColor，镜面反射，应该不用考虑物体吸收把，我觉的
-	vec3 specularColor = lightColor * specular * flag;
+	vec3 specularColor = lightColor * specular * flag * specularIntensity;
 
 	// 最终颜色
 	vec3 finalColor = diffuseColor + specularColor;
