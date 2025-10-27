@@ -48,7 +48,8 @@ public:
     // 设置uniform变量
     void SetUniformFloat(const std::string& name, float value);
     void SetUniformVector3(const std::string& name, float x, float y, float z);
-    void SetUniformVector3(const std::string& name, const float* values);
+    void SetUniformVector3(const std::string& name, const float* value);
+    void SetUniformVector3(const std::string& name, const glm::vec3 value);
     void SetUniformInt(const std::string& name, int value);
     void SetUniformMatrix4x4(const std::string& name, glm::mat4 value);
 private:

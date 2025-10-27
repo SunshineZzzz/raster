@@ -148,9 +148,14 @@ void GLContext::SetUniformVector3(const std::string& name, float x, float y, flo
     m_shader->SetUniformVector3(name, x, y, z);
 }
 
-void GLContext::SetUniformVector3(const std::string& name, const float* values)
+void GLContext::SetUniformVector3(const std::string& name, const float* value)
 {
-    m_shader->SetUniformVector3(name, values);
+    m_shader->SetUniformVector3(name, value);
+}
+
+void GLContext::SetUniformVector3(const std::string& name, const glm::vec3 value)
+{
+    m_shader->SetUniformVector3(name, value);
 }
 
 void GLContext::SetUniformInt(const std::string& name, int value)

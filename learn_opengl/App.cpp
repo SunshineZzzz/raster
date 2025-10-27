@@ -24,6 +24,11 @@ std::unique_ptr<Camera> camera = nullptr;
 std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
 
+// 平行光源方向
+glm::vec3 lightDirection = glm::vec3(-0.4f, -1.4, -1.9f);
+// 平行光颜色
+glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 // 绕着Z轴旋转
 void DoRotationZTransform(glm::mat4& oriM)
 {
@@ -148,7 +153,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	// 准备纹理
 	if (!glcontext->PrepareTexture(
 		{ 
-			"assets/textures/earth.png",
+			"assets/textures/goku.jpg",
 		}, 
 		{ 
 			// 都用的0号纹理单元，依靠各自的Bind函数来切换绑定纹理贴图
@@ -169,9 +174,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	PrepareCamera();
 	// 准备几何体
 	// 1.其实就是准备vao
-	// if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
+	if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
 	// if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f)))
-	if (!glcontext->PrepareGeometry(Geometry::CreatePlane(3.0f, 2.0f)))
+	// if (!glcontext->PrepareGeometry(Geometry::CreatePlane(3.0f, 2.0f)))
 	{
 		SDL_Log("couldn't prepare geometry error");
 		return SDL_APP_FAILURE;
@@ -252,6 +257,8 @@ void render()
 	glcontext->SetUniformMatrix4x4("modelMatrix", glcontext->m_modelMatrix);
 	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
+	glcontext->SetUniformVector3("lightDirection", lightDirection);
+	glcontext->SetUniformVector3("lightColor", lightColor);
 
 	// 2.绑定VAO
 	GL_CALL(glBindVertexArray(glcontext->m_geometry->GetVao()));
