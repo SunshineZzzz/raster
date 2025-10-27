@@ -49,6 +49,9 @@
 - [VBO](#vbo)
 - [VAO](#vao)
 - [EBO](#ebo)
+- [FBO](#fbo)
+	- [RBO](#rbo)
+	- [帧缓冲使用](#帧缓冲使用)
 - [Shader](#shader)
 - [GLSL语言](#glsl语言)
   - [Vertex Shader](#vertex-shader)
@@ -78,6 +81,7 @@
 - [视平线与地平线](#视平线与地平线)
 - [几何体](#几何体)
 	- [球体](#球体)
+- [光源](#光源)
 
 ### OpenGL 
 
@@ -201,8 +205,6 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 **NDC坐标系是三维**的，因为它需要保留深度信息(Z轴)。OpenGL中XYZ轴坐标范围都是[-1, 1]。
 
 **OpenGL是右手坐标系**，但是OpenGL对应的**NDC坐标系是左手坐标系**。
-
-**将[−n,−f] 映射到[−1,1]也就是NDC, -1是近平面，1是远平面。在经过屏幕坐标系映射，0是近平面，1远平面**
 
 ![alt text](img/ndc3.png)
 
@@ -467,7 +469,7 @@ $$
 
 **上面-1的目的是将[−n,−f] 映射到[−1,1]也就是NDC**
 
-**无论哪一种，最终NDC都是左手坐标系，-1是近平面，1是远平面。**
+**前者最终近平面映射到了1，远平面映射到了-1。后者平面映射到了-1，远平面映射到1**
 
 #### 透视投影
 
@@ -983,6 +985,22 @@ EBO(Element/Index Buffer Object)，元素缓冲对象/索引缓冲对象，用�
 
 ![alt text](img/ebo_render1.png)
 
+### FBO
+
+FBO(Frame Buffer Object)，帧缓冲对象，OpenGL允许我们定义我们自己的帧缓冲，也就是说我们能够定义我们自己的颜色缓冲，甚至是深度缓冲和模板缓冲。
+
+#### RBO
+
+RBO(Render Buffer Object)，渲染缓冲对象附件，组成一帧缓冲中，颜色缓存、深度缓存、模板缓存，统称为帧缓冲中的附件。
+
+#### 帧缓冲使用
+
+![alt text](img/fbo_use1.png)
+
+![alt text](img/fbo_use2.png)
+
+![alt text](img/fbo_use3.png)
+
 ### GLSL语法
 
 #### 变量类型
@@ -1398,3 +1416,43 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_Sphere4.png)
 
 ![alt text](img/OpenGL_Sphere5.png)
+
+### 光源
+
+### 平行光
+
+平行光(Parallel Light)，是一种光线方向平行且强度均匀分布的光源。平行光通常用于模拟太阳光，因为太阳光在地球表面上可以近似看作是平行的。
+
+![alt text](img/OpenGL_ParallelLight1.png)
+
+### 环境光
+
+环境光(Ambient Light)，是指在一个场景中，所有方向上均匀分布的光线。环境光不会产生阴影或高光，它只会为场景中的物体提供一个基础的亮度。
+
+![alt text](img/OpenGL_AmbientLight1.png)
+
+### 漫反射
+
+漫反射(Diffuse Reflection)，是指光线照射到物体表面后，光线被物体表面均匀地向各个方向散射的现象。漫反射使得物体在各个角度下都能被观察到，从而呈现出柔和的外观。
+
+![alt text](img/OpenGL_Light_Diffuse1.png)
+
+![alt text](img/OpenGL_Light_Diffuse2.png)
+
+![alt text](img/OpenGL_Light_Diffuse3.png)
+
+![alt text](img/OpenGL_Light_Diffuse4.png)
+
+![alt text](img/OpenGL_Light_Diffuse5.png)
+
+### 高光反射
+
+高光反射(Specular Reflection)，是指光线照射到物体表面后，光线按照一定的方向反射的现象。高光反射使得物体表面呈现出明亮的光斑，从而增强了物体的立体感和质感。
+
+![alt text](img/OpenGL_Light_Specular1.png)
+
+![alt text](img/OpenGL_Light_Specular2.png)
+
+![alt text](img/OpenGL_Light_Specular3.png)
+
+![alt text](img/OpenGL_Light_Specular4.png)

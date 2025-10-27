@@ -104,8 +104,8 @@ void PrepareCamera()
 	// camera.reset(new OrthographicCamera(-size, size, size, -size, size, -size));
 	camera.reset(new PerspectiveCamera(60.f, (float)(nWidth / nHeight), 0.1f, 1000.0f));
 
-	// cameraControl.reset(new TrackBallCameraControl());
-	cameraControl.reset(new GameCameraControl);
+	cameraControl.reset(new TrackBallCameraControl());
+	// cameraControl.reset(new GameCameraControl);
 	cameraControl->SetCamera(camera.get());
 	cameraControl->SetSensitivity(0.4f);
 }
@@ -169,7 +169,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	PrepareCamera();
 	// 准备几何体
 	// 1.其实就是准备vao
-	if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f))) 
+	// if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
+	// if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f)))
+	if (!glcontext->PrepareGeometry(Geometry::CreatePlane(3.0f, 2.0f)))
 	{
 		SDL_Log("couldn't prepare geometry error");
 		return SDL_APP_FAILURE;
