@@ -105,6 +105,12 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 	*/
 }
 
+// 该矩阵表示绕着自身坐标系(0, 1, 1)轴旋转0.003弧度，累计叠加
+void DoTransform(glm::mat4& oriM) 
+{
+	oriM = glm::rotate(oriM, 0.003f, glm::vec3(0.0f, 1.0f, 1.0f));
+}
+
 // 准备摄像机相关
 void PrepareCamera()
 {
@@ -178,8 +184,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	PrepareCamera();
 	// 准备几何体
 	// 1.其实就是准备vao
-	if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
-	// if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f)))
+	// if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
+	if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f)))
 	// if (!glcontext->PrepareGeometry(Geometry::CreatePlane(3.0f, 2.0f)))
 	{
 		SDL_Log("couldn't prepare geometry error");
@@ -258,6 +264,7 @@ void render()
 	// DoTranslateAndRotateZTransform(glcontext->m_modelMatrix);
 	// DoRotateZAndTranslateTransform(glcontext->m_modelMatrix);
 	// DoScaleAndTranslateTransform(glcontext->m_modelMatrix);
+	DoTransform(glcontext->m_modelMatrix);
 	glcontext->SetUniformMatrix4x4("modelMatrix", glcontext->m_modelMatrix);
 	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
 	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);

@@ -16,6 +16,7 @@ void main()
 	worldPosition = transformPosition.xyz;
 	gl_Position = projectionMatrix * viewMatrix * transformPosition;
 	uv = aUV;
-	//  经过线性变化，法线向量也要进行线性变换，但是不能进行平移，所以用mat3
-	normal = normalize(mat3(modelMatrix) * aNormal);
+	// transpose(inverse(mat3(modelMatrix))) 就是法线矩阵
+	// 建议在CPU端计算法线矩阵，传进来就行
+	normal = transpose(inverse(mat3(modelMatrix))) * aNormal;
 }

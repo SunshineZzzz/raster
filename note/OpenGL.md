@@ -84,8 +84,8 @@
 - [光源](#光源)
 	- [平行光](#平行光)
 	- [环境光](#环境光)
-	- [漫反射光](#漫反射光)
-	- [高光反射光](#高光反射光)
+	- [漫反射](#漫反射)
+	- [高光反射](#高光反射)
 
 ### OpenGL 
 
@@ -1479,4 +1479,18 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ![alt text](img/OpenGL_Light_Specular4.png)
 
+### 法线矩阵
 
+法线矩阵(Normal Matrix)，确保法线向量在模型经历非均匀缩放后，依然能够保持垂直于表面。
+
+如果把modelMatrix应用到法线上面，对于缩放操作，是不行的，比如下图，仅仅对于X轴缩放，法线就会出现错误。
+
+![alt text](img/OpenGL_NormalMatrix1.png)
+
+![alt text](img/OpenGL_NormalMatrix2.png)
+
+![alt text](img/OpenGL_NormalMatrix3.png)
+
+![alt text](img/OpenGL_NormalMatrix4.png)
+
+![alt text](img/OpenGL_NormalMatrix5.png)
