@@ -16,11 +16,13 @@
 #include "inc/TrackBallCameraControl.h"
 #include "inc/GameCameraControl.h"
 #include "inc/Geometry.h"
+#include "inc/PhongMaterial.h"
+#include "inc/Mesh.h"
 
 auto nWidth = 800;
 auto nHeight = 600;
 SDL_Window* window = nullptr;
-std::unique_ptr<Camera> camera = nullptr;
+std::shared_ptr<Camera> camera = nullptr;
 std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
 
@@ -33,82 +35,24 @@ float specularIntensity = 0.5f;
 // 环境光颜色
 glm::vec3 ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
 
-// 绕着Z轴旋转
-void DoRotationZTransform(glm::mat4& oriM)
+void Prepare()
 {
-	float angle = 1.0f;
-	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
-}
+	// 渲染器
+	glcontext->m_renderer = std::make_unique<Renderer>();
 
-// 先平移再叠加Z轴旋转
-void DoTranslateAndRotateZTransform(glm::mat4& oriM)
-{
-	// 第一次平移以后，旋转
-	// 第二次在第一次的基础上平移(xy轴发生变化，z轴没变，斜着平移)，再旋转
-	// ...
-	float angle = 1.0f;
-	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
-	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
-}
+	// 创建几何体Geometry
+	auto geometry = Geometry::CreateSphere(3.0f);
+	// 创建材质Material并且配置材质属性
+	auto material = new PhongMaterial();
+	material->m_diffuse = std::make_unique<Texture>("assets/textures/goku.jpg", 0);
+	material->m_shiness = 2.0f;
+	auto mesh = std::make_shared<Mesh>(geometry, material);
+	// 生成网格Mesh
+	glcontext->m_meshes.emplace_back(mesh);
 
-// 先旋转再叠加平移
-void DoRotateZAndTranslateTransform(glm::mat4& oriM)
-{
-	// 第一次旋转以后，平移(xy轴发成变化，z轴没变，斜着平移)
-	// 第二次在第一次的基础上旋转，再平移
-	// ...
-	float angle = 1.0f;
-	oriM = glm::rotate(oriM, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
-	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
-}
-
-void DoOnceTransform(glm::mat4& oriM)
-{
-	// 第一进入这里，oriM是一个4x4的单位矩阵
-	oriM = glm::scale(oriM, glm::vec3(0.5f, 1.0f, 1.0f));
-	/*
-	* [1 0 0 0]  [0.5f 0    0    0]   [0.5 0 0 0]
-	* [0 1 0 0]  [0    1.0f 0    0]   [0   1 0 0]
-	* [0 0 1 0]  [0    0    1.0f 0]   [0   0 1 0]
-	* [0 0 0 1]  [0    0    0    1]   [0   0 0 1]
-	*/
-}
-
-// 先做一次缩放，再叠加平移 
-void DoScaleAndTranslateTransform(glm::mat4& oriM)
-{
-	static bool isDoOneceTransform = false;
-	if (!isDoOneceTransform)
-	{
-		DoOnceTransform(oriM);
-		isDoOneceTransform = true;
-	}
-	// 第一次进入这里，oriM：
-	/*
-	* [0.5 0 0 0]
-	* [0   1 0 0]
-	* [0   0 1 0]
-	* [0   0 0 1]
-	*/
-	oriM = glm::translate(oriM, glm::vec3(0.01f, 0.0f, 0.0f));
-	/*
-	* [0.5 0 0 0]  [1 0 0 0.01]   [0.5 0 0 0.004999(1*(0.01*0.05f))]
-	* [0   1 0 0]  [0 1	0    0]   [0   1 0        0]
-	* [0   0 1 0]  [0 0	1    0]   [0   0 1        0]
-	* [0   0 0 1]  [0 0	0    1]   [0   0 0        1]
-	*/
-	/*
-	* [0.5 0 0 0.004999]  [1 0 0 0.01]  [0.5 0 0  0.00999999978(2*(0.01f*0.5f))]
-	* [0   1 0        0]  [0 1	0   0]  [0   1 0              0]
-	* [0   0 1        0]  [0 0	1   0]  [0   0 1              0]
-	* [0   0 0        1]  [0 0	0   1]  [0   0 0              1]
-	*/
-}
-
-// 该矩阵表示绕着自身坐标系(0, 1, 1)轴旋转0.003弧度，累计叠加
-void DoTransform(glm::mat4& oriM) 
-{
-	oriM = glm::rotate(oriM, 0.003f, glm::vec3(0.0f, 1.0f, 1.0f));
+	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
+	glcontext->m_ambLight = std::make_shared<AmbientLight>();
+	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
 }
 
 // 准备摄像机相关
@@ -153,44 +97,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     GL_CALL(glViewport(0, 0, nWidth, nHeight));
 	// 设置清除颜色
 	GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-	// 1.准备各种数据
-	// 准备shader
-    if (!glcontext->PrepareShader("assets/shaders/vertex.glsl", "assets/shaders/fragment.glsl"))
-	{
-		SDL_Log("couldn't prepare shader error");
-		return SDL_APP_FAILURE;
-	}
-	// 准备纹理
-	if (!glcontext->PrepareTexture(
-		{ 
-			"assets/textures/goku.jpg",
-		}, 
-		{ 
-			// 都用的0号纹理单元，依靠各自的Bind函数来切换绑定纹理贴图
-			0,
-		}
-	))
-	{
-		SDL_Log("couldn't prepare texture error");
-		return SDL_APP_FAILURE;
-	}
-	// 准备模型变化矩阵
-	if (!glcontext->PrepareModel(glm::mat4(1.0f)))
-	{
-		SDL_Log("couldn't prepare model error");
-		return SDL_APP_FAILURE;
-	}
+
 	// 准备摄像机相关
 	PrepareCamera();
-	// 准备几何体
-	// 1.其实就是准备vao
-	// if (!glcontext->PrepareGeometry(Geometry::CreateBox(3.0f)))
-	if (!glcontext->PrepareGeometry(Geometry::CreateSphere(3.0f)))
-	// if (!glcontext->PrepareGeometry(Geometry::CreatePlane(3.0f, 2.0f)))
-	{
-		SDL_Log("couldn't prepare geometry error");
-		return SDL_APP_FAILURE;
-	}
+	Prepare();
 
 	return SDL_APP_CONTINUE;
 }
@@ -249,51 +159,12 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     return SDL_APP_CONTINUE;
 }
 
-void render()
-{
-	// 清除颜色缓冲区(被清理为glClearColor设置的颜色)|清理深度缓冲区(被清理为1.0)
-	GL_CALL(glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT));
-
-	glcontext->BeginShader();
-
-	// glcontext->SetUniformFloat("time", (SDL_GetTicks()/1000.0f));
-	// 纹理采样器设置为纹理单元0
-	glcontext->SetUniformInt("sampler", 0);
-	// 设置变化矩阵
-	// DoRotationZTransform(glcontext->m_modelMatrix);
-	// DoTranslateAndRotateZTransform(glcontext->m_modelMatrix);
-	// DoRotateZAndTranslateTransform(glcontext->m_modelMatrix);
-	// DoScaleAndTranslateTransform(glcontext->m_modelMatrix);
-	DoTransform(glcontext->m_modelMatrix);
-	glcontext->SetUniformMatrix4x4("modelMatrix", glcontext->m_modelMatrix);
-	glcontext->SetUniformMatrix4x4("viewMatrix", glcontext->m_viewMatrix);
-	glcontext->SetUniformMatrix4x4("projectionMatrix", glcontext->m_projectionMatrix);
-	glcontext->SetUniformVector3("lightDirection", lightDirection);
-	glcontext->SetUniformVector3("lightColor", lightColor);
-	glcontext->SetUniformVector3("cameraPosition", camera->m_position);
-	glcontext->SetUniformFloat("specularIntensity", specularIntensity);
-	glcontext->SetUniformVector3("ambientColor", ambientColor);
-
-	// 2.绑定VAO
-	GL_CALL(glBindVertexArray(glcontext->m_geometry->GetVao()));
-	
-	// 3.发出绘制指令
-	GL_CALL(glDrawElements(GL_TRIANGLES, glcontext->m_geometry->GetIndicesCount(), GL_UNSIGNED_INT, 0));
-	
-	// 4.解绑VAO
-	glBindVertexArray(0);
-
-	glcontext->EndShader();
-	glcontext->SwapWindow();
-}
-
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
-	glcontext->PrepareViewMatrix(camera->GetViewMatrix());
-	glcontext->PrepareProjection(camera->GetProjectionMatrix());
-	render();
-    return SDL_APP_CONTINUE;
+	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_dirLight, glcontext->m_ambLight);
+	glcontext->SwapWindow();
+	return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit(void* appstate, SDL_AppResult result)

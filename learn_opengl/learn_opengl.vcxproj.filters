@@ -94,6 +94,15 @@
     <ClCompile Include="src\Geometry.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL.h">
@@ -1257,12 +1266,36 @@
     <ClInclude Include="inc\Geometry.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Object.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Material.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PhongMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mesh.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Light.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AmbientLight.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DirectionalLight.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Renderer.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\fragment.glsl">
+    <None Include="assets\shaders\phong.frag">
       <Filter>assets\shaders</Filter>
     </None>
-    <None Include="assets\shaders\vertex.glsl">
+    <None Include="assets\shaders\phong.vert">
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="..\3rd\glm\detail\func_common.inl">

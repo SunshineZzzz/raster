@@ -5,7 +5,8 @@
 
 #include<string>
 
-class Shader {
+class Shader 
+{
 public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 	~Shader();
@@ -23,6 +24,8 @@ public:
 	void SetUniformVector3(const std::string& name, const glm::vec3 value);
 	void SetUniformInt(const std::string& name, int value);
 	void SetUniformMatrix4x4(const std::string& name, glm::mat4 value);
+	void SetUniformMatrix3x3(const std::string& name, glm::mat3 value);
+
 private:
 	// 检测shader错误
 	const std::string checkShaderErrors(GLuint target, std::string type);

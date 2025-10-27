@@ -16,6 +16,11 @@ public:
 	void Bind();
 	// 是否已经初始化过
 	bool IsInitialized() const;
+	// 获取纹理单元号
+	unsigned int GetUnit() const
+	{
+		return m_unit;
+	}
 
 private:
 	// 纹理对象

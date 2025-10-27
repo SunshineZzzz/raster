@@ -7,12 +7,13 @@ uniform sampler2D sampler;
 // 光源参数
 uniform vec3 lightDirection;
 uniform vec3 lightColor;
+uniform vec3 ambientColor;
 // 相机世界位置
 uniform vec3 cameraPosition;
-// 光斑亮的程度
+// 镜面反射光斑亮的程度
 uniform float specularIntensity;
-// 环境光颜色
-uniform vec3 ambientColor;
+// 镜面反射光斑大小
+uniform float shiness;
 void main()
 {
 	// 计算光照的通用数据
@@ -32,24 +33,23 @@ void main()
 	vec3 diffuseColor = lightColor * diffuse * objectColor;
 	
 	// 计算specular(高光反射，镜面反射)
-	// 防止背面光效果，dotResult大于0说明是正面照射，小于0说明背面照射
+	// 防止背面光效果，dotResult大于0.0说明是正面照射，小于0.0说明背面照射
 	float dotResult = dot(-lightDirN, normalN);
 	// step函数，如果dotResult大于0.0，返回1.0，否则返回0.0
 	float flag = step(0.0, dotResult);
 	// 反射光方向
-	vec3 lightReflect = normalize(reflect(lightDirN, normalN));
+	vec3 lightReflect = normalize(reflect(lightDirN,normalN));
 	// 观察方向与反射方向夹角的余弦值，为1的时候就重合了，最亮
-	float specular = max(dot(lightReflect, -viewDir), 0.0);
+	float specular = max(dot(lightReflect,-viewDir), 0.0);
 	// 控制光斑大小
-	specular = pow(specular, 64);
+	specular = pow(specular, shiness);
 	// 不需要计算objectColor，镜面反射，应该不用考虑物体吸收把，我觉的
 	vec3 specularColor = lightColor * specular * flag * specularIntensity;
 
 	// 环境光计算，前面两种反射会造成物体没有接收到光照的地方是黑色，解决黑色问题
 	vec3 ambientColor = objectColor * ambientColor;
-
+	
 	// 最终颜色
 	vec3 finalColor = diffuseColor + specularColor + ambientColor;
-
 	FragColor = vec4(finalColor, 1.0);
 }

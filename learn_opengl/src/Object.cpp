@@ -1,0 +1,50 @@
+﻿#include "../inc/Object.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+
+Object::Object() {}
+
+Object::~Object() {}
+
+void Object::SetPosition(glm::vec3 pos) 
+{
+	m_position = pos;
+}
+
+void Object::RotateX(float angle) 
+{
+	m_angleX += angle;
+}
+
+void Object::RotateY(float angle) 
+{
+	m_angleY += angle;
+}
+
+void Object::RotateZ(float angle) 
+{
+	m_angleZ += angle;
+}
+
+void Object::SetScale(glm::vec3 scale) 
+{
+	m_scale = scale;
+}
+
+glm::mat4 Object::GetModelMatrix() 
+{
+	// unity标准，缩放，旋转，平移
+	glm::mat4 transform{ 1.0f };
+
+	transform = glm::scale(transform, m_scale);
+
+	transform = glm::rotate(transform, glm::radians(m_angleX), glm::vec3(1.0f, 0.0f, 0.0f));
+	transform = glm::rotate(transform, glm::radians(m_angleY), glm::vec3(0.0f, 1.0f, 0.0f));
+	transform = glm::rotate(transform, glm::radians(m_angleZ), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	// 第一个参数上次变化，本次变化基于上次变化。如果是单位矩阵，相对于世界空间原点进行变化。
+	// 上面的变化都是基于物体局部坐标进行，平移是基于世界坐标进行。
+	transform = glm::translate(glm::mat4(1.0f), m_position) * transform;
+
+	return transform;
+}

@@ -86,6 +86,8 @@
 	- [环境光](#环境光)
 	- [漫反射](#漫反射)
 	- [高光反射](#高光反射)
+	- [法线矩阵](#法线矩阵)
+- [材质](#材质)
 
 ### OpenGL 
 
@@ -142,6 +144,8 @@ https://glad.dav1d.de/
 https://github.com/g-truc/glm/releases
 
 **GLM标准：所有的变化都是相对于局部坐标系而言的，缩放相对于自身局部坐标系的原点，平移相对于自身局部坐标系的原点。旋转相对于自身局部坐标系的原点。**
+
+**第一个参数上次变化，本次变化基于上次变化。如果是单位矩阵，相对于世界空间原点进行变化。**
 
 ![alt text](img/glm0.png)
 
@@ -1423,19 +1427,19 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ### 光源
 
-### 平行光
+#### 平行光
 
 平行光(Parallel Light)，是一种光线方向平行且强度均匀分布的光源。平行光通常用于模拟太阳光，因为太阳光在地球表面上可以近似看作是平行的。
 
 ![alt text](img/OpenGL_ParallelLight1.png)
 
-### 环境光
+#### 环境光
 
 环境光(Ambient Light)，是指在一个场景中，所有方向上均匀分布的光线。环境光不会产生阴影或高光，它只会为场景中的物体提供一个基础的亮度。
 
 ![alt text](img/OpenGL_AmbientLight1.png)
 
-### 漫反射
+#### 漫反射
 
 漫反射(Diffuse Reflection)，是指光线照射到物体表面后，光线被物体表面均匀地向各个方向散射的现象。漫反射使得物体在各个角度下都能被观察到，从而呈现出柔和的外观。
 
@@ -1449,7 +1453,7 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ![alt text](img/OpenGL_Light_Diffuse5.png)
 
-### 高光反射
+#### 高光反射
 
 高光反射(Specular Reflection)，镜面反射，是指光线照射到物体表面后，光线按照一定的方向反射的现象。高光反射使得物体表面呈现出明亮的光斑，从而增强了物体的立体感和质感。
 
@@ -1479,7 +1483,7 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ![alt text](img/OpenGL_Light_Specular4.png)
 
-### 法线矩阵
+#### 法线矩阵
 
 法线矩阵(Normal Matrix)，确保法线向量在模型经历非均匀缩放后，依然能够保持垂直于表面。
 
@@ -1494,3 +1498,11 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_NormalMatrix4.png)
 
 ![alt text](img/OpenGL_NormalMatrix5.png)
+
+### 材质
+
+材质(Material)，定义了物体表面对光线的反应特性，包括环境光反射、漫反射和高光反射等属性。
+
+![alt text](img/OpenGL_Material1.png)
+
+![alt text](img/OpenGL_Material2.png)

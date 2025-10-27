@@ -182,6 +182,13 @@ void Shader::SetUniformMatrix4x4(const std::string& name, glm::mat4 value)
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
+void Shader::SetUniformMatrix3x3(const std::string& name, glm::mat3 value)
+{
+	GLint location = GL_CALL(glGetUniformLocation(m_program, name.c_str()));
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+
 const std::string Shader::checkShaderErrors(GLuint target, std::string type) 
 {
 	int success = 0;

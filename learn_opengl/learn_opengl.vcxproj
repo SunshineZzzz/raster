@@ -139,8 +139,11 @@
     <ClCompile Include="src\GameCameraControl.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLContext.cpp" />
+    <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\OrthographicCamera.cpp" />
     <ClCompile Include="src\PerspectiveCamera.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TrackBallCameraControl.cpp" />
@@ -522,14 +525,22 @@
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL_video.h" />
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL_vulkan.h" />
     <ClInclude Include="..\3rd\stb\stb_image.h" />
+    <ClInclude Include="inc\DirectionalLight.h" />
     <ClInclude Include="inc\Camera.h" />
     <ClInclude Include="inc\CameraControl.h" />
     <ClInclude Include="inc\CheckRstErr.h" />
+    <ClInclude Include="inc\AmbientLight.h" />
     <ClInclude Include="inc\GameCameraControl.h" />
     <ClInclude Include="inc\Geometry.h" />
     <ClInclude Include="inc\GLContext.h" />
+    <ClInclude Include="inc\Light.h" />
+    <ClInclude Include="inc\Material.h" />
+    <ClInclude Include="inc\Mesh.h" />
     <ClInclude Include="inc\OrthographicCamera.h" />
     <ClInclude Include="inc\PerspectiveCamera.h" />
+    <ClInclude Include="inc\Object.h" />
+    <ClInclude Include="inc\PhongMaterial.h" />
+    <ClInclude Include="inc\Renderer.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\TrackBallCameraControl.h" />
@@ -673,8 +684,8 @@
     <None Include="..\3rd\glm\gtx\vector_angle.inl" />
     <None Include="..\3rd\glm\gtx\vector_query.inl" />
     <None Include="..\3rd\glm\gtx\wrap.inl" />
-    <None Include="assets\shaders\fragment.glsl" />
-    <None Include="assets\shaders\vertex.glsl" />
+    <None Include="assets\shaders\phong.frag" />
+    <None Include="assets\shaders\phong.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\earth.png" />
