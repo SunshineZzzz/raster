@@ -25,7 +25,7 @@ std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
 
 // 平行光源方向
-glm::vec3 lightDirection = glm::vec3(-0.4f, -1.4, -1.9f);
+glm::vec3 lightDirection = glm::vec3(-1.0f, -1.0f, -1.0f);
 // 平行光颜色
 glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
