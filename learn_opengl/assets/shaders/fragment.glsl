@@ -11,6 +11,8 @@ uniform vec3 lightColor;
 uniform vec3 cameraPosition;
 // 光斑亮的程度
 uniform float specularIntensity;
+// 环境光颜色
+uniform vec3 ambientColor;
 void main()
 {
 	// 计算光照的通用数据
@@ -43,8 +45,11 @@ void main()
 	// 不需要计算objectColor，镜面反射，应该不用考虑物体吸收把，我觉的
 	vec3 specularColor = lightColor * specular * flag * specularIntensity;
 
+	// 环境光计算，前面两种反射会造成物体没有接收到光照的地方是黑色，解决黑色问题
+	vec3 ambientColor = objectColor * ambientColor;
+
 	// 最终颜色
-	vec3 finalColor = diffuseColor + specularColor;
+	vec3 finalColor = diffuseColor + specularColor + ambientColor;
 
 	FragColor = vec4(finalColor, 1.0);
 }
