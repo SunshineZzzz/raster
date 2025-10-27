@@ -1459,6 +1459,12 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 
 ![alt text](img/OpenGL_Light_Specular1_4.png)
 
+![alt text](img/OpenGL_Light_Specular1_5.png)
+
+![alt text](img/OpenGL_Light_Specular1_6.png)
+
+![alt text](img/OpenGL_Light_Specular1_7.png)
+
 ![alt text](img/OpenGL_Light_Specular2.png)
 
 ![alt text](img/OpenGL_Light_Specular3.png)

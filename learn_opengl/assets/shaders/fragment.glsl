@@ -32,12 +32,16 @@ void main()
 	vec3 diffuseColor = lightColor * diffuse * objectColor;
 	
 	// 计算specular(高光反射，镜面反射)
+	// 防止背面光效果，dotResult大于0说明是正面照射，小于0说明背面照射
+	float dotResult = dot(-lightDirN, normalN);
+	// step函数，如果dotResult大于0.0，返回1.0，否则返回0.0
+	float flag = step(0.0, dotResult);
 	// 反射光方向
 	vec3 lightReflect = normalize(reflect(lightDirN, normalN));
 	// 观察方向与反射方向夹角的余弦值，为1的时候就重合了，最亮
 	float specular = max(dot(lightReflect, -viewDir), 0.0);
 	// 不需要计算objectColor，镜面反射，应该不用考虑物体吸收把，我觉的
-	vec3 specularColor = lightColor * specular;
+	vec3 specularColor = lightColor * specular * flag;
 
 	// 最终颜色
 	vec3 finalColor = diffuseColor + specularColor;
