@@ -143,7 +143,11 @@ https://glad.dav1d.de/
 
 https://github.com/g-truc/glm/releases
 
-**GLM标准：所有的变化都是相对于局部坐标系而言的，缩放相对于自身局部坐标系的原点，平移相对于自身局部坐标系的原点。旋转相对于自身局部坐标系的原点。**
+下面文字和图应该是错误的，我重新解释一下
+
+VS中实际是：单位矩阵 * R旋转矩阵 * T平移矩阵
+
+以自身坐标系先进行平移矩阵，这个时候到了世界坐标系了，再以世界坐标系中的原点做了旋转
 
 ![alt text](img/glm0.png)
 
@@ -1504,3 +1508,11 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_Material1.png)
 
 ![alt text](img/OpenGL_Material2.png)
+
+### 高光贴图蒙版
+
+高光贴图蒙版(Specular Mask)，控制物体表面不同区域的“闪亮”程度和方式。下面这个图就和纹理混合一个道理，通过一张噪声图，控制物体表面不同区域的“闪亮”程度和方式。
+
+![alt text](img/OpenGL_SpecularMask1.png)
+
+![alt text](img/OpenGL_SpecularMask2.png)

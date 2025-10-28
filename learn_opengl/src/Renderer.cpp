@@ -49,9 +49,11 @@ void Renderer::Render(
 			// diffuse贴图
 			// 将纹理采样器与纹理单元进行挂钩
 			shader->SetUniformInt("sampler", phongMat->m_diffuse->GetUnit());
-
 			// 将纹理与纹理单元进行挂钩
 			phongMat->m_diffuse->Bind();
+
+			shader->SetUniformInt("specularMaskSampler", phongMat->m_specularMask->GetUnit());
+			phongMat->m_specularMask->Bind();
 
 			// mvp
 			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());

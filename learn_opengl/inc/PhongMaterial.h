@@ -19,4 +19,6 @@ public:
 	std::unique_ptr<Texture> m_diffuse{ nullptr };
 	// 光斑大小，值越大，光斑越小
 	float m_shiness{ 1.0f };
+	// 高光贴图蒙版，目的是控制物体表面不同区域的“闪亮”程度
+	std::unique_ptr<Texture> m_specularMask{ nullptr };
 };

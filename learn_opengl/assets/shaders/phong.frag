@@ -4,6 +4,7 @@ in vec2 uv;
 in vec3 normal;
 in vec3 worldPosition;
 uniform sampler2D sampler;
+uniform sampler2D specularMaskSampler;
 // 光源参数
 uniform vec3 lightDirection;
 uniform vec3 lightColor;
@@ -43,8 +44,10 @@ void main()
 	float specular = max(dot(lightReflect,-viewDir), 0.0);
 	// 控制光斑大小
 	specular = pow(specular, shiness);
+	// specularMaskSampler对应的纹理对象中可以拿到r，最终让某些地方很亮
+	float specularMask = texture(specularMaskSampler, uv).r;
 	// 不需要计算objectColor，镜面反射，应该不用考虑物体吸收把，我觉的
-	vec3 specularColor = lightColor * specular * flag * specularIntensity;
+	vec3 specularColor = lightColor * specular * flag * specularIntensity * specularMask;
 
 	// 环境光计算，前面两种反射会造成物体没有接收到光照的地方是黑色，解决黑色问题
 	vec3 ambientColor = objectColor * ambientColor;

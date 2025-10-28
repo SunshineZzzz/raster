@@ -32,23 +32,18 @@ void Prepare()
 	glcontext->m_renderer = std::make_unique<Renderer>();
 
 	// 创建几何体Geometry
-	auto geometry01 = Geometry::CreateSphere(1.5f);
+	// auto geometry01 = Geometry::CreateSphere(1.5f);
+	auto geometry01 = Geometry::CreateBox(1.5f);
 	// 创建材质Material并且配置材质属性
 	auto material01 = new PhongMaterial();
-	material01->m_diffuse = std::make_unique<Texture>("assets/textures/goku.jpg", 0);
-	material01->m_shiness = 32.0f;
+	material01->m_shiness = 16.0f;
+	material01->m_diffuse = std::make_unique<Texture>("assets/textures/box.png", 0);
+	material01->m_specularMask = std::make_unique<Texture>("assets/textures/sp_mask.png", 1);
 	
-	auto geometry02 = Geometry::CreateSphere(1.5f);
-	auto material02 = new PhongMaterial();
-	material02->m_diffuse = std::make_unique<Texture>("assets/textures/wall.jpg", 0);
-	material02->m_shiness = 32.0f;
-
 	auto mesh01 = std::make_shared<Mesh>(geometry01, material01);
-	auto mesh02 = std::make_shared<Mesh>(geometry02, material02);
-	mesh02->SetPosition(glm::vec3(3.5f, 0.0f, 0.0f));
+
 	// 生成网格Mesh
 	glcontext->m_meshes.emplace_back(mesh01);
-	glcontext->m_meshes.emplace_back(mesh02);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_ambLight = std::make_shared<AmbientLight>();
@@ -162,8 +157,6 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
-	// glcontext->m_meshes[1]->RotateX(1.0f);
-	// glcontext->m_meshes[1]->RotateY(5.0f);
 	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_dirLight, glcontext->m_ambLight);
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;

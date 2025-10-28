@@ -688,6 +688,7 @@
     <None Include="assets\shaders\phong.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\box.png" />
     <Image Include="assets\textures\earth.png" />
     <Image Include="assets\textures\goku.jpg" />
     <Image Include="assets\textures\grass.jpg" />
@@ -695,6 +696,7 @@
     <Image Include="assets\textures\land.jpg" />
     <Image Include="assets\textures\luffy.jpg" />
     <Image Include="assets\textures\noise.jpg" />
+    <Image Include="assets\textures\sp_mask.png" />
     <Image Include="assets\textures\wall.jpg" />
   </ItemGroup>
   <ItemGroup>
