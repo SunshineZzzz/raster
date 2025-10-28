@@ -1296,6 +1296,9 @@
     <ClInclude Include="inc\WhiteMaterial.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\SpotLight.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">

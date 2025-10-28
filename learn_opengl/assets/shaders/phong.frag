@@ -7,10 +7,14 @@ uniform sampler2D sampler;
 uniform sampler2D specularMaskSampler;
 // 光源参数
 uniform vec3 lightPosition;
+uniform vec3 targetDirection;
+// 可以将inner跟outer两个角度的cosine值在cpu计算完毕，传入shader
+// 光锥体张开角度，绝对可视区cosθ
+uniform float innerLine;
+// 光锥体张开角度，边缘可视区cosβ
+uniform float outerLine;
 uniform vec3 lightColor;
-uniform float k2;
-uniform float k1;
-uniform float kc;
+// 环境光颜色
 uniform vec3 ambientColor;
 // 相机世界位置
 uniform vec3 cameraPosition;
@@ -29,10 +33,14 @@ void main()
 	vec3 lightDirN = normalize(worldPosition - lightPosition);
 	// 视线方向
 	vec3 viewDir = normalize(worldPosition - cameraPosition);
+	// 聚光灯朝向的方向
+	vec3 targetDirN = normalize(targetDirection);
 
-	// 计算衰减
-	float dist = length(worldPosition - lightPosition);
-	float attenuation = 1.0 / (k2 * dist * dist + k1 * dist + kc);
+	// 计算spotlight的照射范围
+	// 点光源方向和聚光灯朝向的方向夹角的余弦值
+	float cGamma = dot(lightDirN, targetDirN);
+	// 具体看md
+	float spotIntensity =clamp((cGamma - outerLine)/(innerLine - outerLine), 0.0, 1.0);
 
 	// 计算diffuse(漫反射)
 	// dot(-lightDirN, normalN)光源与法线的夹角的余弦值
@@ -60,6 +68,6 @@ void main()
 	vec3 ambientColor = objectColor * ambientColor;
 	
 	// 最终颜色
-	vec3 finalColor = (diffuseColor + specularColor) * attenuation + ambientColor;
+	vec3 finalColor = (diffuseColor + specularColor) * spotIntensity + ambientColor;
 	FragColor = vec4(finalColor, 1.0);
 }

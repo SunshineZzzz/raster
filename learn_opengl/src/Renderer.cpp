@@ -17,7 +17,7 @@ Renderer::~Renderer() {}
 void Renderer::Render(
 	const std::vector<std::shared_ptr<Mesh>>& meshes,
 	std::shared_ptr<Camera> camera,
-	std::shared_ptr<PointLight> pointLight,
+	std::shared_ptr<SpotLight> spotLight,
 	std::shared_ptr<AmbientLight> ambLight
 )
 {
@@ -65,12 +65,12 @@ void Renderer::Render(
 			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
 
 			// 光源参数的uniform更新
-			shader->SetUniformVector3("lightPosition", pointLight->GetPosition());
-			shader->SetUniformVector3("lightColor", pointLight->m_color);
-			shader->SetUniformFloat("specularIntensity", pointLight->m_specularIntensity);
-			shader->SetUniformFloat("k2", pointLight->m_k2);
-			shader->SetUniformFloat("k1", pointLight->m_k1);
-			shader->SetUniformFloat("kc", pointLight->m_kc);
+			shader->SetUniformVector3("lightPosition", spotLight->GetPosition());
+			shader->SetUniformVector3("lightColor", spotLight->m_color);
+			shader->SetUniformFloat("specularIntensity", spotLight->m_specularIntensity);
+			shader->SetUniformVector3("targetDirection", spotLight->m_targetDirection);
+			shader->SetUniformFloat("innerLine", glm::cos(glm::radians(spotLight->m_innerAngle)));
+			shader->SetUniformFloat("outerLine", glm::cos(glm::radians(spotLight->m_outerAngle)));
 
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);

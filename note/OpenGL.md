@@ -1528,3 +1528,19 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_PointLight3.png)
 
 ![alt text](img/OpenGL_PointLight4.png)
+
+### 聚光灯
+
+聚光灯(Spot Light)，是一种从一个点向一个方向发射光线的光源。就是一个锥形体，聚光灯通常用于模拟手电筒、聚光灯等大型光源。
+
+![alt text](img/OpenGL_SpotLight1.png)
+
+![alt text](img/OpenGL_SpotLight2.png)
+
+![alt text](img/OpenGL_SpotLight3.png)
+
+![alt text](img/OpenGL_SpotLight4.png)
+
+![alt text](img/OpenGL_SpotLight5.png)
+
+![alt text](img/OpenGL_SpotLight6.png)

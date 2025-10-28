@@ -51,4 +51,6 @@ public:
     std::shared_ptr<AmbientLight> m_ambLight = nullptr;
     // 点光源
     std::shared_ptr<PointLight> m_pointLight = nullptr;
+    // 探照灯
+    std::shared_ptr<SpotLight> m_spotLight = nullptr;
 };

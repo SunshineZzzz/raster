@@ -543,6 +543,7 @@
     <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
     <ClInclude Include="inc\Shader.h" />
+    <ClInclude Include="inc\SpotLight.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\TrackBallCameraControl.h" />
     <ClInclude Include="inc\WhiteMaterial.h" />

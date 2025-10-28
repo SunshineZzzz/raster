@@ -20,6 +20,7 @@
 #include "inc/Mesh.h"
 #include "inc/WhiteMaterial.h"
 #include "inc/PointLight.h"
+#include "inc/SpotLight.h"
 
 auto nWidth = 800;
 auto nHeight = 600;
@@ -54,19 +55,17 @@ void Prepare()
 	glcontext->m_meshes.emplace_back(mesh01);
 	glcontext->m_meshes.emplace_back(meshWhite);
 
-	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
-	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f, 0.0f, -1.0f);
 	glcontext->m_ambLight = std::make_shared<AmbientLight>();
 	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
 
-	glcontext->m_pointLight = std::make_shared<PointLight>();
-	glcontext->m_pointLight->SetPosition(meshWhite->GetPosition());
-	glcontext->m_pointLight->m_k2 = 0.017f;
-	glcontext->m_pointLight->m_k1 = 0.07f;
-	glcontext->m_pointLight->m_kc = 1.0f;
+	glcontext->m_spotLight = std::make_shared<SpotLight>();
+	glcontext->m_spotLight->SetPosition(meshWhite->GetPosition());
+	glcontext->m_spotLight->m_targetDirection = glm::vec3(-1.0f, 0.0f, 0.0f);
+	glcontext->m_spotLight->m_innerAngle = 30.0f;
+	glcontext->m_spotLight->m_outerAngle = 45.0f;
 }
 
-// 准备摄像机相关
+// 准备摄像机相关	
 void PrepareCamera()
 {
 	// 准备摄像机视图变化矩阵+投影矩阵
@@ -169,18 +168,11 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
     return SDL_APP_CONTINUE;
 }
-
-void LightTransform() {
-	float xPos = glm::sin((SDL_GetTicks() / 1000.0f)) + 3.0f;
-	glcontext->m_meshes[1]->SetPosition(glm::vec3(xPos, 0.0f, 0.0f));
-	glcontext->m_pointLight->SetPosition(glm::vec3(xPos, 0.0f, 0.0f));
-}
-
+ 
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
-	LightTransform();
-	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_pointLight, glcontext->m_ambLight);
+	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_spotLight, glcontext->m_ambLight);
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;
 }

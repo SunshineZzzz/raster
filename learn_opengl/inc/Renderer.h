@@ -8,6 +8,7 @@
 #include "AmbientLight.h"
 #include "Shader.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 class Renderer 
 {
@@ -19,7 +20,7 @@ public:
 	void Render(
 		const std::vector<std::shared_ptr<Mesh>>& meshes,
 		std::shared_ptr<Camera> camera,
-		std::shared_ptr<PointLight> pointLight,
+		std::shared_ptr<SpotLight> pointLight,
 		std::shared_ptr<AmbientLight> ambLight
 	);
 
