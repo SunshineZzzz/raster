@@ -540,10 +540,12 @@
     <ClInclude Include="inc\PerspectiveCamera.h" />
     <ClInclude Include="inc\Object.h" />
     <ClInclude Include="inc\PhongMaterial.h" />
+    <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\Texture.h" />
     <ClInclude Include="inc\TrackBallCameraControl.h" />
+    <ClInclude Include="inc\WhiteMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\3rd\glm\detail\func_common.inl" />
@@ -686,6 +688,8 @@
     <None Include="..\3rd\glm\gtx\wrap.inl" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\phong.vert" />
+    <None Include="assets\shaders\white.frag" />
+    <None Include="assets\shaders\white.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\box.png" />

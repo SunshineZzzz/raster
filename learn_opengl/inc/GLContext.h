@@ -9,6 +9,7 @@
 #include "DirectionalLight.h"
 #include "AmbientLight.h"
 #include "Camera.h"
+#include "PointLight.h"
 
 #include <vector>
 #include <memory>
@@ -48,4 +49,6 @@ public:
     std::shared_ptr<DirectionalLight> m_dirLight = nullptr;
     // 环境光
     std::shared_ptr<AmbientLight> m_ambLight = nullptr;
+    // 点光源
+    std::shared_ptr<PointLight> m_pointLight = nullptr;
 };

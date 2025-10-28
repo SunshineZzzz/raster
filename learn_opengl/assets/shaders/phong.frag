@@ -6,8 +6,11 @@ in vec3 worldPosition;
 uniform sampler2D sampler;
 uniform sampler2D specularMaskSampler;
 // 光源参数
-uniform vec3 lightDirection;
+uniform vec3 lightPosition;
 uniform vec3 lightColor;
+uniform float k2;
+uniform float k1;
+uniform float kc;
 uniform vec3 ambientColor;
 // 相机世界位置
 uniform vec3 cameraPosition;
@@ -22,10 +25,14 @@ void main()
 	vec3 objectColor  = texture(sampler, uv).xyz;
 	// 对象法线(插值)
 	vec3 normalN = normalize(normal);
-	// 平行光方向
-	vec3 lightDirN = normalize(lightDirection);
+	// 点光源光方向
+	vec3 lightDirN = normalize(worldPosition - lightPosition);
 	// 视线方向
 	vec3 viewDir = normalize(worldPosition - cameraPosition);
+
+	// 计算衰减
+	float dist = length(worldPosition - lightPosition);
+	float attenuation = 1.0 / (k2 * dist * dist + k1 * dist + kc);
 
 	// 计算diffuse(漫反射)
 	// dot(-lightDirN, normalN)光源与法线的夹角的余弦值
@@ -53,6 +60,6 @@ void main()
 	vec3 ambientColor = objectColor * ambientColor;
 	
 	// 最终颜色
-	vec3 finalColor = diffuseColor + specularColor + ambientColor;
+	vec3 finalColor = (diffuseColor + specularColor) * attenuation + ambientColor;
 	FragColor = vec4(finalColor, 1.0);
 }

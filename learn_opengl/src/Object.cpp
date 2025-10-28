@@ -11,6 +11,12 @@ void Object::SetPosition(glm::vec3 pos)
 	m_position = pos;
 }
 
+glm::vec3 Object::GetPosition()
+{
+	return m_position;
+}
+
+
 void Object::RotateX(float angle) 
 {
 	m_angleX += angle;

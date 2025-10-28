@@ -1290,6 +1290,12 @@
     <ClInclude Include="inc\Renderer.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\PointLight.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\WhiteMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1711,6 +1717,12 @@
     </None>
     <None Include="..\3rd\glm\gtx\wrap.inl">
       <Filter>3rd\glm\gtx</Filter>
+    </None>
+    <None Include="assets\shaders\white.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\white.vert">
+      <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

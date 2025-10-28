@@ -8,7 +8,8 @@
 
 Renderer::Renderer() 
 {
-	m_phongShader =std::make_shared<Shader>("assets/shaders/phong.vert", "assets/shaders/phong.frag");
+	m_phongShader = std::make_shared<Shader>("assets/shaders/phong.vert", "assets/shaders/phong.frag");
+	m_whiteShader = std::make_shared<Shader>("assets/shaders/white.vert", "assets/shaders/white.frag");
 }
 
 Renderer::~Renderer() {}
@@ -16,7 +17,7 @@ Renderer::~Renderer() {}
 void Renderer::Render(
 	const std::vector<std::shared_ptr<Mesh>>& meshes,
 	std::shared_ptr<Camera> camera,
-	std::shared_ptr<DirectionalLight> dirLight,
+	std::shared_ptr<PointLight> pointLight,
 	std::shared_ptr<AmbientLight> ambLight
 )
 {
@@ -64,14 +65,26 @@ void Renderer::Render(
 			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
 
 			// 光源参数的uniform更新
-			shader->SetUniformVector3("lightDirection", dirLight->m_direction);
-			shader->SetUniformVector3("lightColor", dirLight->m_color);
-			shader->SetUniformFloat("specularIntensity", dirLight->m_specularIntensity);
+			shader->SetUniformVector3("lightPosition", pointLight->GetPosition());
+			shader->SetUniformVector3("lightColor", pointLight->m_color);
+			shader->SetUniformFloat("specularIntensity", pointLight->m_specularIntensity);
+			shader->SetUniformFloat("k2", pointLight->m_k2);
+			shader->SetUniformFloat("k1", pointLight->m_k1);
+			shader->SetUniformFloat("kc", pointLight->m_kc);
+
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);
 
 			// 相机信息更新
 			shader->SetUniformVector3("cameraPosition", camera->m_position);
+		}
+		break;
+		case MaterialType::WhiteMaterial: 
+		{
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
 		}
 		break;
 		default:
@@ -92,7 +105,10 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 	{
 	case MaterialType::PhongMaterial:
 		return m_phongShader;
+	case MaterialType::WhiteMaterial:
+		return m_whiteShader;
 	default:
 		assert(0);
 	}
+	return nullptr;
 }

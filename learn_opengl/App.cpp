@@ -18,6 +18,8 @@
 #include "inc/Geometry.h"
 #include "inc/PhongMaterial.h"
 #include "inc/Mesh.h"
+#include "inc/WhiteMaterial.h"
+#include "inc/PointLight.h"
 
 auto nWidth = 800;
 auto nHeight = 600;
@@ -33,7 +35,7 @@ void Prepare()
 
 	// 创建几何体Geometry
 	// auto geometry01 = Geometry::CreateSphere(1.5f);
-	auto geometry01 = Geometry::CreateBox(1.5f);
+	auto geometry01 = Geometry::CreateBox(2.5f);
 	// 创建材质Material并且配置材质属性
 	auto material01 = new PhongMaterial();
 	material01->m_shiness = 16.0f;
@@ -42,12 +44,26 @@ void Prepare()
 	
 	auto mesh01 = std::make_shared<Mesh>(geometry01, material01);
 
+	// 创建白色物体，作为点光源
+	auto geometryWhite = Geometry::CreateSphere(0.1f);
+	auto materialWhite = new WhiteMaterial();
+	auto meshWhite = std::make_shared<Mesh>(geometryWhite, materialWhite);
+	meshWhite->SetPosition(glm::vec3(2.0, 0.0, 0.0));
+
 	// 生成网格Mesh
 	glcontext->m_meshes.emplace_back(mesh01);
+	glcontext->m_meshes.emplace_back(meshWhite);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
+	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f, 0.0f, -1.0f);
 	glcontext->m_ambLight = std::make_shared<AmbientLight>();
 	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
+
+	glcontext->m_pointLight = std::make_shared<PointLight>();
+	glcontext->m_pointLight->SetPosition(meshWhite->GetPosition());
+	glcontext->m_pointLight->m_k2 = 0.017f;
+	glcontext->m_pointLight->m_k1 = 0.07f;
+	glcontext->m_pointLight->m_kc = 1.0f;
 }
 
 // 准备摄像机相关
@@ -154,10 +170,17 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     return SDL_APP_CONTINUE;
 }
 
+void LightTransform() {
+	float xPos = glm::sin((SDL_GetTicks() / 1000.0f)) + 3.0f;
+	glcontext->m_meshes[1]->SetPosition(glm::vec3(xPos, 0.0f, 0.0f));
+	glcontext->m_pointLight->SetPosition(glm::vec3(xPos, 0.0f, 0.0f));
+}
+
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
-	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_dirLight, glcontext->m_ambLight);
+	LightTransform();
+	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_pointLight, glcontext->m_ambLight);
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;
 }

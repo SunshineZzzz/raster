@@ -1516,3 +1516,15 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_SpecularMask1.png)
 
 ![alt text](img/OpenGL_SpecularMask2.png)
+
+### 点光源
+
+点光源(Point Light)，是一种从一个点向所有方向均匀发射光线的光源。点光源通常用于模拟灯泡、火把等小型光源。
+
+![alt text](img/OpenGL_PointLight1.png)
+
+![alt text](img/OpenGL_PointLight2.png)
+
+![alt text](img/OpenGL_PointLight3.png)
+
+![alt text](img/OpenGL_PointLight4.png)

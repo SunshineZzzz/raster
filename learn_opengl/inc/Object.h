@@ -10,6 +10,8 @@ public:
 
 	// 设置世界坐标系位置
 	void SetPosition(glm::vec3 pos);
+	// 获取世界坐标系位置
+	glm::vec3 GetPosition();
 	// 增量绕自身X/Y/Z轴旋转
 	void RotateX(float angle);
 	void RotateY(float angle);
