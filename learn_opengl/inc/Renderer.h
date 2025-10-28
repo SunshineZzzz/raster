@@ -20,7 +20,9 @@ public:
 	void Render(
 		const std::vector<std::shared_ptr<Mesh>>& meshes,
 		std::shared_ptr<Camera> camera,
-		std::shared_ptr<SpotLight> pointLight,
+		std::shared_ptr<DirectionalLight> dirLight,
+		std::shared_ptr<PointLight> pointLight,
+		std::shared_ptr<SpotLight> spotLight,
 		std::shared_ptr<AmbientLight> ambLight
 	);
 

@@ -17,6 +17,8 @@ Renderer::~Renderer() {}
 void Renderer::Render(
 	const std::vector<std::shared_ptr<Mesh>>& meshes,
 	std::shared_ptr<Camera> camera,
+	std::shared_ptr<DirectionalLight> dirLight,
+	std::shared_ptr<PointLight> pointLight,
 	std::shared_ptr<SpotLight> spotLight,
 	std::shared_ptr<AmbientLight> ambLight
 )
@@ -64,15 +66,32 @@ void Renderer::Render(
 			auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
 			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
 
-			// 光源参数的uniform更新
-			shader->SetUniformVector3("lightPosition", spotLight->GetPosition());
-			shader->SetUniformVector3("lightColor", spotLight->m_color);
-			shader->SetUniformFloat("specularIntensity", spotLight->m_specularIntensity);
-			shader->SetUniformVector3("targetDirection", spotLight->m_targetDirection);
-			shader->SetUniformFloat("innerLine", glm::cos(glm::radians(spotLight->m_innerAngle)));
-			shader->SetUniformFloat("outerLine", glm::cos(glm::radians(spotLight->m_outerAngle)));
 
+			// 光源参数的uniform更新
+			// spotlight的更新
+			shader->SetUniformVector3("spotLight.position", spotLight->GetPosition());
+			shader->SetUniformVector3("spotLight.color", spotLight->m_color);
+			shader->SetUniformVector3("spotLight.targetDirection", spotLight->m_targetDirection);
+			shader->SetUniformFloat("spotLight.specularIntensity", spotLight->m_specularIntensity);
+			shader->SetUniformFloat("spotLight.innerLine", glm::cos(glm::radians(spotLight->m_innerAngle)));
+			shader->SetUniformFloat("spotLight.outerLine", glm::cos(glm::radians(spotLight->m_outerAngle)));
+
+			// directionalLight 的更新
+			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
+			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
+			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+
+			// pointLight的更新
+			shader->SetUniformVector3("pointLight.color", pointLight->m_color);
+			shader->SetUniformVector3("pointLight.position", pointLight->GetPosition());
+			shader->SetUniformFloat("pointLight.specularIntensity", pointLight->m_specularIntensity);
+			shader->SetUniformFloat("pointLight.k2", pointLight->m_k2);
+			shader->SetUniformFloat("pointLight.k1", pointLight->m_k1);
+			shader->SetUniformFloat("pointLight.kc", pointLight->m_kc);
+
+			// 光斑大小
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);
+			// 环境光
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);
 
 			// 相机信息更新

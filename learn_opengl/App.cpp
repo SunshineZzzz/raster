@@ -45,24 +45,45 @@ void Prepare()
 	
 	auto mesh01 = std::make_shared<Mesh>(geometry01, material01);
 
+	// 创建白色物体，作为聚光灯
+	auto geometryWhite1 = Geometry::CreateSphere(0.1f);
+	auto materialWhite1 = new WhiteMaterial();
+	auto meshWhite1 = std::make_shared<Mesh>(geometryWhite1, materialWhite1);
+	meshWhite1->SetPosition(glm::vec3(2.0, 0.0, 0.0));
+
 	// 创建白色物体，作为点光源
-	auto geometryWhite = Geometry::CreateSphere(0.1f);
-	auto materialWhite = new WhiteMaterial();
-	auto meshWhite = std::make_shared<Mesh>(geometryWhite, materialWhite);
-	meshWhite->SetPosition(glm::vec3(2.0, 0.0, 0.0));
+	auto geometryWhite2 = Geometry::CreateSphere(0.1f);
+	auto materialWhite2 = new WhiteMaterial();
+	auto meshWhite2 = std::make_shared<Mesh>(geometryWhite2, materialWhite2);
+	meshWhite2->SetPosition(glm::vec3(0.0f, 0.0f, 1.5f));
 
 	// 生成网格Mesh
 	glcontext->m_meshes.emplace_back(mesh01);
-	glcontext->m_meshes.emplace_back(meshWhite);
+	glcontext->m_meshes.emplace_back(meshWhite1);
+	glcontext->m_meshes.emplace_back(meshWhite2);
 
-	glcontext->m_ambLight = std::make_shared<AmbientLight>();
-	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
-
+	// 聚光灯
 	glcontext->m_spotLight = std::make_shared<SpotLight>();
-	glcontext->m_spotLight->SetPosition(meshWhite->GetPosition());
+	glcontext->m_spotLight->SetPosition(meshWhite1->GetPosition());
 	glcontext->m_spotLight->m_targetDirection = glm::vec3(-1.0f, 0.0f, 0.0f);
 	glcontext->m_spotLight->m_innerAngle = 30.0f;
 	glcontext->m_spotLight->m_outerAngle = 45.0f;
+
+	// 平行光
+	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
+	glcontext->m_dirLight->m_direction = glm::vec3(1.0f);
+
+	// 点光源
+	glcontext->m_pointLight = std::make_shared<PointLight>();
+	glcontext->m_pointLight->SetPosition(meshWhite2->GetPosition());
+	glcontext->m_pointLight->m_specularIntensity = 0.5f;
+	glcontext->m_pointLight->m_k2 = 0.017f;
+	glcontext->m_pointLight->m_k1 = 0.07f;
+	glcontext->m_pointLight->m_k2 = 1.0f;
+
+	// 环境光
+	glcontext->m_ambLight = std::make_shared<AmbientLight>();
+	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
 }
 
 // 准备摄像机相关	
@@ -172,7 +193,9 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
-	glcontext->m_renderer->Render(glcontext->m_meshes, camera, glcontext->m_spotLight, glcontext->m_ambLight);
+	glcontext->m_renderer->Render(glcontext->m_meshes, camera, 
+		glcontext->m_dirLight, glcontext->m_pointLight, glcontext->m_spotLight, 
+		glcontext->m_ambLight);
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;
 }
