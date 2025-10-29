@@ -183,5 +183,14 @@ void main()
 
 	vec3 finalColor = result + ambientColor;
 
+	// 450以内0，大就是1
+	float flag = step(450, gl_FragCoord.x);
+	// 通过flag的值来线性插值纯红色和纯蓝色
+	vec3 blendColor = mix(vec3(1.0, 0, 0), vec3(0.0, 0.0, 1.0), flag);
+	finalColor *= blendColor;
+
+	// 直接用深度值作为颜色，应该是灰色
+	finalColor = vec3(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z);
+
 	FragColor = vec4(finalColor, 1.0);
 }
