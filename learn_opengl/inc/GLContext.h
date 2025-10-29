@@ -41,8 +41,8 @@ private:
 public:
     // gl上下文
     SDL_GLContext m_glcontext = nullptr;
-    // 网格s
-    std::vector<std::shared_ptr<Mesh>> m_meshes;
+    // 场景
+    std::shared_ptr<Scene> m_scene;
     // 渲染器
     std::shared_ptr<Renderer> m_renderer;
     // 平行光

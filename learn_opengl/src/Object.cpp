@@ -2,7 +2,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Object::Object() {}
+Object::Object() 
+{
+	m_type = ObjectType::Object;
+}
 
 Object::~Object() {}
 

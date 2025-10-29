@@ -13,12 +13,13 @@ public:
 	{
 		m_geometry.reset(geometry);
 		m_material.reset(material);
+		m_type = ObjectType::Mesh;
 	}
 	~Mesh() {}
 
 public:
 	// 几何体
-	std::unique_ptr<Geometry> m_geometry{ nullptr };
+	std::shared_ptr<Geometry> m_geometry{ nullptr };
 	// 材质(纹理+漫反射+镜面反射+环境光)
-	std::unique_ptr<Material> m_material{ nullptr };
+	std::shared_ptr<Material> m_material{ nullptr };
 };

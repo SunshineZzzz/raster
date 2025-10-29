@@ -16,11 +16,9 @@ Renderer::Renderer()
 Renderer::~Renderer() {}
 
 void Renderer::Render(
-	const std::vector<std::shared_ptr<Mesh>>& meshes,
+	Scene* scene,
 	std::shared_ptr<Camera> camera,
 	std::shared_ptr<DirectionalLight> dirLight,
-	const std::vector<std::shared_ptr<PointLight>>& pointLights,
-	std::shared_ptr<SpotLight> spotLight,
 	std::shared_ptr<AmbientLight> ambLight
 )
 {
@@ -31,15 +29,40 @@ void Renderer::Render(
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// 遍历mesh进行绘制
-	for (int i = 0; i < meshes.size(); i++) 
+	// 将scene当作根节点开始递归渲染
+	RenderObject(scene, camera, dirLight, ambLight);
+}
+
+std::shared_ptr<Shader> Renderer::PickShader(MaterialType type) 
+{
+	switch (type) 
 	{
-		auto mesh = meshes[i];
+	case MaterialType::PhongMaterial:
+		return m_phongShader;
+	case MaterialType::WhiteMaterial:
+		return m_whiteShader;
+	default:
+		assert(0);
+	}
+	return nullptr;
+}
+
+void Renderer::RenderObject(
+	Object* object,
+	std::shared_ptr<Camera> camera,
+	std::shared_ptr<DirectionalLight> dirLight,
+	std::shared_ptr<AmbientLight> ambLight
+) 
+{
+	// 判断是Mesh还是Object，如果是Mesh需要渲染
+	if (object->getType() == ObjectType::Mesh) 
+	{
+		auto mesh = (Mesh*)object;
 		auto& geometry = mesh->m_geometry;
 		auto& material = mesh->m_material;
 
 		// 决定使用哪个Shader 
-		auto shader = PickShader(material->m_type);
+		std::shared_ptr<Shader> shader = PickShader(material->m_type);
 
 		// 更新shader的uniform
 		shader->Begin();
@@ -50,12 +73,13 @@ void Renderer::Render(
 		{
 			PhongMaterial* phongMat = (PhongMaterial*)material.get();
 
-			// diffuse贴图
+			// diffuse贴图帧更新
 			// 将纹理采样器与纹理单元进行挂钩
 			shader->SetUniformInt("sampler", phongMat->m_diffuse->GetUnit());
 			// 将纹理与纹理单元进行挂钩
 			phongMat->m_diffuse->Bind();
 
+			// 高光蒙版的帧更新
 			shader->SetUniformInt("specularMaskSampler", phongMat->m_specularMask->GetUnit());
 			phongMat->m_specularMask->Bind();
 
@@ -67,38 +91,16 @@ void Renderer::Render(
 			auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
 			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
 
-
 			// 光源参数的uniform更新
-			// spotlight的更新
-			shader->SetUniformVector3("spotLight.position", spotLight->GetPosition());
-			shader->SetUniformVector3("spotLight.color", spotLight->m_color);
-			shader->SetUniformVector3("spotLight.targetDirection", spotLight->m_targetDirection);
-			shader->SetUniformFloat("spotLight.specularIntensity", spotLight->m_specularIntensity);
-			shader->SetUniformFloat("spotLight.innerLine", glm::cos(glm::radians(spotLight->m_innerAngle)));
-			shader->SetUniformFloat("spotLight.outerLine", glm::cos(glm::radians(spotLight->m_outerAngle)));
-
-			// directionalLight 的更新
+			// directionalLight的更新
 			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
 			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
 			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
-
-			// pointLight的更新
-			for (int i = 0; i < pointLights.size(); i++) 
-			{
-				auto& pointLight = pointLights[i];
-				shader->SetUniformVector3(std::format("pointLights[{}].color", i), pointLight->m_color);
-				shader->SetUniformVector3(std::format("pointLights[{}].position", i), pointLight->GetPosition());
-				shader->SetUniformFloat(std::format("pointLights[{}].specularIntensity", i), pointLight->m_specularIntensity);
-				shader->SetUniformFloat(std::format("pointLights[{}].kc", i), pointLight->m_kc);
-				shader->SetUniformFloat(std::format("pointLights[{}].k1", i), pointLight->m_k1);
-				shader->SetUniformFloat(std::format("pointLights[{}].k2", i), pointLight->m_k2);
-			}
 
 			// 光斑大小
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);
 			// 环境光
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);
-
 			// 相机信息更新
 			shader->SetUniformVector3("cameraPosition", camera->m_position);
 		}
@@ -121,18 +123,12 @@ void Renderer::Render(
 		// 执行绘制命令
 		glDrawElements(GL_TRIANGLES, geometry->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 	}
-}
 
-std::shared_ptr<Shader> Renderer::PickShader(MaterialType type) 
-{
-	switch (type) 
+
+	// 遍历object的子节点，对每个子节点都需要调用renderObject
+	auto children = object->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
 	{
-	case MaterialType::PhongMaterial:
-		return m_phongShader;
-	case MaterialType::WhiteMaterial:
-		return m_whiteShader;
-	default:
-		assert(0);
+		RenderObject(children[i], camera, dirLight, ambLight);
 	}
-	return nullptr;
 }

@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "Scene.h"
 
 class Renderer 
 {
@@ -18,11 +19,16 @@ public:
 
 	// 每次调用都会渲染一帧
 	void Render(
-		const std::vector<std::shared_ptr<Mesh>>& meshes,
+		Scene* scene,
 		std::shared_ptr<Camera> camera,
 		std::shared_ptr<DirectionalLight> dirLight,
-		const std::vector<std::shared_ptr<PointLight>>& pointLights,
-		std::shared_ptr<SpotLight> spotLight,
+		std::shared_ptr<AmbientLight> ambLight
+	);
+	// 针对单个object进行渲染
+	void RenderObject(
+		Object* object,
+		std::shared_ptr<Camera> camera,
+		std::shared_ptr<DirectionalLight> dirLight,
 		std::shared_ptr<AmbientLight> ambLight
 	);
 	// 设置背景颜色

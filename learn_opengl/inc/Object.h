@@ -3,6 +3,13 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+enum class ObjectType 
+{
+	Object,
+	Mesh,
+	Scene
+};
+
 class Object 
 {
 public:
@@ -27,6 +34,8 @@ public:
 	std::vector<Object*> GetChildren();
 	// 获取父亲
 	Object* GetParent();
+	// 获取类型
+	ObjectType getType()const { return m_type; }
 
 protected:
 	// 世界坐标系位置
@@ -40,8 +49,9 @@ protected:
 	float m_angleZ{ 0.0f };
 	// 缩放
 	glm::vec3 m_scale{ 1.0f };
-
-	//父子关系
+	// 父子关系
 	std::vector<Object*> m_children;
 	Object* m_parent;
+	// 类型记录
+	ObjectType m_type;
 };

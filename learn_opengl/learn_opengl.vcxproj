@@ -557,6 +557,7 @@
     <ClInclude Include="inc\PhongMaterial.h" />
     <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
+    <ClInclude Include="inc\Scene.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\SpotLight.h" />
     <ClInclude Include="inc\Texture.h" />

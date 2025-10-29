@@ -170,13 +170,13 @@ void main()
 	// 视线方向
 	vec3 viewDir = normalize(worldPosition - cameraPosition);
 
-	result += CalculateSpotLight(spotLight, normalN, viewDir);
+	// result += CalculateSpotLight(spotLight, normalN, viewDir);
 	result += CalculateDirectionalLight(directionalLight,normalN, viewDir);
 
-	for(int i = 0;i < POINT_LIGHT_NUM; i++) 
-    {
-		result += CalculatePointLight(pointLights[i], normalN, viewDir);
-	}
+	// for(int i = 0;i < POINT_LIGHT_NUM; i++) 
+    // {
+	//		result += CalculatePointLight(pointLights[i], normalN, viewDir);
+	// }
 
 	// 环境光计算
 	vec3 ambientColor = objectColor * ambientColor;

@@ -47,75 +47,37 @@ void InitImGUI()
 void Prepare()
 {
 	// 渲染器
-	glcontext->m_renderer = std::make_unique<Renderer>();
+	glcontext->m_renderer = std::make_shared<Renderer>();
+	// 场景
+	glcontext->m_scene = std::make_shared<Scene>();
 
-	// 创建几何体Geometry
-	// auto geometry01 = Geometry::CreateSphere(1.5f);
-	auto geometry01 = Geometry::CreateBox(1.0f);
-	// 创建材质Material并且配置材质属性
-	auto material01 = new PhongMaterial();
-	material01->m_shiness = 16.0f;
-	material01->m_diffuse = std::make_unique<Texture>("assets/textures/box.png", 0);
-	material01->m_specularMask = std::make_unique<Texture>("assets/textures/sp_mask.png", 1);
-	
-	auto mesh01 = std::make_shared<Mesh>(geometry01, material01);
+	// 创建geometry
+	auto boxGeometry = Geometry::CreateBox(1.0f);
+	auto spGeometry = Geometry::CreateSphere(1.0f);
 
-	// 创建白色物体，作为聚光灯
-	auto geometryWhite1 = Geometry::CreateSphere(0.1f);
-	auto materialWhite1 = new WhiteMaterial();
-	auto meshWhite1 = std::make_shared<Mesh>(geometryWhite1, materialWhite1);
-	meshWhite1->SetPosition(glm::vec3(0.0, 0.0, 2.0));
+	// 创建一个material并且配置参数
+	auto material = new PhongMaterial();
+	material->m_shiness = 16.0f;
+	material->m_diffuse = std::make_unique<Texture>("assets/textures/box.png", 0);
+	material->m_specularMask = std::make_unique<Texture>("assets/textures/sp_mask.png", 1);
 
-	// 生成网格Mesh
-	glcontext->m_meshes.emplace_back(mesh01);
-	glcontext->m_meshes.emplace_back(meshWhite1);
+	// 生成mesh
+	auto mesh = new Mesh(boxGeometry, material);
+	auto spMesh01 = new Mesh(spGeometry, material);
+	auto spMesh02 = new Mesh(spGeometry, material);
+	spMesh01->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+	spMesh02->SetPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
 
-	// 聚光灯
-	glcontext->m_spotLight = std::make_shared<SpotLight>();
-	glcontext->m_spotLight->SetPosition(meshWhite1->GetPosition());
-	glcontext->m_spotLight->m_targetDirection = glm::vec3(0.0f, 0.0f, -1.0f);
-	glcontext->m_spotLight->m_innerAngle = 30.0f;
-	glcontext->m_spotLight->m_outerAngle = 45.0f;
+	// 创建父子关系
+	mesh->AddChild(spMesh01);
+	mesh->AddChild(spMesh02);
 
-	// 平行光
-	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
-	glcontext->m_dirLight->m_direction = glm::vec3(1.0f);
+	glcontext->m_scene->AddChild(mesh);
 
-	// 点光源
-	auto pointLight1 = std::make_shared<PointLight>();
-	pointLight1->SetPosition(glm::vec3(1.0f, 0.0f, 0.0f));
-	pointLight1->m_color = glm::vec3(1.0f, 0.0f, 0.0f);
-	pointLight1->m_k2 = 0.0f;
-	pointLight1->m_k1 = 0.0f;
-	pointLight1->m_kc = 1.0f;
-	glcontext->m_pointLights.push_back(pointLight1);
+	glcontext->m_dirLight = std::make_unique<DirectionalLight>();
+	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
 
-	auto pointLight2 = std::make_shared<PointLight>();
-	pointLight2->SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-	pointLight2->m_color = glm::vec3(0.0f, 1.0f, 0.0f);
-	pointLight2->m_k2 = 0.0f;
-	pointLight2->m_k1 = 0.0f;
-	pointLight2->m_kc = 1.0f;
-	glcontext->m_pointLights.push_back(pointLight2);
-
-	auto pointLight3 = std::make_shared<PointLight>();
-	pointLight3->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	pointLight3->m_color = glm::vec3(0.0f, 0.0f, 1.0f);
-	pointLight3->m_k2 = 0.0f;
-	pointLight3->m_k1 = 0.0f;
-	pointLight3->m_kc = 1.0f;
-	glcontext->m_pointLights.push_back(pointLight3);
-
-	auto pointLight4 = std::make_shared<PointLight>();
-	pointLight4->SetPosition(glm::vec3(0.0f, 0.0f, -1.0f));
-	pointLight3->m_color = glm::vec3(1.0f, 1.0f, 0.0f);
-	pointLight4->m_k2 = 0.0f;
-	pointLight4->m_k1 = 0.0f;
-	pointLight4->m_kc = 1.0f;
-	glcontext->m_pointLights.push_back(pointLight4);
-
-	// 环境光
-	glcontext->m_ambLight = std::make_shared<AmbientLight>();
+	glcontext->m_ambLight = std::make_unique<AmbientLight>();
 	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
 }
 
@@ -261,9 +223,8 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
 	glcontext->m_renderer->SetClearColor(clearColor);
-	glcontext->m_renderer->Render(glcontext->m_meshes, camera, 
-		glcontext->m_dirLight, glcontext->m_pointLights, glcontext->m_spotLight, 
-		glcontext->m_ambLight);
+	glcontext->m_renderer->Render(glcontext->m_scene.get(), camera,
+		glcontext->m_dirLight, glcontext->m_ambLight);
 	RenderIMGUI();
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;

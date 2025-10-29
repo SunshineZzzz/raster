@@ -88,6 +88,10 @@
 	- [高光反射](#高光反射)
 	- [法线矩阵](#法线矩阵)
 - [材质](#材质)
+- [高光贴图蒙版](#高光贴图蒙版)
+- [点光源](#点光源)
+- [聚光灯](#聚光灯)
+- [场景](#场景)
 
 ### OpenGL 
 
@@ -1544,3 +1548,13 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_SpotLight5.png)
 
 ![alt text](img/OpenGL_SpotLight6.png)
+
+### 场景
+
+场景(Scene)，是指一个包含了所有物体、光源、环境等元素的虚拟环境。场景是渲染图形的基础，通过场景可以模拟真实的物理环境，为用户提供沉浸式的体验。
+
+![alt text](img/OpenGL_Scene1.png)
+
+![alt text](img/OpenGL_Scene2.png)
+
+![alt text](img/OpenGL_Scene3.png)
