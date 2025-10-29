@@ -22,6 +22,12 @@ void Renderer::Render(
 	std::shared_ptr<AmbientLight> ambLight
 )
 {
+	// 设置当前帧绘制的时候，opengl的必要状态机参数
+	// 有可能绘制最后一个mesh的时候，状态机参数被修改了，所以需要重新设置
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
