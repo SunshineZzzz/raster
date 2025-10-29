@@ -35,12 +35,12 @@ private:
 
     // SDL窗口指针
     SDL_Window* m_window = nullptr;
-    // gl上下文
-    SDL_GLContext m_glcontext = nullptr;
     // 是否已经初始化过
     bool m_initialized = false;
 
 public:
+    // gl上下文
+    SDL_GLContext m_glcontext = nullptr;
     // 网格s
     std::vector<std::shared_ptr<Mesh>> m_meshes;
     // 渲染器
@@ -50,7 +50,7 @@ public:
     // 环境光
     std::shared_ptr<AmbientLight> m_ambLight = nullptr;
     // 点光源
-    std::shared_ptr<PointLight> m_pointLight = nullptr;
+    std::vector<std::shared_ptr<PointLight>> m_pointLights;
     // 探照灯
     std::shared_ptr<SpotLight> m_spotLight = nullptr;
 };

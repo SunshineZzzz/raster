@@ -21,10 +21,15 @@ public:
 		const std::vector<std::shared_ptr<Mesh>>& meshes,
 		std::shared_ptr<Camera> camera,
 		std::shared_ptr<DirectionalLight> dirLight,
-		std::shared_ptr<PointLight> pointLight,
+		const std::vector<std::shared_ptr<PointLight>>& pointLights,
 		std::shared_ptr<SpotLight> spotLight,
 		std::shared_ptr<AmbientLight> ambLight
 	);
+	// 设置背景颜色
+	void SetClearColor(glm::vec3 color) 
+	{
+		glClearColor(color.r, color.g, color.b, 1.0);
+	}
 
 private:
 	// 根据Material类型不同，挑选不同的shader

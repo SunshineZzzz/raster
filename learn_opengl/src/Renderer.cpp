@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <format>
 
 Renderer::Renderer() 
 {
@@ -18,7 +19,7 @@ void Renderer::Render(
 	const std::vector<std::shared_ptr<Mesh>>& meshes,
 	std::shared_ptr<Camera> camera,
 	std::shared_ptr<DirectionalLight> dirLight,
-	std::shared_ptr<PointLight> pointLight,
+	const std::vector<std::shared_ptr<PointLight>>& pointLights,
 	std::shared_ptr<SpotLight> spotLight,
 	std::shared_ptr<AmbientLight> ambLight
 )
@@ -82,12 +83,16 @@ void Renderer::Render(
 			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
 
 			// pointLight的更新
-			shader->SetUniformVector3("pointLight.color", pointLight->m_color);
-			shader->SetUniformVector3("pointLight.position", pointLight->GetPosition());
-			shader->SetUniformFloat("pointLight.specularIntensity", pointLight->m_specularIntensity);
-			shader->SetUniformFloat("pointLight.k2", pointLight->m_k2);
-			shader->SetUniformFloat("pointLight.k1", pointLight->m_k1);
-			shader->SetUniformFloat("pointLight.kc", pointLight->m_kc);
+			for (int i = 0; i < pointLights.size(); i++) 
+			{
+				auto& pointLight = pointLights[i];
+				shader->SetUniformVector3(std::format("pointLights[{}].color", i), pointLight->m_color);
+				shader->SetUniformVector3(std::format("pointLights[{}].position", i), pointLight->GetPosition());
+				shader->SetUniformFloat(std::format("pointLights[{}].specularIntensity", i), pointLight->m_specularIntensity);
+				shader->SetUniformFloat(std::format("pointLights[{}].kc", i), pointLight->m_kc);
+				shader->SetUniformFloat(std::format("pointLights[{}].k1", i), pointLight->m_k1);
+				shader->SetUniformFloat(std::format("pointLights[{}].k2", i), pointLight->m_k2);
+			}
 
 			// 光斑大小
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);

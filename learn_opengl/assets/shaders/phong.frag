@@ -23,7 +23,6 @@ struct DirectionalLight
 	// 镜面反射光斑亮度
 	float specularIntensity;
 };
-
 // 点光源
 struct PointLight
 {
@@ -58,9 +57,9 @@ struct SpotLight
 uniform SpotLight spotLight;
 // 平行光
 uniform DirectionalLight directionalLight;
-// 点光源
-uniform PointLight pointLight;
-
+// 宏定义
+#define POINT_LIGHT_NUM 4
+uniform PointLight pointLights[POINT_LIGHT_NUM];
 // 计算漫反射光照
 vec3 CalculateDiffuse(vec3 lightColor, vec3 objectColor, vec3 lightDir, vec3 normal)
 {
@@ -172,8 +171,12 @@ void main()
 	vec3 viewDir = normalize(worldPosition - cameraPosition);
 
 	result += CalculateSpotLight(spotLight, normalN, viewDir);
-	result += CalculateDirectionalLight(directionalLight, normalN, viewDir);
-	result += CalculatePointLight(pointLight,normalN, viewDir);
+	result += CalculateDirectionalLight(directionalLight,normalN, viewDir);
+
+	for(int i = 0;i < POINT_LIGHT_NUM; i++) 
+    {
+		result += CalculatePointLight(pointLights[i], normalN, viewDir);
+	}
 
 	// 环境光计算
 	vec3 ambientColor = objectColor * ambientColor;

@@ -22,12 +22,27 @@
 #include "inc/PointLight.h"
 #include "inc/SpotLight.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl3.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 auto nWidth = 800;
 auto nHeight = 600;
 SDL_Window* window = nullptr;
 std::shared_ptr<Camera> camera = nullptr;
 std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
+glm::vec3 clearColor{};
+
+void InitImGUI()
+{
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+
+	// 设置ImGui与GLFW和OpenGL的绑定
+	ImGui_ImplSDL3_InitForOpenGL(window, glcontext->m_glcontext);
+	ImGui_ImplOpenGL3_Init("#version 460");
+}
 
 void Prepare()
 {
@@ -36,7 +51,7 @@ void Prepare()
 
 	// 创建几何体Geometry
 	// auto geometry01 = Geometry::CreateSphere(1.5f);
-	auto geometry01 = Geometry::CreateBox(2.5f);
+	auto geometry01 = Geometry::CreateBox(1.0f);
 	// 创建材质Material并且配置材质属性
 	auto material01 = new PhongMaterial();
 	material01->m_shiness = 16.0f;
@@ -49,23 +64,16 @@ void Prepare()
 	auto geometryWhite1 = Geometry::CreateSphere(0.1f);
 	auto materialWhite1 = new WhiteMaterial();
 	auto meshWhite1 = std::make_shared<Mesh>(geometryWhite1, materialWhite1);
-	meshWhite1->SetPosition(glm::vec3(2.0, 0.0, 0.0));
-
-	// 创建白色物体，作为点光源
-	auto geometryWhite2 = Geometry::CreateSphere(0.1f);
-	auto materialWhite2 = new WhiteMaterial();
-	auto meshWhite2 = std::make_shared<Mesh>(geometryWhite2, materialWhite2);
-	meshWhite2->SetPosition(glm::vec3(0.0f, 0.0f, 1.5f));
+	meshWhite1->SetPosition(glm::vec3(0.0, 0.0, 2.0));
 
 	// 生成网格Mesh
 	glcontext->m_meshes.emplace_back(mesh01);
 	glcontext->m_meshes.emplace_back(meshWhite1);
-	glcontext->m_meshes.emplace_back(meshWhite2);
 
 	// 聚光灯
 	glcontext->m_spotLight = std::make_shared<SpotLight>();
 	glcontext->m_spotLight->SetPosition(meshWhite1->GetPosition());
-	glcontext->m_spotLight->m_targetDirection = glm::vec3(-1.0f, 0.0f, 0.0f);
+	glcontext->m_spotLight->m_targetDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 	glcontext->m_spotLight->m_innerAngle = 30.0f;
 	glcontext->m_spotLight->m_outerAngle = 45.0f;
 
@@ -74,12 +82,37 @@ void Prepare()
 	glcontext->m_dirLight->m_direction = glm::vec3(1.0f);
 
 	// 点光源
-	glcontext->m_pointLight = std::make_shared<PointLight>();
-	glcontext->m_pointLight->SetPosition(meshWhite2->GetPosition());
-	glcontext->m_pointLight->m_specularIntensity = 0.5f;
-	glcontext->m_pointLight->m_k2 = 0.017f;
-	glcontext->m_pointLight->m_k1 = 0.07f;
-	glcontext->m_pointLight->m_k2 = 1.0f;
+	auto pointLight1 = std::make_shared<PointLight>();
+	pointLight1->SetPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+	pointLight1->m_color = glm::vec3(1.0f, 0.0f, 0.0f);
+	pointLight1->m_k2 = 0.0f;
+	pointLight1->m_k1 = 0.0f;
+	pointLight1->m_kc = 1.0f;
+	glcontext->m_pointLights.push_back(pointLight1);
+
+	auto pointLight2 = std::make_shared<PointLight>();
+	pointLight2->SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+	pointLight2->m_color = glm::vec3(0.0f, 1.0f, 0.0f);
+	pointLight2->m_k2 = 0.0f;
+	pointLight2->m_k1 = 0.0f;
+	pointLight2->m_kc = 1.0f;
+	glcontext->m_pointLights.push_back(pointLight2);
+
+	auto pointLight3 = std::make_shared<PointLight>();
+	pointLight3->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
+	pointLight3->m_color = glm::vec3(0.0f, 0.0f, 1.0f);
+	pointLight3->m_k2 = 0.0f;
+	pointLight3->m_k1 = 0.0f;
+	pointLight3->m_kc = 1.0f;
+	glcontext->m_pointLights.push_back(pointLight3);
+
+	auto pointLight4 = std::make_shared<PointLight>();
+	pointLight4->SetPosition(glm::vec3(0.0f, 0.0f, -1.0f));
+	pointLight3->m_color = glm::vec3(1.0f, 1.0f, 0.0f);
+	pointLight4->m_k2 = 0.0f;
+	pointLight4->m_k1 = 0.0f;
+	pointLight4->m_kc = 1.0f;
+	glcontext->m_pointLights.push_back(pointLight4);
 
 	// 环境光
 	glcontext->m_ambLight = std::make_shared<AmbientLight>();
@@ -116,6 +149,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
 
     glcontext = std::make_unique<GLContext>(window);
+	
+	InitImGUI();
 
 	// 开启深度检测
 	glEnable(GL_DEPTH_TEST);
@@ -138,6 +173,13 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
+	ImGui_ImplSDL3_ProcessEvent(event);
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse || io.WantCaptureKeyboard) 
+	{
+		return SDL_APP_CONTINUE;
+	}
+
     switch(event->type)
 	{
 		case SDL_EVENT_WINDOW_RESIZED:
@@ -189,13 +231,40 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
     return SDL_APP_CONTINUE;
 }
- 
+
+void RenderIMGUI() 
+{
+	// 开启当前的IMGUI渲染
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL3_NewFrame();
+	ImGui::NewFrame();
+
+	// 决定当前的GUI上面有哪些控件，从上到下
+	ImGui::Begin("Hello, world!");
+	ImGui::Text("ChangeColor Demo");
+	ImGui::Button("Test Button", ImVec2(40, 20));
+	ImGui::ColorEdit3("Clear Color", (float*)&clearColor);
+	ImGui::End();
+
+	// 执行UI渲染
+	ImGui::Render();
+	// 获取当前窗体的宽高
+	int display_w, display_h;
+	SDL_GetWindowSize(window, &display_w, &display_h);
+	// 重置视口大小
+	glViewport(0, 0, display_w, display_h);
+
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
+	glcontext->m_renderer->SetClearColor(clearColor);
 	glcontext->m_renderer->Render(glcontext->m_meshes, camera, 
-		glcontext->m_dirLight, glcontext->m_pointLight, glcontext->m_spotLight, 
+		glcontext->m_dirLight, glcontext->m_pointLights, glcontext->m_spotLight, 
 		glcontext->m_ambLight);
+	RenderIMGUI();
 	glcontext->SwapWindow();
 	return SDL_APP_CONTINUE;
 }

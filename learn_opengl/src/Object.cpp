@@ -51,3 +51,25 @@ glm::mat4 Object::GetModelMatrix()
 
 	return transform;
 }
+
+void Object::AddChild(Object* obj)
+{
+	auto iter = std::find(m_children.begin(), m_children.end(), obj);
+	if (iter != m_children.end()) 
+	{
+		assert(0);
+	}
+
+	m_children.push_back(obj);
+	obj->m_parent = this;
+}
+
+std::vector<Object*> Object::GetChildren()
+{
+	return m_children;
+}
+
+Object* Object::GetParent()
+{
+	return m_parent;
+}

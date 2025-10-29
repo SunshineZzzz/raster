@@ -1,6 +1,7 @@
 ﻿#pragma once 
 
 #include <glm/glm.hpp>
+#include <vector>
 
 class Object 
 {
@@ -20,6 +21,12 @@ public:
 	void SetScale(glm::vec3 scale);
 	// 获取模型矩阵
 	glm::mat4 GetModelMatrix();
+	// 增加孩子
+	void AddChild(Object* obj);
+	// 获取孩子们
+	std::vector<Object*> GetChildren();
+	// 获取父亲
+	Object* GetParent();
 
 protected:
 	// 世界坐标系位置
@@ -33,4 +40,8 @@ protected:
 	float m_angleZ{ 0.0f };
 	// 缩放
 	glm::vec3 m_scale{ 1.0f };
+
+	//父子关系
+	std::vector<Object*> m_children;
+	Object* m_parent;
 };
