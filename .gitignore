@@ -3,3 +3,4 @@ x64
 *vcxproj.user
 imgui.ini
 assimp-6.0.2
+assimp-vc143-mtd.lib
