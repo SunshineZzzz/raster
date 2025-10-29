@@ -3,6 +3,46 @@
 
 #include "../inc/texture.h"
 
+std::map<std::string, Texture*> Texture::sTextureCache{};
+
+Texture* Texture::CreateTexture(const std::string& path, unsigned int unit)
+{
+	// 检查是否缓存过本路径对应的纹理对象
+	auto iter = sTextureCache.find(path);
+	if (iter != sTextureCache.end()) 
+	{
+		return iter->second;
+	}
+
+	// 如果本路径对应的texture没有生成过，则重新生成
+	auto texture = new Texture(path, unit);
+	sTextureCache[path] = texture;
+
+	return texture;
+}
+
+Texture* Texture::CreateTextureFromMemory(
+	const std::string& path,
+	unsigned int unit,
+	unsigned char* dataIn,
+	uint32_t widthIn,
+	uint32_t heightIn
+)
+{
+	// 检查是否缓存过本路径对应的纹理对象
+	auto iter = sTextureCache.find(path);
+	if (iter != sTextureCache.end()) 
+	{
+		return iter->second;
+	}
+
+	// 如果本路径对应的texture没有生成过，则重新生成
+	auto texture = new Texture(unit, dataIn, widthIn, heightIn);
+	sTextureCache[path] = texture;
+
+	return texture;
+}
+
 Texture::Texture(const std::string& path, unsigned int unit) 
 {
 	m_unit = unit;
@@ -57,6 +97,55 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	m_initialized = true;
+}
+
+Texture::Texture(unsigned int unit, unsigned char* dataIn, uint32_t widthIn, uint32_t heightIn)
+{
+	m_unit = unit;
+
+	// stbImage 读取图片
+	int channels;
+	// 反转y轴
+	stbi_set_flip_vertically_on_load(true);
+	// 计算整张图片的大小
+	// Assimp规定：如果内嵌纹理是png或者jpg压缩格式的话，height = 0，width就代表了图片大小
+	uint32_t dataInSize = 0;
+	if (!heightIn) 
+	{
+		dataInSize = widthIn;
+	}
+	else 
+	{
+		// 如果内嵌图片不是压缩格式，height = 正常高度，width = 正常宽度
+		// 偷懒：统一认为数据格式都是RGBA
+		dataInSize = widthIn * heightIn * 4;
+	}
+
+	unsigned char* data = stbi_load_from_memory(dataIn, dataInSize, &m_width, &m_height, &channels, STBI_rgb_alpha);
+
+	// 生成纹理并且激活单元绑定
+	glGenTextures(1, &m_texture);
+	// 激活纹理单元
+	glActiveTexture(GL_TEXTURE0 + m_unit);
+	// 绑定纹理对象
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+
+	// 传输纹理数据, 开辟显存
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// 释放数据 
+	stbi_image_free(data);
+
+	// 设置纹理的过滤方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+
+	// 设置纹理的包裹方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 Texture::~Texture() 

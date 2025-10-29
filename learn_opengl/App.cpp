@@ -26,8 +26,10 @@
 #include "imgui/imgui_impl_sdl3.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-auto nWidth = 800;
-auto nHeight = 600;
+#include "inc/AssimpLoader.h"
+
+auto nWidth = 900;
+auto nHeight = 800;
 SDL_Window* window = nullptr;
 std::shared_ptr<Camera> camera = nullptr;
 std::unique_ptr<CameraControl> cameraControl = nullptr;
@@ -51,31 +53,14 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	// 创建geometry
-	auto boxGeometry = Geometry::CreateBox(1.0f);
-	auto spGeometry = Geometry::CreateSphere(1.0f);
-
-	// 创建一个material并且配置参数
-	auto material = new PhongMaterial();
-	material->m_shiness = 16.0f;
-	material->m_diffuse = std::make_unique<Texture>("assets/textures/box.png", 0);
-	material->m_specularMask = std::make_unique<Texture>("assets/textures/sp_mask.png", 1);
-
-	// 生成mesh
-	auto mesh = new Mesh(boxGeometry, material);
-	auto spMesh01 = new Mesh(spGeometry, material);
-	auto spMesh02 = new Mesh(spGeometry, material);
-	spMesh01->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
-	spMesh02->SetPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
-
-	// 创建父子关系
-	mesh->AddChild(spMesh01);
-	mesh->AddChild(spMesh02);
-
-	glcontext->m_scene->AddChild(mesh);
+	//auto testModel = AssimpLoader::Load("assets/fbx/Fist Fight B.fbx");
+	//testModel->SetScale(glm::vec3(0.05f));
+	auto testModel = AssimpLoader::Load("assets/fbx/bag/backpack.obj");
+	glcontext->m_scene->AddChild(testModel);
 
 	glcontext->m_dirLight = std::make_unique<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
+	glcontext->m_dirLight->m_specularIntensity = 1.0f;
 
 	glcontext->m_ambLight = std::make_unique<AmbientLight>();
 	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
@@ -89,10 +74,11 @@ void PrepareCamera()
 	// camera.reset(new OrthographicCamera(-size, size, size, -size, size, -size));
 	camera.reset(new PerspectiveCamera(60.f, (float)(nWidth / nHeight), 0.1f, 1000.0f));
 
-	cameraControl.reset(new TrackBallCameraControl());
-	// cameraControl.reset(new GameCameraControl);
+	// cameraControl.reset(new TrackBallCameraControl());
+	cameraControl.reset(new GameCameraControl);
 	cameraControl->SetCamera(camera.get());
 	cameraControl->SetSensitivity(0.4f);
+	((GameCameraControl*)cameraControl.get())->SetSpeed(0.06f);
 }
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])

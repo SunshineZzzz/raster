@@ -19,7 +19,6 @@ glm::vec3 Object::GetPosition()
 	return m_position;
 }
 
-
 void Object::RotateX(float angle) 
 {
 	m_angleX += angle;
@@ -42,6 +41,13 @@ void Object::SetScale(glm::vec3 scale)
 
 glm::mat4 Object::GetModelMatrix() 
 {
+	//首先获取父亲的变换矩阵
+	glm::mat4 parentMatrix{ 1.0f };
+	if (m_parent != nullptr) 
+	{
+		parentMatrix = m_parent->GetModelMatrix();
+	}
+
 	// unity标准，缩放，旋转，平移
 	glm::mat4 transform{ 1.0f };
 
@@ -50,7 +56,7 @@ glm::mat4 Object::GetModelMatrix()
 	transform = glm::rotate(transform, glm::radians(m_angleY), glm::vec3(0.0f, 1.0f, 0.0f));
 	transform = glm::rotate(transform, glm::radians(m_angleZ), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	transform = glm::translate(glm::mat4(1.0f), m_position) * transform;
+	transform = parentMatrix * glm::translate(glm::mat4(1.0f), m_position) * transform;
 
 	return transform;
 }

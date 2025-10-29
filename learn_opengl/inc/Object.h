@@ -24,6 +24,18 @@ public:
 	void RotateX(float angle);
 	void RotateY(float angle);
 	void RotateZ(float angle);
+	void SetAngleX(float angle)
+	{
+		m_angleX = angle;
+	}
+	void SetAngleY(float angle)
+	{
+		m_angleY = angle;
+	}
+	void SetAngleZ(float angle)
+	{
+		m_angleZ = angle;
+	}
 	// 缩放
 	void SetScale(glm::vec3 scale);
 	// 获取模型矩阵
@@ -49,9 +61,9 @@ protected:
 	float m_angleZ{ 0.0f };
 	// 缩放
 	glm::vec3 m_scale{ 1.0f };
-	// 父子关系
+	// 父子
 	std::vector<Object*> m_children;
-	Object* m_parent;
+	Object* m_parent{nullptr};
 	// 类型记录
 	ObjectType m_type;
 };

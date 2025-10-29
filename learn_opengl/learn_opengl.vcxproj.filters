@@ -55,6 +55,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{499477ed-07fe-49f4-a7c9-ae1a97a46e93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\fbx">
+      <UniqueIdentifier>{e92942cf-d3bb-4b0a-b051-2ce32be1c2b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -123,6 +126,12 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tools.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssimpLoader.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1348,6 +1357,12 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="inc\Scene.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Tools.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AssimpLoader.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

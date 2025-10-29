@@ -92,6 +92,7 @@
 - [点光源](#点光源)
 - [聚光灯](#聚光灯)
 - [场景](#场景)
+- [Assimp](#assimp)
 
 ### OpenGL 
 
@@ -1558,3 +1559,13 @@ FPS/TPS游戏、观察者视角等，保证视平线与地平线水平，符合�
 ![alt text](img/OpenGL_Scene2.png)
 
 ![alt text](img/OpenGL_Scene3.png)
+
+### Assimp
+
+Assimp(AssimpImporter)，是一个开源的3D模型导入库，支持多种格式的3D模型文件导入，如OBJ、FBX、DAE等。Assimp可以将这些模型文件导入到OpenGL中进行渲染。
+
+![alt text](img/OpenGL_Assimp1.png)
+
+![alt text](img/OpenGL_Assimp2.png)
+
+![alt text](img/OpenGL_Assimp3.png)

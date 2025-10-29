@@ -3,11 +3,18 @@
 #include <glad/glad.h>
 
 #include <array>
+#include <vector>
 
 class Geometry
 {
 public:
 	Geometry();
+	Geometry(
+		const std::vector<float>& positions,
+		const std::vector<float>& normals,
+		const std::vector<float>& uvs,
+		const std::vector<unsigned int>& indices
+	);
 	~Geometry();
 
 	// 创建立方体，立方体中心在原点 

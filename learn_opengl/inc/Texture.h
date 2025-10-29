@@ -4,11 +4,23 @@
 #include <SDL3/SDL.h>
 
 #include <string>
+#include <map>
 
 class Texture 
 {
 public:
+	static std::map<std::string, Texture*> sTextureCache;
+	static Texture* CreateTexture(const std::string& path, unsigned int unit);
+	static Texture* CreateTextureFromMemory(
+		const std::string& path,
+		unsigned int unit,
+		unsigned char* dataIn,
+		uint32_t widthIn,
+		uint32_t heightIn
+	);
+
 	Texture(const std::string& path, unsigned int unit);
+	Texture(unsigned int unit, unsigned char* dataIn, uint32_t widthIn, uint32_t heightIn);
 	~Texture();
 
 	// 纹理单元与纹理对象绑定
@@ -21,6 +33,14 @@ public:
 	{
 		return m_unit;
 	}
+	// 设置纹理单元号
+	void SetUnit(unsigned int unit) 
+	{ 
+		m_unit = unit; 
+	}
+	// 获取纹理宽高
+	int getWidth()const { return m_width; }
+	int getHeight()const { return m_height; }
 
 private:
 	// 纹理对象
