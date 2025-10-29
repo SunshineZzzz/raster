@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <glad/glad.h>
+
 // 材质类型
 enum class MaterialType 
 {
@@ -17,4 +19,8 @@ public:
 
 public:
 	MaterialType m_type;
+	// 深度检测相关
+	bool m_depthTest{ true };
+	GLenum m_depthFunc{ GL_LESS };
+	bool m_depthWrite{ true };
 };

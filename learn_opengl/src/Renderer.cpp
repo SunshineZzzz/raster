@@ -22,10 +22,6 @@ void Renderer::Render(
 	std::shared_ptr<AmbientLight> ambLight
 )
 {
-	// 设置当前帧绘制的时候，opengl的必要状态机参数
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -61,6 +57,26 @@ void Renderer::RenderObject(
 		auto& geometry = mesh->m_geometry;
 		auto& material = mesh->m_material;
 
+		// 设置渲染状态
+		if (material->m_depthTest) 
+		{
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(material->m_depthFunc);
+		}
+		else 
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+
+		if (material->m_depthWrite) 
+		{
+			glDepthMask(GL_TRUE);
+		}
+		else 
+		{
+			glDepthMask(GL_FALSE);
+		}
+
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
 
@@ -80,8 +96,8 @@ void Renderer::RenderObject(
 			phongMat->m_diffuse->Bind();
 
 			// 高光蒙版的帧更新
-			shader->SetUniformInt("specularMaskSampler", phongMat->m_specularMask->GetUnit());
-			phongMat->m_specularMask->Bind();
+			//shader->SetUniformInt("specularMaskSampler", phongMat->m_specularMask->GetUnit());
+			//phongMat->m_specularMask->Bind();
 
 			// mvp
 			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
@@ -128,7 +144,15 @@ void Renderer::RenderObject(
 	// 遍历object的子节点，对每个子节点都需要调用renderObject
 	auto children = object->GetChildren();
 	for (int i = 0; i < children.size(); i++) 
-	{
+	{	
+		//if (i == 1) 
+		//{
+		//	glDepthMask(GL_FALSE);
+		//}
+		//else 
+		//{
+		//	glDepthMask(GL_TRUE);
+		//}
 		RenderObject(children[i], camera, dirLight, ambLight);
 	}
 }

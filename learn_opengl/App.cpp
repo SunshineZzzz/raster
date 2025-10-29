@@ -53,10 +53,28 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	//auto testModel = AssimpLoader::Load("assets/fbx/Fist Fight B.fbx");
-	//testModel->SetScale(glm::vec3(0.05f));
-	auto testModel = AssimpLoader::Load("assets/fbx/bag/backpack.obj");
-	glcontext->m_scene->AddChild(testModel);
+	auto geometry = Geometry::CreatePlane(5.0f, 5.0f);
+	auto materialA = new PhongMaterial();
+	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
+	auto meshA = new Mesh(geometry, materialA);
+
+	glcontext->m_scene->AddChild(meshA);
+
+	auto materialB = new PhongMaterial();
+	materialB->m_diffuse = new Texture("assets/textures/box.png", 0);
+	// 禁止深度写入
+	materialB->m_depthWrite = false;
+	auto meshB = new Mesh(geometry, materialB);
+	meshB->SetPosition(glm::vec3(2.0f, 0.5f, -1.0f));
+
+	glcontext->m_scene->AddChild(meshB);
+
+	auto materialC = new PhongMaterial();
+	materialC->m_diffuse = new Texture("assets/textures/earth.png", 0);
+	auto meshC = new Mesh(geometry, materialC);
+	meshC->SetPosition(glm::vec3(4.0f, 1.0f, -2.0f));
+
+	glcontext->m_scene->AddChild(meshC);
 
 	glcontext->m_dirLight = std::make_unique<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
