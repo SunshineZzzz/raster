@@ -33,8 +33,13 @@ void Renderer::Render(
 	glDisable(GL_POLYGON_OFFSET_FILL);
 	glDisable(GL_POLYGON_OFFSET_LINE);
 
+	// 开启测试、设置基本写入状态，打开模板测试写入
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glStencilMask(0xFF);
+
 	// 清理画布 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// 将scene当作根节点开始递归渲染
 	RenderObject(scene, camera, dirLight, ambLight);
@@ -102,6 +107,7 @@ void Renderer::RenderObject(
 			glDisable(GL_POLYGON_OFFSET_FILL);
 			glDisable(GL_POLYGON_OFFSET_LINE);
 		}
+
 
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
@@ -182,14 +188,18 @@ void Renderer::RenderObject(
 	auto children = object->GetChildren();
 	for (int i = 0; i < children.size(); i++) 
 	{	
-		//if (i == 1) 
-		//{
-		//	glDepthMask(GL_FALSE);
-		//}
-		//else 
-		//{
-		//	glDepthMask(GL_TRUE);
-		//}
+		if (i == 0) 
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			glStencilMask(0xFF);
+		}
+		else if (i == 1) 
+		{
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			// glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			glStencilMask(0x00);
+		}
 		RenderObject(children[i], camera, dirLight, ambLight);
 	}
 }

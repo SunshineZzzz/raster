@@ -39,6 +39,8 @@
 	- [像素所有权测试](#像素所有权测试)
 	- [剪裁测试](#剪裁测试)
 	- [模板测试](#模板测试)
+	  - [模板缓存](#模板缓存)
+	  - [OpenGL开启模板测试](#opengl开启模板测试)
 	- [深度检测](#深度检测)
 		- [深度缓存](#深度缓存)
 		- [OpenGL开启深度测试](#opengl开启深度测试)
@@ -751,6 +753,42 @@ $$
 一个模板缓冲中，（通常）每个模板值(Stencil Value)是8位的。所以每个像素/片段一共能有256种不同的模板值。我们可以将这些模板值设置为我们想要的值，然后当某一个片段有某一个模板值的时候，我们就可以选择丢弃或是保留这个片段了。
 
 ![alt text](img/OpenGL_StencilTest1.png)
+
+![alt text](img/OpenGL_StencilTest2.png)
+
+![alt text](img/OpenGL_StencilTest3.png)
+
+![alt text](img/OpenGL_StencilTest4.png)
+
+###### opengl开启模板测试
+
+如果mask是1
+
+![alt text](img/OpenGL_EnableStencilTest1.png)
+
+如果mask不是1
+
+![alt text](img/OpenGL_EnableStencilTest2.png)
+
+**只有模板才有 glStencilOp 这样的操作函数？**
+
+**深度缓冲区只需要知道“是更近还是更远”并进行简单的替换，而模板缓冲区需要知道“如何根据不同的测试结果改变标记状态”，所以只有模板才有 glStencilOp 这样的操作函数。**
+
+我的理解是：
+
+glEnable(GL_STENCIL_TEST) -  开启模板测试
+
+glStencilFunc - 测试条件
+
+glStencilOp - 如何根据不同的测试结果改变标记状态
+
+glStencilMask - 开启模板测试写入规则
+
+![alt text](img/OpenGL_EnableStencilTest3.png)
+
+![alt text](img/OpenGL_EnableStencilTest4.png)
+
+![alt text](img/OpenGL_EnableStencilTest5.png)
 
 ##### 深度检测
 

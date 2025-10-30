@@ -54,23 +54,22 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto geometry = Geometry::CreatePlane(700.0f, 700.0f);
+	// ---------A方块的实体与边界------------
+	//  创建一个普通方块
+	auto geometry = Geometry::CreateBox(4);
 	auto materialA = new PhongMaterial();
 	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
 	auto meshA = new Mesh(geometry, materialA);
-	meshA->RotateX(-88.0f);
 
 	glcontext->m_scene->AddChild(meshA);
 
-	auto materialB = new PhongMaterial();
-	materialB->m_diffuse = new Texture("assets/textures/box.png", 1);
-	materialB->m_polygonOffset = true;
-	materialB->m_factor = 1.0;
-	materialB->m_unit = 1.0;
-	auto meshB = new Mesh(geometry, materialB);
-	meshB->SetPosition(glm::vec3(0.0f, 0.0f, -0.5f));
-	meshB->RotateX(-88.0f);
-	glcontext->m_scene->AddChild(meshB);
+	// 创建一个勾边方块
+	auto materialABound = new WhiteMaterial();
+	auto meshABound = new Mesh(geometry, materialABound);
+	meshABound->SetPosition(meshA->GetPosition());
+	meshABound->SetScale(glm::vec3(1.2f));
+
+	glcontext->m_scene->AddChild(meshABound);
 	
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
