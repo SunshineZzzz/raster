@@ -42,7 +42,8 @@
 	- [深度检测](#深度检测)
 		- [深度缓存](#深度缓存)
 		- [OpenGL开启深度测试](#opengl开启深度测试)
-		- [深度补充](#深度补充)
+		- [深度数学讨论](#深度数学讨论)
+		- [Z-Fighting](#z-fighting)
 	- [混合](#混合)
 	- [抖动](#抖动)
 	- [逻辑操作](#逻辑操作)
@@ -818,7 +819,13 @@ GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
 ![alt text](img/OpenGL_MathDepthTest4.png)
 
+###### Z-Fighting
 
+Z-Fighting是指在渲染过程中，由于浮点数精度问题，导致物体之间的深度值非常接近，从而导致渲染结果出现错误的情况。
+
+![alt text](img/OpenGL_ZFighting1.png)
+
+![alt text](img/OpenGL_ZFighting2.png)
 
 ##### 混合
 

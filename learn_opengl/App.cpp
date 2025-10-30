@@ -55,19 +55,19 @@ void Prepare()
 	glcontext->m_scene = std::make_shared<Scene>();
 
 	auto geometry = Geometry::CreatePlane(5.0f, 5.0f);
-	auto material = new DepthMaterial();
-	auto meshA = new Mesh(geometry, material);
+	auto materialA = new PhongMaterial();
+	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
+	auto meshA = new Mesh(geometry, materialA);
 
 	glcontext->m_scene->AddChild(meshA);
 
-	auto meshB = new Mesh(geometry, material);
-	meshB->SetPosition(glm::vec3(2.0f, 0.5f, -1.0f));
+	auto materialB = new PhongMaterial();
+	materialB->m_diffuse = new Texture("assets/textures/box.png", 1);	
+	auto meshB = new Mesh(geometry, materialB);
+	meshB->SetPosition(glm::vec3(2.0f, 0.5f, -0.0000001f));
+
 	glcontext->m_scene->AddChild(meshB);
-
-	auto meshC = new Mesh(geometry, material);
-	meshC->SetPosition(glm::vec3(4.0f, 1.0f, -2.0f));
-	glcontext->m_scene->AddChild(meshC);
-
+	
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
 	glcontext->m_dirLight->m_specularIntensity = 0.1f;
