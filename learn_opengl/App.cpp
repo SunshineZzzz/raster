@@ -54,89 +54,21 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	// ---------A方块的实体与边界------------
-	// 创建一个普通方块
-	auto geometry = Geometry::CreateBox(3);
-	auto materialA = new PhongMaterial();
-	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
-	materialA->m_stencilTest = true;
-	// 模板测试后的结果写入
-	materialA->m_sFail = GL_KEEP;
-	materialA->m_zFail = GL_KEEP;
-	materialA->m_zPass = GL_REPLACE;
-	// 控制写入
-	materialA->m_stencilMask = 0xFF;
-	// 模板测试规则
-	materialA->m_stencilFunc = GL_ALWAYS;
-	materialA->m_stencilRef = 1;
-	materialA->m_stencilFuncMask = 0xFF;
+	
+	auto boxGeo = Geometry::CreateBox(4);
+	auto boxMat = new PhongMaterial();
+	boxMat->m_diffuse = new Texture("assets/textures/box.png", 0);
 
-	auto meshA = new Mesh(geometry, materialA);
+	auto boxMesh = new Mesh(boxGeo, boxMat);
+	glcontext->m_scene->AddChild(boxMesh);
 
-	glcontext->m_scene->AddChild(meshA);
+	auto planeGeo = Geometry::CreatePlane(6.0, 6.0);
+	auto planeMat = new PhongMaterial();
+	planeMat->m_diffuse = new Texture("assets/textures/window.png", 0);
 
-	// 创建一个勾边方块
-	auto materialABound = new WhiteMaterial();
-	materialABound->m_depthTest = false;
-	materialABound->m_stencilTest = true;
-	// 模板测试后的结果写入
-	materialABound->m_sFail = GL_KEEP;
-	materialABound->m_zFail = GL_KEEP;
-	materialABound->m_zPass = GL_KEEP;
-	// 控制写入
-	materialABound->m_stencilMask = 0x00;
-	// 模板测试规则
-	materialABound->m_stencilFunc = GL_NOTEQUAL;
-	materialABound->m_stencilRef = 1;
-	materialABound->m_stencilFuncMask = 0xFF;
-
-	auto meshABound = new Mesh(geometry, materialABound);
-	meshABound->SetPosition(meshA->GetPosition());
-	meshABound->SetScale(glm::vec3(1.2f));
-	glcontext->m_scene->AddChild(meshABound);
-
-	// ---------B 方块的实体与边界------------
-	// 创建一个普通方块
-	auto geometryB = Geometry::CreateBox(3);
-	auto materialB = new PhongMaterial();
-	materialB->m_diffuse = new Texture("assets/textures/wall.jpg", 0);
-	materialB->m_stencilTest = true;
-	// 模板测试后的结果写入
-	materialB->m_sFail = GL_KEEP;
-	materialB->m_zFail = GL_KEEP;
-	materialB->m_zPass = GL_REPLACE;
-	// 控制写入
-	materialB->m_stencilMask = 0xFF;
-	// 模板测试规则
-	materialB->m_stencilFunc = GL_ALWAYS;
-	materialB->m_stencilRef = 1;
-	materialB->m_stencilFuncMask = 0xFF;
-
-	auto meshB = new Mesh(geometryB, materialB);
-	meshB->SetPosition(glm::vec3(3.0f, 1.0f, 1.0f));
-
-	glcontext->m_scene->AddChild(meshB);
-
-	// 创建一个勾边方块
-	auto materialBBound = new WhiteMaterial();
-	materialBBound->m_depthTest = false;
-	materialBBound->m_stencilTest = true;
-	// 模板测试后的结果写入
-	materialBBound->m_sFail = GL_KEEP;
-	materialBBound->m_zFail = GL_KEEP;
-	materialBBound->m_zPass = GL_KEEP;
-	// 控制写入
-	materialBBound->m_stencilMask = 0x00;
-	// 模板测试规则
-	materialBBound->m_stencilFunc = GL_NOTEQUAL;
-	materialBBound->m_stencilRef = 1;
-	materialBBound->m_stencilFuncMask = 0xFF;
-
-	auto meshBBound = new Mesh(geometryB, materialBBound);
-	meshBBound->SetPosition(meshB->GetPosition());
-	meshBBound->SetScale(glm::vec3(1.2f));
-	glcontext->m_scene->AddChild(meshBBound);
-
+	auto planeMesh = new Mesh(planeGeo, planeMat);
+	planeMesh->SetPosition(glm::vec3(0.0, 0.0, 4.0));
+	glcontext->m_scene->AddChild(planeMesh);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
@@ -158,7 +90,7 @@ void PrepareCamera()
 	cameraControl.reset(new GameCameraControl);
 	cameraControl->SetCamera(camera.get());
 	cameraControl->SetSensitivity(0.4f);
-	((GameCameraControl*)cameraControl.get())->SetSpeed(1.0f);
+	((GameCameraControl*)cameraControl.get())->SetSpeed(0.06f);
 }
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])

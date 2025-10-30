@@ -1834,6 +1834,9 @@
     <Image Include="assets\textures\sp_mask.png">
       <Filter>assets\textures</Filter>
     </Image>
+    <Image Include="assets\textures\window.png">
+      <Filter>assets\textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\3rd\glm\CMakeLists.txt">

@@ -47,6 +47,7 @@
 		- [深度数学讨论](#深度数学讨论)
 		- [Z-Fighting](#z-fighting)
 	- [混合](#混合)
+		- [OpenGL开启混合](#opengl开启混合)
 	- [抖动](#抖动)
 	- [逻辑操作](#逻辑操作)
 - [GPU工作流程解析](#gpu工作流程解析)
@@ -840,6 +841,12 @@ GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
 ![alt text](img/OpenGL_EnableDepthTest1.png)
 
+![alt text](img/OpenGL_EnableDepthTest2.png)
+
+![alt text](img/OpenGL_EnableDepthTest3.png)
+
+![alt text](img/OpenGL_EnableDepthTest4.png)
+
 ###### 深度数学讨论
 
 **下图的核心就是：正交投影中，深度值和物体与摄像机的距离是线性的。而透视投影中，深度值得到过程和物体与摄像机的距离非线性，我们需要一个公式将深度值转换为真实距离。**	
@@ -971,6 +978,12 @@ $$
 结果就是重叠方形的片段包含了一个60%绿色，40%红色的一种脏兮兮的颜色：
 
 ![alt text](img/OpenGL_Blending3.png)
+
+![alt text](img/OpenGL_Blending4.png)
+
+###### opengl开启混合
+
+![alt text](img/OpenGL_EnableBlending.png)
 
 ##### 抖动
 

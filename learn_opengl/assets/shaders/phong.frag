@@ -165,6 +165,7 @@ void main()
 	// 计算光照的通用数据
 	// 对象颜色(插值)
 	vec3 objectColor  = texture(sampler, uv).xyz;
+	float alpha =  texture(sampler, uv).a;
 	// 对象法线(插值)
 	vec3 normalN = normalize(normal);
 	// 视线方向
@@ -183,5 +184,5 @@ void main()
 
 	vec3 finalColor = result + ambientColor;
  
-	FragColor = vec4(finalColor, 1.0);
+	FragColor = vec4(finalColor, alpha);
 }
