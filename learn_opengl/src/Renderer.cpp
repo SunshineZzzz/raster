@@ -125,6 +125,8 @@ void Renderer::RenderObject(
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);
 			// 相机信息更新
 			shader->SetUniformVector3("cameraPosition", camera->m_position);
+			shader->SetUniformFloat("near", camera->m_near);
+			shader->SetUniformFloat("far", camera->m_far);
 		}
 		break;
 		case MaterialType::WhiteMaterial: 

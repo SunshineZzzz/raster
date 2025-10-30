@@ -2,7 +2,7 @@
 
 #include "camera.h"
 
-class PerspectiveCamera :public Camera 
+class PerspectiveCamera : public Camera 
 {
 public:
 	PerspectiveCamera(float fovy, float aspect, float near, float far);
@@ -19,8 +19,4 @@ private:
 	float m_fovy = 0.0f;
 	// 近平面横纵比
 	float m_aspect = 0.0f;
-	// 近平面
-	float m_near = 0.0f;
-	// 远平面
-	float m_far = 0.0f;
 };

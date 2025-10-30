@@ -60,6 +60,10 @@ uniform DirectionalLight directionalLight;
 // 宏定义
 #define POINT_LIGHT_NUM 4
 uniform PointLight pointLights[POINT_LIGHT_NUM];
+// 近平面距离
+uniform float near;
+// 远平面距离
+uniform float far;
 // 计算漫反射光照
 vec3 CalculateDiffuse(vec3 lightColor, vec3 objectColor, vec3 lightDir, vec3 normal)
 {
@@ -181,9 +185,12 @@ void main()
 	// 环境光计算
 	vec3 ambientColor = objectColor * ambientColor;
 
-	vec3 finalColor = result + ambientColor;
+	// vec3 finalColor = result + ambientColor;
 
-	finalColor = vec3(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z);
+	float Zndc = gl_FragCoord.z * 2.0 - 1.0;
+	float linearDepth = 2.0 * near / (far + near - Zndc *(far - near));
 
+	vec3 finalColor = vec3(linearDepth);
+ 
 	FragColor = vec4(finalColor, 1.0);
 }

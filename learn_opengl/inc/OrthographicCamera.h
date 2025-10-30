@@ -2,7 +2,7 @@
 
 #include "camera.h"
 
-class OrthographicCamera :public Camera 
+class OrthographicCamera : public Camera 
 {
 public:
 	OrthographicCamera(float l, float r, float t, float b, float n, float f);
@@ -23,10 +23,6 @@ private:
 	float m_top = 0.0f;
 	// 下边界
 	float m_bottom = 0.0f;
-	// 近平面
-	float m_near = 0.0f;
-	// 远平面
-	float m_far = 0.0f;
 	// 摄像机缩放比例
 	float m_scale{ 0.0f };
 };

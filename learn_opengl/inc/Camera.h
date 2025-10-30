@@ -23,4 +23,9 @@ public:
 	glm::vec3 m_up{ 0.0f, 1.0f, 0.0f };
 	// 摄像机本地坐标系X轴朝向
 	glm::vec3 m_right{ 1.0f, 0.0f, 0.0f };
+	// 摄像机在原点，看向负Z轴方向，正数表示距离，实际是负数
+	// 近平面
+	float m_near = 0.0f;
+	// 远平面
+	float m_far = 0.0f;
 };
