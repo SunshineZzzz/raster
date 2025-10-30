@@ -54,18 +54,19 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto geometry = Geometry::CreatePlane(5.0f, 5.0f);
+	auto geometry = Geometry::CreatePlane(700.0f, 700.0f);
 	auto materialA = new PhongMaterial();
 	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
 	auto meshA = new Mesh(geometry, materialA);
+	meshA->RotateX(-88.0f);
 
 	glcontext->m_scene->AddChild(meshA);
 
 	auto materialB = new PhongMaterial();
 	materialB->m_diffuse = new Texture("assets/textures/box.png", 1);	
 	auto meshB = new Mesh(geometry, materialB);
-	meshB->SetPosition(glm::vec3(2.0f, 0.5f, -0.0000001f));
-
+	meshB->SetPosition(glm::vec3(0.0f, 0.0f, -0.5f));
+	meshB->RotateX(-88.0f);
 	glcontext->m_scene->AddChild(meshB);
 	
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
@@ -88,7 +89,7 @@ void PrepareCamera()
 	cameraControl.reset(new GameCameraControl);
 	cameraControl->SetCamera(camera.get());
 	cameraControl->SetSensitivity(0.4f);
-	((GameCameraControl*)cameraControl.get())->SetSpeed(0.06f);
+	((GameCameraControl*)cameraControl.get())->SetSpeed(1.0f);
 }
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
