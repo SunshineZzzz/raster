@@ -183,5 +183,7 @@ void main()
 
 	vec3 finalColor = result + ambientColor;
 
+	finalColor = vec3(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z);
+
 	FragColor = vec4(finalColor, 1.0);
 }
