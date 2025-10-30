@@ -197,7 +197,19 @@ void Renderer::RenderObject(
 		else if (i == 1) 
 		{
 			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-			// glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+			glStencilMask(0x00);
+		}
+		else if (i == 2) 
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			glStencilMask(0xFF);
+		}
+		else if (i == 3)
+		{
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 			glStencilMask(0x00);
 		}
 		RenderObject(children[i], camera, dirLight, ambLight);

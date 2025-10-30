@@ -56,21 +56,40 @@ void Prepare()
 
 	// ---------A方块的实体与边界------------
 	//  创建一个普通方块
-	auto geometry = Geometry::CreateBox(4);
+	auto geometryA = Geometry::CreateBox(4);
 	auto materialA = new PhongMaterial();
 	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
-	auto meshA = new Mesh(geometry, materialA);
+	auto meshA = new Mesh(geometryA, materialA);
 
 	glcontext->m_scene->AddChild(meshA);
 
 	// 创建一个勾边方块
 	auto materialABound = new WhiteMaterial();
-	auto meshABound = new Mesh(geometry, materialABound);
+	materialABound->m_depthTest = false;
+	auto meshABound = new Mesh(geometryA, materialABound);
 	meshABound->SetPosition(meshA->GetPosition());
 	meshABound->SetScale(glm::vec3(1.2f));
 
 	glcontext->m_scene->AddChild(meshABound);
 	
+	// ---------B 方块的实体与边界------------
+	// 创建一个普通方块
+	auto geometryB = Geometry::CreateBox(4);
+	auto materialB = new PhongMaterial();
+	materialB->m_diffuse = new Texture("assets/textures/wall.jpg", 1);
+	auto meshB = new Mesh(geometryB, materialB);
+	meshB->SetPosition(glm::vec3(3.0f, 1.0f, 1.0f));
+
+	glcontext->m_scene->AddChild(meshB);
+
+	// 创建一个勾边方块
+	auto materialBBound = new WhiteMaterial();
+	materialBBound->m_depthTest = false;
+	auto meshBBound = new Mesh(geometryB, materialBBound);
+	meshBBound->SetPosition(meshB->GetPosition());
+	meshBBound->SetScale(glm::vec3(1.2f));
+	glcontext->m_scene->AddChild(meshBBound);
+
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
 	glcontext->m_dirLight->m_specularIntensity = 0.1f;
