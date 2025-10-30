@@ -839,6 +839,28 @@ Z-Fighting是指在渲染过程中，由于浮点数精度问题，导致物体�
 
 ![alt text](img/OpenGL_PolygonOffset4.png)
 
+![alt text](img/OpenGL_PolygonOffset5.png)
+
+![alt text](img/OpenGL_PolygonOffset6.png)
+
+这个时候就需要**偏导数**
+
+![alt text](img/OpenGL_PolygonOffset7.png)
+
+透视投影中，如果一个面片和摄像机平行，整个片区中片元与片元深度值差不多(取决于插值算法把，只能说很差不多，应该完全相同把)。
+
+如果一个面片和摄像机不平行的话，比如放倒了：
+
+1. 前面片区中，片元与片元距离和深度的偏导数较小
+
+2. 后面片区中，片元与片元距离和深度的偏导数较大
+
+这就是**深度斜率**
+
+![alt text](img/OpenGL_PolygonOffset8.png)
+
+![alt text](img/OpenGL_PolygonOffset9.png)
+
 ##### 混合
 
 OpenGL中，混合(Blending)通常是实现物体透明度(Transparency)的一种技术。透明就是说一个物体（或者其中的一部分）不是纯色(Solid Color)的，它的颜色是物体本身的颜色和它背后其它物体的颜色的不同强度结合。一个有色玻璃窗是一个透明的物体，玻璃有它自己的颜色，但它最终的颜色还包含了玻璃之后所有物体的颜色。这也是混合这一名字的出处，我们混合(Blend)（不同物体的）多种颜色为一种颜色。所以透明度能让我们看穿物体。
