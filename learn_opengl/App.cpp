@@ -27,6 +27,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "inc/AssimpLoader.h"
+#include "inc/DepthMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -54,33 +55,24 @@ void Prepare()
 	glcontext->m_scene = std::make_shared<Scene>();
 
 	auto geometry = Geometry::CreatePlane(5.0f, 5.0f);
-	auto materialA = new PhongMaterial();
-	materialA->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
-	auto meshA = new Mesh(geometry, materialA);
+	auto material = new DepthMaterial();
+	auto meshA = new Mesh(geometry, material);
 
 	glcontext->m_scene->AddChild(meshA);
 
-	auto materialB = new PhongMaterial();
-	materialB->m_diffuse = new Texture("assets/textures/box.png", 0);
-	// 禁止深度写入
-	materialB->m_depthWrite = false;
-	auto meshB = new Mesh(geometry, materialB);
+	auto meshB = new Mesh(geometry, material);
 	meshB->SetPosition(glm::vec3(2.0f, 0.5f, -1.0f));
-
 	glcontext->m_scene->AddChild(meshB);
 
-	auto materialC = new PhongMaterial();
-	materialC->m_diffuse = new Texture("assets/textures/earth.png", 0);
-	auto meshC = new Mesh(geometry, materialC);
+	auto meshC = new Mesh(geometry, material);
 	meshC->SetPosition(glm::vec3(4.0f, 1.0f, -2.0f));
-
 	glcontext->m_scene->AddChild(meshC);
 
-	glcontext->m_dirLight = std::make_unique<DirectionalLight>();
+	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
-	glcontext->m_dirLight->m_specularIntensity = 1.0f;
+	glcontext->m_dirLight->m_specularIntensity = 0.1f;
 
-	glcontext->m_ambLight = std::make_unique<AmbientLight>();
+	glcontext->m_ambLight = std::make_shared<AmbientLight>();
 	glcontext->m_ambLight->m_color = glm::vec3(0.1f);
 }
 

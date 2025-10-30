@@ -46,4 +46,6 @@ private:
 	std::shared_ptr<Shader> m_phongShader{ nullptr };
 	// 点光源材质对应的shader
 	std::shared_ptr<Shader> m_whiteShader{ nullptr };
+	// 深度材质对应的shader
+	std::shared_ptr<Shader> m_depthShader{ nullptr };
 };

@@ -7,8 +7,10 @@ enum class MaterialType
 {
 	// 冯氏光照模型，漫反射+镜面反射+环境光
 	PhongMaterial,
-	// 点光源
+	// 点光源材质
 	WhiteMaterial,
+	// 深度材质
+	DepthMaterial
 };
 
 class Material 

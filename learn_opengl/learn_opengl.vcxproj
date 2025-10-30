@@ -543,6 +543,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="inc\AssimpLoader.h" />
+    <ClInclude Include="inc\DepthMaterial.h" />
     <ClInclude Include="inc\DirectionalLight.h" />
     <ClInclude Include="inc\Camera.h" />
     <ClInclude Include="inc\CameraControl.h" />
@@ -707,6 +708,8 @@
     <None Include="..\3rd\glm\gtx\vector_angle.inl" />
     <None Include="..\3rd\glm\gtx\vector_query.inl" />
     <None Include="..\3rd\glm\gtx\wrap.inl" />
+    <None Include="assets\shaders\depth.frag" />
+    <None Include="assets\shaders\depth.vert" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\phong.vert" />
     <None Include="assets\shaders\white.frag" />

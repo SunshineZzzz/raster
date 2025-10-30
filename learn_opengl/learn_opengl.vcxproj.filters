@@ -1365,6 +1365,9 @@
     <ClInclude Include="inc\AssimpLoader.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\DepthMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1791,6 +1794,12 @@
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="assets\shaders\white.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\depth.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\depth.vert">
       <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>

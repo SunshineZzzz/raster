@@ -11,6 +11,7 @@ Renderer::Renderer()
 {
 	m_phongShader = std::make_shared<Shader>("assets/shaders/phong.vert", "assets/shaders/phong.frag");
 	m_whiteShader = std::make_shared<Shader>("assets/shaders/white.vert", "assets/shaders/white.frag");
+	m_depthShader = std::make_shared<Shader>("assets/shaders/depth.vert", "assets/shaders/depth.frag");
 }
 
 Renderer::~Renderer() {}
@@ -43,6 +44,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_phongShader;
 	case MaterialType::WhiteMaterial:
 		return m_whiteShader;
+	case MaterialType::DepthMaterial:
+		return m_depthShader;
 	default:
 		assert(0);
 	}
@@ -125,8 +128,6 @@ void Renderer::RenderObject(
 			shader->SetUniformVector3("ambientColor", ambLight->m_color);
 			// 相机信息更新
 			shader->SetUniformVector3("cameraPosition", camera->m_position);
-			shader->SetUniformFloat("near", camera->m_near);
-			shader->SetUniformFloat("far", camera->m_far);
 		}
 		break;
 		case MaterialType::WhiteMaterial: 
@@ -135,6 +136,17 @@ void Renderer::RenderObject(
 			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
 			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
 			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+		}
+		break;
+		case MaterialType::DepthMaterial:
+		{
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+			// 相机信息更新
+			shader->SetUniformFloat("near", camera->m_near);
+			shader->SetUniformFloat("far", camera->m_far);
 		}
 		break;
 		default:
