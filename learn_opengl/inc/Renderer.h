@@ -36,6 +36,10 @@ public:
 	{
 		glClearColor(color.r, color.g, color.b, 1.0);
 	}
+	// 设置渲染状态
+	void SetDepthState(Material* material);
+	void SetPolygonOffsetState(Material* material);
+	void SetStencilState(Material* material);
 
 private:
 	// 根据Material类型不同，挑选不同的shader

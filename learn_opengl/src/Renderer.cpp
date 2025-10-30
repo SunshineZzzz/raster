@@ -76,38 +76,9 @@ void Renderer::RenderObject(
 		auto& material = mesh->m_material;
 
 		// 设置渲染状态
-		if (material->m_depthTest) 
-		{
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(material->m_depthFunc);
-		}
-		else 
-		{
-			glDisable(GL_DEPTH_TEST);
-		}
-
-		// 是否开启深度写入
-		if (material->m_depthWrite) 
-		{
-			glDepthMask(GL_TRUE);
-		}
-		else 
-		{
-			glDepthMask(GL_FALSE);
-		}
-
-		// 是否检测使用polygonOffset
-		if (material->m_polygonOffset) 
-		{
-			glEnable(material->m_polygonOffsetType);
-			glPolygonOffset(material->m_factor, material->m_unit);
-		}
-		else 
-		{
-			glDisable(GL_POLYGON_OFFSET_FILL);
-			glDisable(GL_POLYGON_OFFSET_LINE);
-		}
-
+		SetDepthState(material.get());
+		SetPolygonOffsetState(material.get());
+		SetStencilState(material.get());
 
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
@@ -188,30 +159,57 @@ void Renderer::RenderObject(
 	auto children = object->GetChildren();
 	for (int i = 0; i < children.size(); i++) 
 	{	
-		if (i == 0) 
-		{
-			glStencilFunc(GL_ALWAYS, 1, 0xFF);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			glStencilMask(0xFF);
-		}
-		else if (i == 1) 
-		{
-			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-			glStencilMask(0x00);
-		}
-		else if (i == 2) 
-		{
-			glStencilFunc(GL_ALWAYS, 1, 0xFF);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			glStencilMask(0xFF);
-		}
-		else if (i == 3)
-		{
-			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-			glStencilMask(0x00);
-		}
 		RenderObject(children[i], camera, dirLight, ambLight);
+	}
+}
+
+void Renderer::SetDepthState(Material* material)
+{
+	if (material->m_depthTest) 
+	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(material->m_depthFunc);
+	}
+	else 
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	if (material->m_depthWrite) 
+	{
+		glDepthMask(GL_TRUE);
+	}
+	else {
+		glDepthMask(GL_FALSE);
+	}
+}
+
+void Renderer::SetPolygonOffsetState(Material* material)
+{
+	if (material->m_polygonOffset) 
+	{
+		glEnable(material->m_polygonOffset);
+		glPolygonOffset(material->m_factor, material->m_unit);
+	}
+	else 
+	{
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glDisable(GL_POLYGON_OFFSET_LINE);
+	}
+}
+
+void Renderer::SetStencilState(Material* material)
+{
+	if (material->m_stencilTest) 
+	{
+		glEnable(GL_STENCIL_TEST);
+
+		glStencilOp(material->m_sFail, material->m_zFail, material->m_zPass);
+		glStencilMask(material->m_stencilMask);
+		glStencilFunc(material->m_stencilFunc, material->m_stencilRef, material->m_stencilFuncMask);
+	}
+	else 
+	{
+		glDisable(GL_STENCIL_TEST);
 	}
 }
