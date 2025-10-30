@@ -29,6 +29,10 @@ void Renderer::Render(
 	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
 
+	// 关闭多边形面/线偏移
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisable(GL_POLYGON_OFFSET_LINE);
+
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -77,6 +81,7 @@ void Renderer::RenderObject(
 			glDisable(GL_DEPTH_TEST);
 		}
 
+		// 是否开启深度写入
 		if (material->m_depthWrite) 
 		{
 			glDepthMask(GL_TRUE);
@@ -84,6 +89,18 @@ void Renderer::RenderObject(
 		else 
 		{
 			glDepthMask(GL_FALSE);
+		}
+
+		// 是否检测使用polygonOffset
+		if (material->m_polygonOffset) 
+		{
+			glEnable(material->m_polygonOffsetType);
+			glPolygonOffset(material->m_factor, material->m_unit);
+		}
+		else 
+		{
+			glDisable(GL_POLYGON_OFFSET_FILL);
+			glDisable(GL_POLYGON_OFFSET_LINE);
 		}
 
 		// 决定使用哪个Shader 

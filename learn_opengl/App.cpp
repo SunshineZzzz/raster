@@ -63,7 +63,10 @@ void Prepare()
 	glcontext->m_scene->AddChild(meshA);
 
 	auto materialB = new PhongMaterial();
-	materialB->m_diffuse = new Texture("assets/textures/box.png", 1);	
+	materialB->m_diffuse = new Texture("assets/textures/box.png", 1);
+	materialB->m_polygonOffset = true;
+	materialB->m_factor = 1.0;
+	materialB->m_unit = 1.0;
 	auto meshB = new Mesh(geometry, materialB);
 	meshB->SetPosition(glm::vec3(0.0f, 0.0f, -0.5f));
 	meshB->RotateX(-88.0f);
