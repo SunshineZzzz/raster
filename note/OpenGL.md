@@ -1014,6 +1014,10 @@ fs shader中全部给了0.3透明度
 
 ![alt text](img/OpenGL_Blending_closedepthwrite2.png)
 
+###### 透明度蒙版
+
+![alt text](img/OpenGL_Blending_mask1.png)
+
 ##### 抖动
 
 抖动(Dithering)，仅在颜色位数较低（如 16 位颜色）时，通过故意引入少量噪声来模拟更多的颜色。（修改颜色缓冲区）

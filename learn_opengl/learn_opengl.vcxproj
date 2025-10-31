@@ -555,6 +555,7 @@
     <ClInclude Include="inc\Light.h" />
     <ClInclude Include="inc\Material.h" />
     <ClInclude Include="inc\Mesh.h" />
+    <ClInclude Include="inc\OpacityMaskMaterial.h" />
     <ClInclude Include="inc\OrthographicCamera.h" />
     <ClInclude Include="inc\PerspectiveCamera.h" />
     <ClInclude Include="inc\Object.h" />
@@ -712,6 +713,8 @@
     <None Include="assets\shaders\depth.vert" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\phong.vert" />
+    <None Include="assets\shaders\phongOpacityMask.frag" />
+    <None Include="assets\shaders\phongOpacityMask.vert" />
     <None Include="assets\shaders\white.frag" />
     <None Include="assets\shaders\white.vert" />
   </ItemGroup>

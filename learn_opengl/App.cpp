@@ -28,6 +28,7 @@
 
 #include "inc/AssimpLoader.h"
 #include "inc/DepthMaterial.h"
+#include "inc/OpacityMaskMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -71,38 +72,15 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	// 背包模型
-	auto model = AssimpLoader::Load("assets/fbx/bag/backpack.obj");
-	SetModelBlend(model, true, 0.2f);
-	glcontext->m_scene->AddChild(model);
+	auto planeGeo = Geometry::CreatePlane(5.0, 5.0);
+	auto planeMat = new OpacityMaskMaterial();
+	planeMat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
+	planeMat->m_opacityMask = new Texture("assets/textures/grassMask.png", 1);
+	planeMat->m_blend = true;
 
-	// 实体平面
-	auto planeGeo = Geometry::CreatePlane(5.0f, 5.0f);
-	auto planeMat = new PhongMaterial();
-	planeMat->m_diffuse = new Texture("assets/textures/box.png", 0);
 	auto planeMesh = new Mesh(planeGeo, planeMat);
-	planeMesh->SetPosition(glm::vec3(0.0f, 0.0f, 6.0f));
+
 	glcontext->m_scene->AddChild(planeMesh);
-
-	// 半透明平面
-	auto planeGeoTrans = Geometry::CreatePlane(10.0, 10.0);
-	auto planeMatTrans = new PhongMaterial();
-	planeMatTrans->m_diffuse = new Texture("assets/textures/wall.jpg", 0);
-	planeMatTrans->m_blend = true;
-	planeMatTrans->m_opacity = 0.4f;
-	auto planeMeshTrans = new Mesh(planeGeoTrans, planeMatTrans);
-	planeMeshTrans->SetPosition(glm::vec3(0.0f, 0.0f, -6.0f));
-
-	glcontext->m_scene->AddChild(planeMeshTrans);
-
-	// 实体平面
-	auto planeGeo2 = Geometry::CreatePlane(10.0, 10.0);
-	auto planeMat2 = new PhongMaterial();
-	planeMat2->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
-	auto planeMesh2 = new Mesh(planeGeo2, planeMat2);
-	planeMesh2->SetPosition(glm::vec3(3.0f, 0.0f, 0.0f));
-	planeMesh2->RotateY(45.0f);
-	glcontext->m_scene->AddChild(planeMesh2);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

@@ -55,6 +55,8 @@ private:
 	std::shared_ptr<Shader> m_whiteShader{ nullptr };
 	// 深度材质对应的shader
 	std::shared_ptr<Shader> m_depthShader{ nullptr };
+	// 透明度遮罩材质对应的shader
+	std::shared_ptr<Shader> m_opacityMaskShader{ nullptr };
 
 	// 不透明物体与透明物体的队列
 	// 注意！！*****每一帧绘制前，需要清空两个队列********

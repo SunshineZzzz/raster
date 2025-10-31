@@ -1,5 +1,6 @@
 ﻿#include "../inc/Renderer.h"
 #include "../inc/phongMaterial.h"
+#include "../inc/OpacityMaskMaterial.h"
 
 #include <cassert>
 
@@ -13,6 +14,7 @@ Renderer::Renderer()
 	m_phongShader = std::make_shared<Shader>("assets/shaders/phong.vert", "assets/shaders/phong.frag");
 	m_whiteShader = std::make_shared<Shader>("assets/shaders/white.vert", "assets/shaders/white.frag");
 	m_depthShader = std::make_shared<Shader>("assets/shaders/depth.vert", "assets/shaders/depth.frag");
+	m_opacityMaskShader = std::make_shared<Shader>("assets/shaders/phongOpacityMask.vert", "assets/shaders/phongOpacityMask.frag");
 }
 
 Renderer::~Renderer() {}
@@ -94,6 +96,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_whiteShader;
 	case MaterialType::DepthMaterial:
 		return m_depthShader;
+	case MaterialType::OpacityMaskMaterial:
+		return m_opacityMaskShader;
 	default:
 		assert(0);
 	}
@@ -184,6 +188,45 @@ void Renderer::RenderObject(
 			// 相机信息更新
 			shader->SetUniformFloat("near", camera->m_near);
 			shader->SetUniformFloat("far", camera->m_far);
+		}
+		break;
+		case MaterialType::OpacityMaskMaterial:
+		{
+			OpacityMaskMaterial* opacityMat = (OpacityMaskMaterial*)material.get();
+
+			// diffuse贴图帧更新
+			// 将纹理采样器与纹理单元进行挂钩
+			shader->SetUniformInt("sampler", opacityMat->m_diffuse->GetUnit());
+			// 将纹理与纹理单元进行挂钩
+			opacityMat->m_diffuse->Bind();
+
+			// opacityMask的帧更新
+			shader->SetUniformInt("opacityMaskSampler", opacityMat->m_opacityMask->GetUnit());
+			opacityMat->m_opacityMask->Bind();
+
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+
+			auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
+			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
+
+			// 光源参数的uniform更新
+			// directionalLight 的更新
+			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
+			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
+			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+
+			// shader->SetUniformFloat("shiness", opacityMat->m_shiness);
+
+			shader->SetUniformVector3("ambientColor", ambLight->m_color);
+
+			// 相机信息更新
+			shader->SetUniformVector3("cameraPosition", camera->m_position);
+
+			//透明度
+			shader->SetUniformFloat("opacity", material->m_opacity);
 		}
 		break;
 		default:

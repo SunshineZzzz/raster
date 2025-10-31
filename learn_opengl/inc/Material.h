@@ -10,7 +10,9 @@ enum class MaterialType
 	// 点光源材质
 	WhiteMaterial,
 	// 深度材质
-	DepthMaterial
+	DepthMaterial,
+	// 蒙版透明度材质
+	OpacityMaskMaterial,
 };
 
 class Material 
@@ -35,7 +37,6 @@ public:
 	// 深度精度的最小细分值，即当前深度缓冲中，使用的数据格式所表达的最小值是多少
 	float m_unit{ 0.0f };
 
-	
 	// 模板测试相关
 	// 是否开启模板测试，glEnable(GL_STENCIL_TEST)
 	bool m_stencilTest{ false };
