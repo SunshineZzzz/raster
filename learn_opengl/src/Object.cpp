@@ -39,7 +39,7 @@ void Object::SetScale(glm::vec3 scale)
 	m_scale = scale;
 }
 
-glm::mat4 Object::GetModelMatrix() 
+glm::mat4 Object::GetModelMatrix() const
 {
 	//首先获取父亲的变换矩阵
 	glm::mat4 parentMatrix{ 1.0f };

@@ -47,6 +47,23 @@ void InitImGUI()
 	ImGui_ImplOpenGL3_Init("#version 460");
 }
 
+void SetModelBlend(Object* obj, bool blend, float opacity) {
+	if (obj->getType() == ObjectType::Mesh) 
+	{
+		Mesh* mesh = (Mesh*)obj;
+		Material* mat = mesh->m_material.get();
+		mat->m_blend = blend;
+		mat->m_opacity = opacity;
+		mat->m_depthWrite = false;
+	}
+
+	auto children = obj->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
+	{
+		SetModelBlend(children[i], blend, opacity);
+	}
+}
+
 void Prepare()
 {
 	// 渲染器
@@ -54,15 +71,38 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto boxGeo = Geometry::CreateBox(4.0f);
-	auto boxMat = new PhongMaterial();
-	boxMat->m_diffuse = new Texture("assets/textures/window.png", 0);
-	boxMat->m_blend = true;
-	boxMat->m_depthWrite = false;
-	boxMat->m_opacity = 0.3f;
+	// 背包模型
+	auto model = AssimpLoader::Load("assets/fbx/bag/backpack.obj");
+	SetModelBlend(model, true, 0.2f);
+	glcontext->m_scene->AddChild(model);
 
-	auto boxMesh = new Mesh(boxGeo, boxMat);
-	glcontext->m_scene->AddChild(boxMesh);
+	// 实体平面
+	auto planeGeo = Geometry::CreatePlane(5.0f, 5.0f);
+	auto planeMat = new PhongMaterial();
+	planeMat->m_diffuse = new Texture("assets/textures/box.png", 0);
+	auto planeMesh = new Mesh(planeGeo, planeMat);
+	planeMesh->SetPosition(glm::vec3(0.0f, 0.0f, 6.0f));
+	glcontext->m_scene->AddChild(planeMesh);
+
+	// 半透明平面
+	auto planeGeoTrans = Geometry::CreatePlane(10.0, 10.0);
+	auto planeMatTrans = new PhongMaterial();
+	planeMatTrans->m_diffuse = new Texture("assets/textures/wall.jpg", 0);
+	planeMatTrans->m_blend = true;
+	planeMatTrans->m_opacity = 0.4f;
+	auto planeMeshTrans = new Mesh(planeGeoTrans, planeMatTrans);
+	planeMeshTrans->SetPosition(glm::vec3(0.0f, 0.0f, -6.0f));
+
+	glcontext->m_scene->AddChild(planeMeshTrans);
+
+	// 实体平面
+	auto planeGeo2 = Geometry::CreatePlane(10.0, 10.0);
+	auto planeMat2 = new PhongMaterial();
+	planeMat2->m_diffuse = new Texture("assets/textures/goku.jpg", 0);
+	auto planeMesh2 = new Mesh(planeGeo2, planeMat2);
+	planeMesh2->SetPosition(glm::vec3(3.0f, 0.0f, 0.0f));
+	planeMesh2->RotateY(45.0f);
+	glcontext->m_scene->AddChild(planeMesh2);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

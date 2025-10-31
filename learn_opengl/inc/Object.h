@@ -39,7 +39,7 @@ public:
 	// 缩放
 	void SetScale(glm::vec3 scale);
 	// 获取模型矩阵
-	glm::mat4 GetModelMatrix();
+	glm::mat4 GetModelMatrix() const;
 	// 增加孩子
 	void AddChild(Object* obj);
 	// 获取孩子们

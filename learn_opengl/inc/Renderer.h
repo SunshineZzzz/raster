@@ -41,6 +41,8 @@ public:
 	void SetPolygonOffsetState(Material* material);
 	void SetStencilState(Material* material);
 	void SetBlendState(Material* material);
+	// 将scene中的所有mesh放入队列
+	void ProjectObject(Object* obj);
 
 private:
 	// 根据Material类型不同，挑选不同的shader
@@ -53,4 +55,9 @@ private:
 	std::shared_ptr<Shader> m_whiteShader{ nullptr };
 	// 深度材质对应的shader
 	std::shared_ptr<Shader> m_depthShader{ nullptr };
+
+	// 不透明物体与透明物体的队列
+	// 注意！！*****每一帧绘制前，需要清空两个队列********
+	std::vector<Mesh*>	m_opacityObjects{};
+	std::vector<Mesh*>	m_transparentObjects{};
 };

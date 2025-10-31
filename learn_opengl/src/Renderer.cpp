@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <format>
+#include <algorithm>
 
 Renderer::Renderer() 
 {
@@ -44,8 +45,43 @@ void Renderer::Render(
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	// 将scene当作根节点开始递归渲染
-	RenderObject(scene, camera, dirLight, ambLight);
+	// 清空两个队列
+	m_opacityObjects.clear();
+	m_transparentObjects.clear();
+
+	// 将scene中的所有mesh放入队列
+	ProjectObject(scene);
+	// 先绘制不透明物体，透明物体按照距离摄像机远近排序，由远到近绘制
+	std::sort(
+		m_transparentObjects.begin(),
+		m_transparentObjects.end(),
+		[camera](const Mesh* a, const Mesh* b) {
+			auto viewMatrix = camera->GetViewMatrix();
+
+			// 计算a的相机系的Z
+			auto modelMatrixA = a->GetModelMatrix();
+			auto worldPositionA = modelMatrixA * glm::vec4(0.0, 0.0, 0.0, 1.0);
+			auto cameraPositionA = viewMatrix * worldPositionA;
+
+			// 计算b的相机系的Z
+			auto modelMatrixB = b->GetModelMatrix();
+			auto worldPositionB = modelMatrixB * glm::vec4(0.0, 0.0, 0.0, 1.0);
+			auto cameraPositionB = viewMatrix * worldPositionB;
+
+			return cameraPositionA.z < cameraPositionB.z;
+		}
+	);
+
+	// 先绘制不透明物体
+	for (int i = 0; i < m_opacityObjects.size(); i++) 
+	{
+		RenderObject(m_opacityObjects[i], camera, dirLight, ambLight);
+	}
+	// 透明物体按照距离摄像机远近排序，由远到近绘制
+	for (int i = 0; i < m_transparentObjects.size(); i++) 
+	{
+		RenderObject(m_transparentObjects[i], camera, dirLight, ambLight);
+	}
 }
 
 std::shared_ptr<Shader> Renderer::PickShader(MaterialType type) 
@@ -231,5 +267,27 @@ void Renderer::SetBlendState(Material* material)
 	else 
 	{
 		glDisable(GL_BLEND);
+	}
+}
+
+void Renderer::ProjectObject(Object* obj)
+{
+	if (obj->getType() == ObjectType::Mesh) 
+	{
+		Mesh* mesh = (Mesh*)obj;
+		auto material = mesh->m_material.get();
+		if (material->m_blend) 
+		{
+			m_transparentObjects.push_back(mesh);
+		}
+		else {
+			m_opacityObjects.push_back(mesh);
+		}
+	}
+
+	auto children = obj->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
+	{
+		ProjectObject(children[i]);
 	}
 }
