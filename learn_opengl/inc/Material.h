@@ -17,6 +17,8 @@ enum class MaterialType
 	ScreenMaterial,
 	// 天空盒子材质
 	CubeMaterial,
+	// 天空盒环境光照
+	PhongEnvMaterial,
 };
 
 class Material 

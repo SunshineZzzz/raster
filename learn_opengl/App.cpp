@@ -31,6 +31,7 @@
 #include "inc/OpacityMaskMaterial.h"
 #include "inc/ScreenMaterial.h"
 #include "inc/CubeMaterial.h"
+#include "inc/PhongEnvMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -98,8 +99,9 @@ void Prepare()
 	glcontext->m_scene->AddChild(boxMesh);
 
 	auto sphereGeo = Geometry::CreateSphere(4.0f);
-	auto sphereMat = new PhongMaterial();
+	auto sphereMat = new PhongEnvMaterial();
 	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 1);
+	sphereMat->m_env = boxMat->m_diffuse;
 	auto sphereMesh = new Mesh(sphereGeo, sphereMat);
 	glcontext->m_scene->AddChild(sphereMesh);
 

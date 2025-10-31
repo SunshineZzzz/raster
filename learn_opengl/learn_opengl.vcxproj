@@ -562,6 +562,7 @@
     <ClInclude Include="inc\OrthographicCamera.h" />
     <ClInclude Include="inc\PerspectiveCamera.h" />
     <ClInclude Include="inc\Object.h" />
+    <ClInclude Include="inc\PhongEnvMaterial.h" />
     <ClInclude Include="inc\PhongMaterial.h" />
     <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
@@ -719,6 +720,8 @@
     <None Include="assets\shaders\depth.vert" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\phong.vert" />
+    <None Include="assets\shaders\phongEnv.frag" />
+    <None Include="assets\shaders\phongEnv.vert" />
     <None Include="assets\shaders\phongOpacityMask.frag" />
     <None Include="assets\shaders\phongOpacityMask.vert" />
     <None Include="assets\shaders\screen.frag" />

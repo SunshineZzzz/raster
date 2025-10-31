@@ -3,6 +3,7 @@
 #include "../inc/OpacityMaskMaterial.h"
 #include "../inc/ScreenMaterial.h"
 #include "../inc/CubeMaterial.h"
+#include "../inc/PhongEnvMaterial.h"
 
 #include <cassert>
 
@@ -19,6 +20,7 @@ Renderer::Renderer()
 	m_opacityMaskShader = std::make_shared<Shader>("assets/shaders/phongOpacityMask.vert", "assets/shaders/phongOpacityMask.frag");
 	m_screenShader = std::make_shared<Shader>("assets/shaders/screen.vert", "assets/shaders/screen.frag");
 	m_cubeShader = std::make_shared<Shader>("assets/shaders/cube.vert", "assets/shaders/cube.frag");
+	m_phongEnvShader = std::make_shared<Shader>("assets/shaders/phongEnv.vert", "assets/shaders/phongEnv.frag");
 }
 
 Renderer::~Renderer() {}
@@ -109,6 +111,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_screenShader;
 	case MaterialType::CubeMaterial:
 		return m_cubeShader;
+	case MaterialType::PhongEnvMaterial:
+		return m_phongEnvShader;
 	default:
 		assert(0);
 	}
@@ -270,6 +274,42 @@ void Renderer::RenderObject(
 
 			shader->SetUniformInt("cubeSampler", cubeMat->m_diffuse->GetUnit());
 			cubeMat->m_diffuse->Bind();
+		}
+		break;
+		case MaterialType::PhongEnvMaterial: 
+		{
+			PhongEnvMaterial* phongMat = (PhongEnvMaterial*)material;
+
+			shader->SetUniformInt("sampler", phongMat->m_diffuse->GetUnit());
+			phongMat->m_diffuse->Bind();
+
+			shader->SetUniformInt("envSampler", phongMat->m_env->GetUnit());
+			phongMat->m_env->Bind();
+
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+
+			auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
+			shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
+
+			// 光源参数的uniform更新
+			// directionalLight 的更新
+			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
+			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
+			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+
+
+			shader->SetUniformFloat("shiness", phongMat->m_shiness);
+
+			shader->SetUniformVector3("ambientColor", ambLight->m_color);
+
+			// 相机信息更新
+			shader->SetUniformVector3("cameraPosition", camera->m_position);
+
+			// 透明度
+			shader->SetUniformFloat("opacity", material->m_opacity);
 		}
 		break;
 		default:

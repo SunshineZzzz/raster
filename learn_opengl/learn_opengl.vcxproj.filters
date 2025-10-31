@@ -1386,6 +1386,9 @@
     <ClInclude Include="inc\CubeMaterial.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\PhongEnvMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1836,6 +1839,12 @@
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="assets\shaders\cube.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\phongEnv.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\phongEnv.vert">
       <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>
