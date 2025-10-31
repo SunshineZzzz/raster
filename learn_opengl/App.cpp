@@ -54,14 +54,15 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto geometry = Geometry::CreateBox(5.0f);
-	auto material = new WhiteMaterial();
-	auto mesh = new Mesh(geometry, material);
-	mesh->SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
-	glcontext->m_scene->AddChild(mesh);
+	auto boxGeo = Geometry::CreateBox(4.0f);
+	auto boxMat = new PhongMaterial();
+	boxMat->m_diffuse = new Texture("assets/textures/window.png", 0);
+	boxMat->m_blend = true;
+	boxMat->m_depthWrite = false;
+	boxMat->m_opacity = 0.3f;
 
-	auto model = AssimpLoader::Load("assets/fbx/bag/backpack.obj");
-	glcontext->m_scene->AddChild(model);
+	auto boxMesh = new Mesh(boxGeo, boxMat);
+	glcontext->m_scene->AddChild(boxMesh);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

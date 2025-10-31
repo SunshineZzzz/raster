@@ -60,6 +60,9 @@ uniform DirectionalLight directionalLight;
 // 宏定义
 #define POINT_LIGHT_NUM 4
 uniform PointLight pointLights[POINT_LIGHT_NUM];
+// 透明度
+uniform float opacity;
+
 // 计算漫反射光照
 vec3 CalculateDiffuse(vec3 lightColor, vec3 objectColor, vec3 lightDir, vec3 normal)
 {
@@ -165,6 +168,7 @@ void main()
 	// 计算光照的通用数据
 	// 对象颜色(插值)
 	vec3 objectColor  = texture(sampler, uv).xyz;
+	// 材质透明度
 	float alpha =  texture(sampler, uv).a;
 	// 对象法线(插值)
 	vec3 normalN = normalize(normal);
@@ -184,5 +188,5 @@ void main()
 
 	vec3 finalColor = result + ambientColor;
  
-	FragColor = vec4(finalColor, 0.3);
+	FragColor = vec4(finalColor, alpha * opacity);
 }

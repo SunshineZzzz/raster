@@ -40,6 +40,7 @@ public:
 	void SetDepthState(Material* material);
 	void SetPolygonOffsetState(Material* material);
 	void SetStencilState(Material* material);
+	void SetBlendState(Material* material);
 
 private:
 	// 根据Material类型不同，挑选不同的shader

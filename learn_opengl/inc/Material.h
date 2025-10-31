@@ -35,11 +35,6 @@ public:
 	// 深度精度的最小细分值，即当前深度缓冲中，使用的数据格式所表达的最小值是多少
 	float m_unit{ 0.0f };
 
-	// stencil相关
-	// glEnable(GL_STENCIL_TEST);
-	// glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	// glStencilMask(0xFF);/
-	// glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	
 	// 模板测试相关
 	// 是否开启模板测试，glEnable(GL_STENCIL_TEST)
@@ -61,4 +56,13 @@ public:
 	unsigned int m_stencilRef{ 0 };
 	// 缓冲数值与参考数值的比较前，先与掩码进行与操作
 	unsigned int m_stencilFuncMask{ 0xFF };
+
+	// 颜色混合相关
+	bool m_blend{ false };
+	// 颜色混合方程
+	GLenum m_sFactor{ GL_SRC_ALPHA };
+	GLenum m_dFactor{ GL_ONE_MINUS_SRC_ALPHA };
+	// 0.0f~1.0f，0.0f完全透明，1.0f完全不透明
+	// 作用于物体本身透明度
+	float m_opacity{ 1.0f };
 };

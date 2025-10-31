@@ -38,9 +38,8 @@ void Renderer::Render(
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glStencilMask(0xFF);
 
-	// 打开颜色混合
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// 默认关闭颜色混合
+	glDisable(GL_BLEND);
 
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -83,6 +82,7 @@ void Renderer::RenderObject(
 		SetDepthState(material.get());
 		SetPolygonOffsetState(material.get());
 		SetStencilState(material.get());
+		SetBlendState(material.get());
 
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
@@ -119,6 +119,9 @@ void Renderer::RenderObject(
 			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
 			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
 			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+
+			// 透明度
+			shader->SetUniformFloat("opacity", material->m_opacity);
 
 			// 光斑大小
 			shader->SetUniformFloat("shiness", phongMat->m_shiness);
@@ -215,5 +218,18 @@ void Renderer::SetStencilState(Material* material)
 	else 
 	{
 		glDisable(GL_STENCIL_TEST);
+	}
+}
+
+void Renderer::SetBlendState(Material* material)
+{
+	if (material->m_blend) 
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(material->m_sFactor, material->m_dFactor);
+	}
+	else 
+	{
+		glDisable(GL_BLEND);
 	}
 }
