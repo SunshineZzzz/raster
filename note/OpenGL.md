@@ -99,6 +99,8 @@
 - [聚光灯](#聚光灯)
 - [场景](#场景)
 - [Assimp](#assimp)
+- [面剔除](#面剔除)
+	- [OpenGL开启面剔除](#opengl开启面剔除)
 
 ### OpenGL 
 
@@ -1716,3 +1718,17 @@ Assimp(AssimpImporter)，是一个开源的3D模型导入库，支持多种格�
 ![alt text](img/OpenGL_Assimp2.png)
 
 ![alt text](img/OpenGL_Assimp3.png)
+
+### 面剔除
+
+面剔除(Face Culling)，是一种优化技术，用于提高渲染效率。通过剔除那些不可见的面(背面)，减少渲染负担，从而提升性能。
+
+看不见的面会被FS之后的深度测试给剔除掉，希望在VS中剔除掉，减少渲染负担。
+
+![alt text](img/OpenGL_FaceCulling1.png)
+
+![alt text](img/OpenGL_FaceCulling2.png)
+
+#### opengl开启面剔除
+
+![alt text](img/OpenGL_EbableFaceCulling1.png)

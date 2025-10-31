@@ -44,6 +44,13 @@ void Renderer::Render(
 	// 默认关闭颜色混合
 	glDisable(GL_BLEND);
 
+	// 默认开启背面剔除
+	glEnable(GL_CULL_FACE);
+	// 默认逆时针为正面
+	glFrontFace(GL_CCW);
+	// 默认剔除背面
+	glCullFace(GL_BACK);
+
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
