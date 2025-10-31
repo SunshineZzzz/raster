@@ -66,4 +66,12 @@ public:
 	// 0.0f~1.0f，0.0f完全透明，1.0f完全不透明
 	// 作用于物体本身透明度
 	float m_opacity{ 1.0f };
+
+	// 面剔除相关
+	// 是否开启面剔除
+	bool m_faceCulling{ false };
+	// 面剔除方式
+	GLenum m_frontFace{ GL_CCW };
+	// 剔除正面还是背面
+	GLenum m_cullFace{ GL_BACK };
 };

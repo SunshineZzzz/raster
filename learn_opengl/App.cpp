@@ -74,10 +74,12 @@ void Prepare()
 
 	auto geo = Geometry::CreatePlane(5.0, 5.0);
 	auto mat = new PhongMaterial();
+	mat->m_faceCulling = true;
+	mat->m_frontFace = GL_CCW;
+	mat->m_cullFace = GL_BACK;
 	mat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
 	auto mesh = new Mesh(geo, mat);
 	glcontext->m_scene->AddChild(mesh);
-
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

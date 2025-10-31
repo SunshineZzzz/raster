@@ -44,13 +44,6 @@ void Renderer::Render(
 	// 默认关闭颜色混合
 	glDisable(GL_BLEND);
 
-	// 默认开启背面剔除
-	glEnable(GL_CULL_FACE);
-	// 默认逆时针为正面
-	glFrontFace(GL_CCW);
-	// 默认剔除背面
-	glCullFace(GL_BACK);
-
 	// 清理画布 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -136,6 +129,7 @@ void Renderer::RenderObject(
 		SetPolygonOffsetState(material);
 		SetStencilState(material);
 		SetBlendState(material);
+		SetFaceCullingState(material);
 
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
@@ -323,6 +317,20 @@ void Renderer::SetBlendState(Material* material)
 	else 
 	{
 		glDisable(GL_BLEND);
+	}
+}
+
+void Renderer::SetFaceCullingState(Material* material) 
+{
+	if (material->m_faceCulling) 
+	{
+		glEnable(GL_CULL_FACE);
+		glFrontFace(material->m_frontFace);
+		glCullFace(material->m_cullFace);
+	}
+	else 
+	{
+		glDisable(GL_CULL_FACE);
 	}
 }
 

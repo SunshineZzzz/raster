@@ -41,6 +41,7 @@ public:
 	void SetPolygonOffsetState(Material* material);
 	void SetStencilState(Material* material);
 	void SetBlendState(Material* material);
+	void SetFaceCullingState(Material* material);
 	// 将scene中的所有mesh放入队列
 	void ProjectObject(Object* obj);
 
