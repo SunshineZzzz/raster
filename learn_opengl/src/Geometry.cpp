@@ -376,3 +376,62 @@ Geometry* Geometry::CreatePlane(float width, float height)
 
 	return geometry;
 }
+
+Geometry* Geometry::CreateScreenPlane()
+{
+	Geometry* geometry = new Geometry();
+	geometry->m_indicesCount = 6;
+
+	// 构建数据positions uv
+	float positions[] = 
+	{
+		-1.0f,  1.0f,
+		-1.0f, -1.0f,
+		 1.0f, -1.0f,
+		 1.0f,  1.0f,
+	};
+
+	float uvs[] = 
+	{
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
+	};
+
+	unsigned int indices[] = 
+	{
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	// 创建vao vbo等
+	glGenBuffers(1, &geometry->m_posVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_posVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &geometry->m_uvVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_uvVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &geometry->m_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->m_ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &geometry->m_vao);
+	glBindVertexArray(geometry->m_vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_posVbo);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, geometry->m_uvVbo);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->m_ebo);
+
+	glBindVertexArray(0);
+
+	return geometry;
+}

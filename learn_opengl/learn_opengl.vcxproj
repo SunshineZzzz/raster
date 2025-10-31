@@ -563,6 +563,7 @@
     <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
     <ClInclude Include="inc\Scene.h" />
+    <ClInclude Include="inc\ScreenMaterial.h" />
     <ClInclude Include="inc\Shader.h" />
     <ClInclude Include="inc\SpotLight.h" />
     <ClInclude Include="inc\Texture.h" />
@@ -715,6 +716,8 @@
     <None Include="assets\shaders\phong.vert" />
     <None Include="assets\shaders\phongOpacityMask.frag" />
     <None Include="assets\shaders\phongOpacityMask.vert" />
+    <None Include="assets\shaders\screen.frag" />
+    <None Include="assets\shaders\screen.vert" />
     <None Include="assets\shaders\white.frag" />
     <None Include="assets\shaders\white.vert" />
   </ItemGroup>

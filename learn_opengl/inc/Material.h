@@ -13,6 +13,8 @@ enum class MaterialType
 	DepthMaterial,
 	// 蒙版透明度材质
 	OpacityMaskMaterial,
+	// 屏幕材质
+	ScreenMaterial,
 };
 
 class Material 

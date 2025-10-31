@@ -57,6 +57,7 @@
 - [EBO](#ebo)
 - [FBO](#fbo)
 	- [RBO](#rbo)
+	- [帧缓冲需求分析](#帧缓冲需求分析)
 	- [帧缓冲使用](#帧缓冲使用)
 - [Shader](#shader)
 - [GLSL语言](#glsl语言)
@@ -1156,6 +1157,16 @@ FBO(Frame Buffer Object)，帧缓冲对象，OpenGL允许我们定义我们自�
 #### RBO
 
 RBO(Render Buffer Object)，渲染缓冲对象附件，组成一帧缓冲中，颜色缓存、深度缓存、模板缓存，统称为帧缓冲中的附件。
+
+![alt text](img/rbo1.png)
+
+#### 帧缓冲需求分析
+
+![alt text](img/fbo_need1.png)
+
+![alt text](img/fbo_need2.png)
+
+![alt text](img/fbo_need3.png)
 
 #### 帧缓冲使用
 

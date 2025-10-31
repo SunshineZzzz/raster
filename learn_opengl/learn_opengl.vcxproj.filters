@@ -1371,6 +1371,9 @@
     <ClInclude Include="inc\OpacityMaskMaterial.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ScreenMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1809,6 +1812,12 @@
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="assets\shaders\phongOpacityMask.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\screen.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\screen.vert">
       <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>

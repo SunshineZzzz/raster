@@ -29,6 +29,7 @@
 #include "inc/AssimpLoader.h"
 #include "inc/DepthMaterial.h"
 #include "inc/OpacityMaskMaterial.h"
+#include "inc/ScreenMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -72,12 +73,9 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto geo = Geometry::CreatePlane(5.0, 5.0);
-	auto mat = new PhongMaterial();
-	mat->m_faceCulling = true;
-	mat->m_frontFace = GL_CCW;
-	mat->m_cullFace = GL_BACK;
-	mat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
+	auto geo = Geometry::CreateScreenPlane();
+	auto mat = new ScreenMaterial();
+	mat->m_screenTexture = new Texture("assets/textures/box.png", 0);
 	auto mesh = new Mesh(geo, mat);
 	glcontext->m_scene->AddChild(mesh);
 

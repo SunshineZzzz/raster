@@ -1,6 +1,7 @@
 ﻿#include "../inc/Renderer.h"
 #include "../inc/phongMaterial.h"
 #include "../inc/OpacityMaskMaterial.h"
+#include "../inc/ScreenMaterial.h"
 
 #include <cassert>
 
@@ -15,6 +16,7 @@ Renderer::Renderer()
 	m_whiteShader = std::make_shared<Shader>("assets/shaders/white.vert", "assets/shaders/white.frag");
 	m_depthShader = std::make_shared<Shader>("assets/shaders/depth.vert", "assets/shaders/depth.frag");
 	m_opacityMaskShader = std::make_shared<Shader>("assets/shaders/phongOpacityMask.vert", "assets/shaders/phongOpacityMask.frag");
+	m_screenShader = std::make_shared<Shader>("assets/shaders/screen.vert", "assets/shaders/screen.frag");
 }
 
 Renderer::~Renderer() {}
@@ -98,6 +100,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_depthShader;
 	case MaterialType::OpacityMaskMaterial:
 		return m_opacityMaskShader;
+	case MaterialType::ScreenMaterial:
+		return m_screenShader;
 	default:
 		assert(0);
 	}
@@ -234,6 +238,13 @@ void Renderer::RenderObject(
 
 			//透明度
 			shader->SetUniformFloat("opacity", material->m_opacity);
+		}
+		break;
+		case MaterialType::ScreenMaterial: 
+		{
+			ScreenMaterial* screenMat = (ScreenMaterial*)material;
+			shader->SetUniformInt("screenTexSampler", screenMat->m_screenTexture->GetUnit());
+			screenMat->m_screenTexture->Bind();
 		}
 		break;
 		default:

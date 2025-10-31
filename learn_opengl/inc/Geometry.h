@@ -23,6 +23,8 @@ public:
 	static Geometry* CreateSphere(float radius);
 	// 创建平面，平面中心在原点
 	static Geometry* CreatePlane(float width, float height);
+	// 创建屏幕平面，平面中心在原点
+	static Geometry* CreateScreenPlane();
 
 	// 获取VAO
 	GLuint GetVao()const { return m_vao; }
