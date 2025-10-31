@@ -44,6 +44,10 @@ public:
 	// 将scene中的所有mesh放入队列
 	void ProjectObject(Object* obj);
 
+public:
+	// 全局材质
+	Material* m_globalMaterial{ nullptr };
+
 private:
 	// 根据Material类型不同，挑选不同的shader
 	std::shared_ptr<Shader> PickShader(MaterialType type);

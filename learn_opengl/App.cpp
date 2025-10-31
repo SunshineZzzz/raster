@@ -72,15 +72,17 @@ void Prepare()
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
 
-	auto planeGeo = Geometry::CreatePlane(5.0, 5.0);
-	auto planeMat = new OpacityMaskMaterial();
-	planeMat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
-	planeMat->m_opacityMask = new Texture("assets/textures/grassMask.png", 1);
-	planeMat->m_blend = true;
+	auto grassModel = AssimpLoader::Load("assets/fbx/grass.fbx");
+	grassModel->SetScale(glm::vec3(0.02f));
+	glcontext->m_scene->AddChild(grassModel);
 
-	auto planeMesh = new Mesh(planeGeo, planeMat);
+	auto grassMat = new OpacityMaskMaterial();
+	grassMat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
+	grassMat->m_opacityMask = new Texture("assets/textures/grassMask.png", 1);
+	grassMat->m_blend = true;
+	grassMat->m_depthWrite = false;
 
-	glcontext->m_scene->AddChild(planeMesh);
+	glcontext->m_renderer->m_globalMaterial = grassMat;
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

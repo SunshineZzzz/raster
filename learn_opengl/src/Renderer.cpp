@@ -115,14 +115,20 @@ void Renderer::RenderObject(
 	if (object->getType() == ObjectType::Mesh) 
 	{
 		auto mesh = (Mesh*)object;
-		auto& geometry = mesh->m_geometry;
-		auto& material = mesh->m_material;
+		auto geometry = mesh->m_geometry.get();
+		auto material = mesh->m_material.get();
+
+		// 考察是否拥有全局材质
+		if (m_globalMaterial != nullptr) 
+		{
+			material = m_globalMaterial;
+		}
 
 		// 设置渲染状态
-		SetDepthState(material.get());
-		SetPolygonOffsetState(material.get());
-		SetStencilState(material.get());
-		SetBlendState(material.get());
+		SetDepthState(material);
+		SetPolygonOffsetState(material);
+		SetStencilState(material);
+		SetBlendState(material);
 
 		// 决定使用哪个Shader 
 		std::shared_ptr<Shader> shader = PickShader(material->m_type);
@@ -134,7 +140,7 @@ void Renderer::RenderObject(
 		{
 		case MaterialType::PhongMaterial: 
 		{
-			PhongMaterial* phongMat = (PhongMaterial*)material.get();
+			PhongMaterial* phongMat = (PhongMaterial*)material;
 
 			// diffuse贴图帧更新
 			// 将纹理采样器与纹理单元进行挂钩
@@ -192,7 +198,7 @@ void Renderer::RenderObject(
 		break;
 		case MaterialType::OpacityMaskMaterial:
 		{
-			OpacityMaskMaterial* opacityMat = (OpacityMaskMaterial*)material.get();
+			OpacityMaskMaterial* opacityMat = (OpacityMaskMaterial*)material;
 
 			// diffuse贴图帧更新
 			// 将纹理采样器与纹理单元进行挂钩
