@@ -59,6 +59,7 @@
 	- [RBO](#rbo)
 	- [帧缓冲需求分析](#帧缓冲需求分析)
 	- [帧缓冲使用](#帧缓冲使用)
+	- [卷积操作](#卷积操作)
 - [Shader](#shader)
 - [GLSL语言](#glsl语言)
   - [Vertex Shader](#vertex-shader)
@@ -1175,6 +1176,20 @@ RBO(Render Buffer Object)，渲染缓冲对象附件，组成一帧缓冲中，�
 ![alt text](img/fbo_use2.png)
 
 ![alt text](img/fbo_use3.png)
+
+#### 卷积操作
+
+卷积(Convolution)，是一种图像处理操作，用于将图像与一个称为卷积核(Kernel)的小矩阵进行元素级乘法和累加，以生成新的图像。
+
+![alt text](img/fbo_convolution1.png)
+
+![alt text](img/fbo_convolution2.png)
+
+![alt text](img/fbo_convolution3.png)
+
+![alt text](img/fbo_convolution4.png)
+
+![alt text](img/fbo_convolution5.png)
 
 ### GLSL语法
 

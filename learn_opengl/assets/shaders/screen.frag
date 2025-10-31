@@ -2,6 +2,8 @@
 out vec4 FragColor;
 in vec2 uv;
 uniform sampler2D screenTexSampler;
+uniform float texWidth;
+uniform float texHeight;
 
 // 颜色反相
 vec3 ColorInvert(vec3 color)
@@ -27,11 +29,66 @@ vec3 GrayCorrect(vec3 color)
 	return vec3(avg);
 }
 
+// 模糊
+vec3 Blur()
+{	
+	// 相邻两个像素的u差值
+	float du = 1.0 / texWidth;
+	// 相邻两个像素的v差值
+	float dv = 1.0 / texHeight;
+
+	// 偏移值数组，是一个3X3矩阵，3个为一行
+	vec2 offsets[9] = vec2[] 
+	(
+		// 左上
+		vec2(-du, dv),
+		// 正上
+		vec2(0.0, dv),
+		// 右上
+		vec2(du, dv),
+		// 左中
+		vec2(-du, 0.0),
+		// 中
+		vec2(0.0, 0.0),
+		// 右中
+		vec2(du, 0.0),
+		// 左下
+		vec2(-du, -dv),
+		// 正下
+		vec2(0.0, -dv),
+		// 右下
+		vec2(du, -dv)
+	);
+
+	// 卷积核矩阵，是一个3X3矩阵，3个为一行
+	// 计算中间新的颜色，加权周边再平均
+	float kernel[9] = float[]
+	(
+		1.0, 2.0, 1.0,
+		2.0, 4.0, 2.0,
+		1.0, 2.0, 1.0
+	);
+
+	// 加权相加
+	vec3 sumColor = vec3(0.0);
+	for(int i = 0; i < 9; i++)
+	{
+		vec3 sampleColor = texture(screenTexSampler, uv + offsets[i]).rgb;
+		sumColor += sampleColor * kernel[i];
+	}
+	// 再平均
+	sumColor /= 16.0;
+
+	return sumColor;
+}
+
 void main()
 {
 	// vec3 color = ColorInvert(texture(screenTexSampler, uv).rgb);
 	// vec3 color = Gray(texture(screenTexSampler, uv).rgb);
-	vec3 color = GrayCorrect(texture(screenTexSampler, uv).rgb);
+	// vec3 color = GrayCorrect(texture(screenTexSampler, uv).rgb);
+	vec3 color = Blur();
 
 	FragColor = vec4(color, 1.0);
+	// FragColor = texture(screenTexSampler, uv);
 }

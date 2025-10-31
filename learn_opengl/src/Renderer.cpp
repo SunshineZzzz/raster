@@ -248,6 +248,10 @@ void Renderer::RenderObject(
 			ScreenMaterial* screenMat = (ScreenMaterial*)material;
 			shader->SetUniformInt("screenTexSampler", screenMat->m_screenTexture->GetUnit());
 			screenMat->m_screenTexture->Bind();
+
+			// 凑合了一下
+			shader->SetUniformFloat("texWidth", 900);
+			shader->SetUniformFloat("texHeight", 800);
 		}
 		break;
 		default:

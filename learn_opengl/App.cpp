@@ -79,7 +79,7 @@ void Prepare()
 	// 离屏渲染的box
 	auto boxGeo = Geometry::CreateBox(5.0f);
 	auto boxMat = new PhongMaterial();
-	boxMat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
+	boxMat->m_diffuse = new Texture("assets/textures/wall.jpg", 0);
 	auto boxMesh = new Mesh(boxGeo, boxMat);
 	glcontext->m_offscreenScene->AddChild(boxMesh);
 
