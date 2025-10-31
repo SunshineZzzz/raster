@@ -143,6 +143,7 @@
     <ClCompile Include="src\AssimpLoader.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CameraControl.cpp" />
+    <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\GameCameraControl.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLContext.cpp" />
@@ -549,6 +550,7 @@
     <ClInclude Include="inc\CameraControl.h" />
     <ClInclude Include="inc\CheckRstErr.h" />
     <ClInclude Include="inc\AmbientLight.h" />
+    <ClInclude Include="inc\FrameBuffer.h" />
     <ClInclude Include="inc\GameCameraControl.h" />
     <ClInclude Include="inc\Geometry.h" />
     <ClInclude Include="inc\GLContext.h" />

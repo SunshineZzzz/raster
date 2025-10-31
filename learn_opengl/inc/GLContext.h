@@ -10,6 +10,7 @@
 #include "AmbientLight.h"
 #include "Camera.h"
 #include "PointLight.h"
+#include "FrameBuffer.h"
 
 #include <vector>
 #include <memory>
@@ -43,6 +44,10 @@ public:
     SDL_GLContext m_glcontext = nullptr;
     // 场景
     std::shared_ptr<Scene> m_scene;
+    // 离屏场景
+    std::shared_ptr<Scene> m_offscreenScene;
+    // 离屏渲染对应的帧缓冲
+    std::shared_ptr<FrameBuffer> m_offscreenFB = nullptr;
     // 渲染器
     std::shared_ptr<Renderer> m_renderer;
     // 平行光

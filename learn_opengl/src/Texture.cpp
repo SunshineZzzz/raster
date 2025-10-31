@@ -43,6 +43,44 @@ Texture* Texture::CreateTextureFromMemory(
 	return texture;
 }
 
+// 创建颜色附件
+Texture* Texture::CreateColorAttachment(
+	unsigned int width,
+	unsigned int height,
+	unsigned int unit
+)
+{
+	return new Texture(width, height, unit);
+}
+
+// 创建深度模板附件
+Texture* Texture::CreateDepthStencilAttachment(
+	unsigned int width,
+	unsigned int height,
+	unsigned int unit
+)
+{
+	Texture* dsTex = new Texture();
+
+	unsigned int depthStencil;
+	glGenTextures(1, &depthStencil);
+	glBindTexture(GL_TEXTURE_2D, depthStencil);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	dsTex->m_texture = depthStencil;
+	dsTex->m_width = width;
+	dsTex->m_height = height;
+	dsTex->m_unit = unit;
+
+	return dsTex;
+}
+
+Texture::Texture() {}
+
 Texture::Texture(const std::string& path, unsigned int unit) 
 {
 	m_unit = unit;
@@ -146,6 +184,22 @@ Texture::Texture(unsigned int unit, unsigned char* dataIn, uint32_t widthIn, uin
 	// 设置纹理的包裹方式
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
+Texture::Texture(unsigned int width, unsigned int height, unsigned int unit)
+{
+	m_width = width;
+	m_height = height;
+	m_unit = unit;
+
+	glGenTextures(1, &m_texture);
+	glActiveTexture(GL_TEXTURE0 + m_unit);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 Texture::~Texture() 

@@ -18,9 +18,24 @@ public:
 		uint32_t widthIn,
 		uint32_t heightIn
 	);
+	// 创建颜色附件
+	static Texture* CreateColorAttachment(
+		unsigned int width,
+		unsigned int height,
+		unsigned int unit
+	);
+	// 创建深度模板附件
+	static Texture* CreateDepthStencilAttachment(
+		unsigned int width,
+		unsigned int height,
+		unsigned int unit
+	);
 
+	Texture();
 	Texture(const std::string& path, unsigned int unit);
 	Texture(unsigned int unit, unsigned char* dataIn, uint32_t widthIn, uint32_t heightIn);
+	// 产生一个空白纹理
+	Texture(unsigned int width, unsigned int height, unsigned int unit);
 	~Texture();
 
 	// 纹理单元与纹理对象绑定
@@ -39,8 +54,9 @@ public:
 		m_unit = unit; 
 	}
 	// 获取纹理宽高
-	int getWidth()const { return m_width; }
-	int getHeight()const { return m_height; }
+	int GetWidth()const { return m_width; }
+	int GetHeight()const { return m_height; }
+	GLuint GetTexture()const { return m_texture; }
 
 private:
 	// 纹理对象

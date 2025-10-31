@@ -22,7 +22,8 @@ public:
 		Scene* scene,
 		std::shared_ptr<Camera> camera,
 		std::shared_ptr<DirectionalLight> dirLight,
-		std::shared_ptr<AmbientLight> ambLight
+		std::shared_ptr<AmbientLight> ambLight,
+		unsigned int fbo = 0
 	);
 	// 针对单个object进行渲染
 	void RenderObject(

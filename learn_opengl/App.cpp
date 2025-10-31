@@ -72,10 +72,21 @@ void Prepare()
 	glcontext->m_renderer = std::make_shared<Renderer>();
 	// 场景
 	glcontext->m_scene = std::make_shared<Scene>();
+	// 离屏渲染场景
+	glcontext->m_offscreenScene = std::make_shared<Scene>();
+	glcontext->m_offscreenFB = std::make_shared<FrameBuffer>(nWidth, nHeight);
+
+	// 离屏渲染的box
+	auto boxGeo = Geometry::CreateBox(5.0f);
+	auto boxMat = new PhongMaterial();
+	boxMat->m_diffuse = new Texture("assets/textures/grass.jpg", 0);
+	auto boxMesh = new Mesh(boxGeo, boxMat);
+	glcontext->m_offscreenScene->AddChild(boxMesh);
 
 	auto geo = Geometry::CreateScreenPlane();
 	auto mat = new ScreenMaterial();
-	mat->m_screenTexture = new Texture("assets/textures/box.png", 0);
+	// 离屏渲染上面有摄像机操作对应的shader等等，每次移动摄像机绘制一帧，传给这个场景
+	mat->m_screenTexture = glcontext->m_offscreenFB->m_colorAttachment;
 	auto mesh = new Mesh(geo, mat);
 	glcontext->m_scene->AddChild(mesh);
 
@@ -230,6 +241,12 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 {
 	cameraControl->Update();
 	glcontext->m_renderer->SetClearColor(clearColor);
+
+	// pass01 将box渲染到colorAttachment上，新的fbo上
+	glcontext->m_renderer->Render(glcontext->m_offscreenScene.get(), camera, glcontext->m_dirLight,
+		glcontext->m_ambLight, glcontext->m_offscreenFB->m_fbo);
+
+	// pass02 将colorAttachment作为纹理，绘制到整个屏幕上
 	glcontext->m_renderer->Render(glcontext->m_scene.get(), camera,
 		glcontext->m_dirLight, glcontext->m_ambLight);
 	RenderIMGUI();

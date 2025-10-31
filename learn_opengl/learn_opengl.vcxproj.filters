@@ -133,6 +133,9 @@
     <ClCompile Include="src\AssimpLoader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\FrameBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\SDL3-3.2.24\include\SDL3\SDL.h">
@@ -1372,6 +1375,9 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="inc\ScreenMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FrameBuffer.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
