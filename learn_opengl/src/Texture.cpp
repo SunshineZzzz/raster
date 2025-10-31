@@ -202,6 +202,46 @@ Texture::Texture(unsigned int width, unsigned int height, unsigned int unit)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
+Texture::Texture(const std::vector<std::string>& paths, unsigned int unit)
+{
+	m_unit = unit;
+	m_textureTarget = GL_TEXTURE_CUBE_MAP;
+
+	// cubemap不需要反转y轴，而且一定还要写，这是因为前面加载2D纹理的时候，就反转了，就会出现错误
+	// 一定要把状态重置回来，stbi里面也有状态啊
+	stbi_set_flip_vertically_on_load(false);
+
+	// 创建CubeMap对象
+	glGenTextures(1, &m_texture);
+	glActiveTexture(GL_TEXTURE0 + m_unit);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
+
+	// 循环读取六张贴图，并且放置到cubemap的六个GPU空间内
+	int channels;
+	int width = 0, height = 0;
+	unsigned char* data = nullptr;
+	for (int i = 0; i < paths.size(); i++) 
+	{
+		data = stbi_load(paths[i].c_str(), &width, &height, &channels, STBI_rgb_alpha);
+		if (data != nullptr) 
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else 
+		{
+			stbi_image_free(data);
+			assert(0);
+		}
+	}
+
+	// 设置纹理参数，这样子没有接缝
+	glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
 Texture::~Texture() 
 {
 	if (!m_initialized)
@@ -220,7 +260,7 @@ void Texture::Bind()
 {
 	// 先激活纹理单元，然后绑定纹理对象
 	glActiveTexture(GL_TEXTURE0 + m_unit);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
+	glBindTexture(m_textureTarget, m_texture);
 }
 
 bool Texture::IsInitialized() const

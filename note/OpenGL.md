@@ -103,6 +103,7 @@
 - [Assimp](#assimp)
 - [面剔除](#面剔除)
 	- [OpenGL开启面剔除](#opengl开启面剔除)
+- [立方体贴图](#立方体贴图)
 
 ### OpenGL 
 
@@ -1758,3 +1759,60 @@ Assimp(AssimpImporter)，是一个开源的3D模型导入库，支持多种格�
 #### opengl开启面剔除
 
 ![alt text](img/OpenGL_EbableFaceCulling1.png)
+
+### 立方体贴图
+
+立方体贴图(Cube Map)，是一种特殊的纹理映射，用于渲染环境贴图(Environment Map)。立方体贴图由6个面组成，每个面都是一个2D纹理，用于表示场景中不同方向的环境。
+
+不要开启面剔除，特别是把里面的面剔除了，会导致环境贴图渲染错误。
+
+![alt text](img/OpenGL_CubeMap1.png)
+
+1 * 1 * 1的立方体，包围盒子的模型变化矩阵就是跟随摄像机移动(直接设置成相机的位置，再生成模型变化矩阵即可)，再应用vp变化，保证了盒子一直包裹着摄像机， 随着摄像机的旋转看到不同的盒子面。 本来盒子在世界坐标系下的原点，通过过模型矩阵平移到了摄像机位置，在经过摄像机的vp矩阵，永远和相机位置一样。
+
+这里需要注意的是，投影变化矩阵存在(压缩+)平移+缩放，天空盒子有可能不在NDC中了。我这个代码为啥没问题，原因是，透视投影矩阵，近平面0.1f距离，远平面1000.0f距离，所以天空盒子在NDC中。
+正确的做法：
+```GLSL
+// vs
+#version 460 core
+layout (location = 0) in vec3 aPos;
+// 直接用包围盒的aPos作为UVW，1*1*1的包围盒
+// layout (location = 1) in vec2 aUV;
+out vec3 uvw;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+void main()
+{
+	vec4 transformPosition = vec4(aPos, 1.0);
+	transformPosition = modelMatrix * transformPosition;
+	// mvp后，剪裁坐标系下的顶点坐标
+	gl_Position = projectionMatrix * viewMatrix * transformPosition;
+	// 核心修改：深度欺骗 (Depth Hack)
+	// 后面需要经历透视除法，这样子修改后，透视除法一直都是远平面，深度值一直是1！
+	// 天空盒子是1X1X1,near是2.0f far是1000.0f,mvp就会被裁剪，这样做避免了剪裁，永远都在视野盒子中，
+	// 并且一直在远平面
+	gl_Position = gl_Position.xyww;
+	// 完美地利用了 1 * 1 *1 立方体顶点坐标的符号，使它们恰好对应于 samplerCube 所需的六个方向
+	uvw = aPos;
+}
+```
+
+FS中使用`FragColor = texture(cubeSampler, uvw);`来对天空盒立方体纹理进行采样。
+```GLSL
+// fs
+#version 460 core
+out vec4 FragColor;
+in vec3 uvw;
+uniform samplerCube cubeSampler;
+void main()
+{
+	// 片段着色器 (Fragment Shader) 的主要输出颜色
+	// 还要经历：模板测试，深度测试，颜色混合，最终写入颜色缓冲区，显示在屏幕
+	FragColor = texture(cubeSampler, uvw);
+}
+```
+
+** 这里还需要注意一点，	深度检测对应判断函数是GL_LESS， 在天空盒绘制时会出Z-FIGHTING情况，这是因为天空盒恒定为远平面，深度值一直是1，清除深度缓冲区的是填写的也是1，因为float类型，这两个值太近了，背景某片大或者天空盒大，就出现了Z-FIGHTING情况。正确设置为 GL_LEQUAL，小于等于就可以通过 **
+
+![alt text](img/OpenGL_CubeMap2.png)

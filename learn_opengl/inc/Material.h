@@ -15,6 +15,8 @@ enum class MaterialType
 	OpacityMaskMaterial,
 	// 屏幕材质
 	ScreenMaterial,
+	// 天空盒子材质
+	CubeMaterial,
 };
 
 class Material 
@@ -27,7 +29,10 @@ public:
 	MaterialType m_type;
 	// 深度检测相关
 	bool m_depthTest{ true };
-	GLenum m_depthFunc{ GL_LESS };
+	// GL_LESS 在天空盒绘制时会出Z-FIGHTING情况，这是因为天空盒恒定为远平面，深度值一直是1，
+	// 清除深度缓冲区的是填写的也是1，因为float类型，这两个值太近了，就出现了Z-FIGHTING情况
+	// GLenum m_depthFunc{ GL_LESS };
+	GLenum m_depthFunc{ GL_LEQUAL };
 	bool m_depthWrite{ true };
 	
 	// 多边形面/线偏移相关

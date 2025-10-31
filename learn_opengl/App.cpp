@@ -30,6 +30,7 @@
 #include "inc/DepthMaterial.h"
 #include "inc/OpacityMaskMaterial.h"
 #include "inc/ScreenMaterial.h"
+#include "inc/CubeMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -76,19 +77,31 @@ void Prepare()
 	glcontext->m_offscreenScene = std::make_shared<Scene>();
 	glcontext->m_offscreenFB = std::make_shared<FrameBuffer>(nWidth, nHeight);
 
-	// 离屏渲染的box
-	auto boxGeo = Geometry::CreateBox(5.0f);
-	auto boxMat = new PhongMaterial();
-	boxMat->m_diffuse = new Texture("assets/textures/wall.jpg", 0);
-	auto boxMesh = new Mesh(boxGeo, boxMat);
-	glcontext->m_offscreenScene->AddChild(boxMesh);
+	std::vector<std::string> paths = 
+	{
+		"assets/textures/skybox/right.jpg",
+		"assets/textures/skybox/left.jpg",
+		"assets/textures/skybox/top.jpg",
+		"assets/textures/skybox/bottom.jpg",
+		"assets/textures/skybox/back.jpg",
+		"assets/textures/skybox/front.jpg"
+	};
 
-	auto geo = Geometry::CreateScreenPlane();
-	auto mat = new ScreenMaterial();
-	// 离屏渲染上面有摄像机操作对应的shader等等，每次移动摄像机绘制一帧，传给这个场景
-	mat->m_screenTexture = glcontext->m_offscreenFB->m_colorAttachment;
-	auto mesh = new Mesh(geo, mat);
-	glcontext->m_scene->AddChild(mesh);
+	auto boxGeo = Geometry::CreateBox(1.0f);
+	auto boxMat = new CubeMaterial();
+	boxMat->m_diffuse = new Texture(paths, 0);
+	// 因为vs中没有把天空盒子搞到远平面，所以他先绘制，就遮挡了后面的球体，球体的深度大一些
+	// 所以需要关闭深度检测。其实关了也没用，如果先绘制球，就又出了同样的问题了。
+	// 正确的做法是天空盒vs中搞到远平面！
+	// boxMat->m_depthWrite = false;
+	auto boxMesh = new Mesh(boxGeo, boxMat);
+	glcontext->m_scene->AddChild(boxMesh);
+
+	auto sphereGeo = Geometry::CreateSphere(4.0f);
+	auto sphereMat = new PhongMaterial();
+	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 1);
+	auto sphereMesh = new Mesh(sphereGeo, sphereMat);
+	glcontext->m_scene->AddChild(sphereMesh);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 class Texture 
 {
@@ -36,6 +37,8 @@ public:
 	Texture(unsigned int unit, unsigned char* dataIn, uint32_t widthIn, uint32_t heightIn);
 	// 产生一个空白纹理
 	Texture(unsigned int width, unsigned int height, unsigned int unit);
+	// 从多个纹理路径中加载cube map纹理, paths: 右左上下后前(+x -x +y -y +z -z)
+	Texture(const std::vector<std::string>& paths, unsigned int unit);
 	~Texture();
 
 	// 纹理单元与纹理对象绑定
@@ -65,6 +68,8 @@ private:
 	unsigned int m_unit{ 0 };
 	// 是否已经初始化过
 	bool m_initialized = false;
+	// 纹理类型
+	unsigned int m_textureTarget{ GL_TEXTURE_2D };
 
 public:
 	// 纹理宽高

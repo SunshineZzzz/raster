@@ -2,6 +2,7 @@
 #include "../inc/phongMaterial.h"
 #include "../inc/OpacityMaskMaterial.h"
 #include "../inc/ScreenMaterial.h"
+#include "../inc/CubeMaterial.h"
 
 #include <cassert>
 
@@ -17,6 +18,7 @@ Renderer::Renderer()
 	m_depthShader = std::make_shared<Shader>("assets/shaders/depth.vert", "assets/shaders/depth.frag");
 	m_opacityMaskShader = std::make_shared<Shader>("assets/shaders/phongOpacityMask.vert", "assets/shaders/phongOpacityMask.frag");
 	m_screenShader = std::make_shared<Shader>("assets/shaders/screen.vert", "assets/shaders/screen.frag");
+	m_cubeShader = std::make_shared<Shader>("assets/shaders/cube.vert", "assets/shaders/cube.frag");
 }
 
 Renderer::~Renderer() {}
@@ -105,6 +107,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_opacityMaskShader;
 	case MaterialType::ScreenMaterial:
 		return m_screenShader;
+	case MaterialType::CubeMaterial:
+		return m_cubeShader;
 	default:
 		assert(0);
 	}
@@ -252,6 +256,20 @@ void Renderer::RenderObject(
 			// 凑合了一下
 			shader->SetUniformFloat("texWidth", 900);
 			shader->SetUniformFloat("texHeight", 800);
+		}
+		break;
+		case MaterialType::CubeMaterial:
+		{
+			CubeMaterial* cubeMat = (CubeMaterial*)material;
+			// 很重要，这就是包围盒跟着摄像机移动
+			mesh->SetPosition(camera->m_position);
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+
+			shader->SetUniformInt("cubeSampler", cubeMat->m_diffuse->GetUnit());
+			cubeMat->m_diffuse->Bind();
 		}
 		break;
 		default:

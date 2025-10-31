@@ -58,6 +58,9 @@
     <Filter Include="assets\fbx">
       <UniqueIdentifier>{e92942cf-d3bb-4b0a-b051-2ce32be1c2b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\textures\skybox">
+      <UniqueIdentifier>{c3306d49-e307-4b8d-94eb-e42cc51e52ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -1380,6 +1383,9 @@
     <ClInclude Include="inc\FrameBuffer.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\CubeMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1826,6 +1832,12 @@
     <None Include="assets\shaders\screen.vert">
       <Filter>assets\shaders</Filter>
     </None>
+    <None Include="assets\shaders\cube.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\cube.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\goku.jpg">
@@ -1860,6 +1872,24 @@
     </Image>
     <Image Include="assets\textures\window.png">
       <Filter>assets\textures</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\back.jpg">
+      <Filter>assets\textures\skybox</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\bottom.jpg">
+      <Filter>assets\textures\skybox</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\front.jpg">
+      <Filter>assets\textures\skybox</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\left.jpg">
+      <Filter>assets\textures\skybox</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\right.jpg">
+      <Filter>assets\textures\skybox</Filter>
+    </Image>
+    <Image Include="assets\textures\skybox\top.jpg">
+      <Filter>assets\textures\skybox</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -544,6 +544,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="inc\AssimpLoader.h" />
+    <ClInclude Include="inc\CubeMaterial.h" />
     <ClInclude Include="inc\DepthMaterial.h" />
     <ClInclude Include="inc\DirectionalLight.h" />
     <ClInclude Include="inc\Camera.h" />
@@ -712,6 +713,8 @@
     <None Include="..\3rd\glm\gtx\vector_angle.inl" />
     <None Include="..\3rd\glm\gtx\vector_query.inl" />
     <None Include="..\3rd\glm\gtx\wrap.inl" />
+    <None Include="assets\shaders\cube.frag" />
+    <None Include="assets\shaders\cube.vert" />
     <None Include="assets\shaders\depth.frag" />
     <None Include="assets\shaders\depth.vert" />
     <None Include="assets\shaders\phong.frag" />
@@ -732,6 +735,12 @@
     <Image Include="assets\textures\land.jpg" />
     <Image Include="assets\textures\luffy.jpg" />
     <Image Include="assets\textures\noise.jpg" />
+    <Image Include="assets\textures\skybox\back.jpg" />
+    <Image Include="assets\textures\skybox\bottom.jpg" />
+    <Image Include="assets\textures\skybox\front.jpg" />
+    <Image Include="assets\textures\skybox\left.jpg" />
+    <Image Include="assets\textures\skybox\right.jpg" />
+    <Image Include="assets\textures\skybox\top.jpg" />
     <Image Include="assets\textures\sp_mask.png" />
     <Image Include="assets\textures\wall.jpg" />
     <Image Include="assets\textures\window.png" />
