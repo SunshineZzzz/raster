@@ -6,6 +6,7 @@
 #include "../inc/PhongEnvMaterial.h"
 #include "../inc/PhongInstanceMaterial.h"
 #include "../inc/InstancedMesh.h"
+#include "../inc/GrassInstanceMaterial.h"
 
 #include <cassert>
 
@@ -24,6 +25,7 @@ Renderer::Renderer()
 	m_cubeShader = std::make_shared<Shader>("assets/shaders/cube.vert", "assets/shaders/cube.frag");
 	m_phongEnvShader = std::make_shared<Shader>("assets/shaders/phongEnv.vert", "assets/shaders/phongEnv.frag");
 	m_phongInstanceShader = std::make_shared<Shader>("assets/shaders/phongInstance.vert", "assets/shaders/phongInstance.frag");
+	m_grassInstanceShader = std::make_shared<Shader>("assets/shaders/grassInstance.vert", "assets/shaders/grassInstance.frag");
 }
 
 Renderer::~Renderer() {}
@@ -118,6 +120,8 @@ std::shared_ptr<Shader> Renderer::PickShader(MaterialType type)
 		return m_phongEnvShader;
 	case MaterialType::PhongInstanceMaterial:
 		return m_phongInstanceShader;
+	case MaterialType::GrassInstanceMaterial:
+		return m_grassInstanceShader;
 	default:
 		assert(0);
 	}
@@ -186,6 +190,7 @@ void Renderer::RenderObject(
 			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
 			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
 			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+			shader->SetUniformFloat("directionalLight.intensity", dirLight->m_intensity);
 
 			// 透明度
 			shader->SetUniformFloat("opacity", material->m_opacity);
@@ -355,6 +360,70 @@ void Renderer::RenderObject(
 
 			// ********传输uniform类型的矩阵变换数组*********/
 			// shader->SetUniformMatrix4x4Array("matrices", im->m_instanceMatrices, im->m_instanceCount);
+		}
+		break;
+		case MaterialType::GrassInstanceMaterial:
+		{
+			GrassInstanceMaterial* grassMat = (GrassInstanceMaterial*)material;
+			InstancedMesh* im = (InstancedMesh*)mesh;
+
+			im->SortMatrices(camera->GetViewMatrix());
+			im->UpdateMatrices();
+
+			// diffuse贴图帧更新
+			// 将纹理采样器与纹理单元进行挂钩
+			shader->SetUniformInt("sampler", grassMat->m_diffuse->GetUnit());
+			// 将纹理与纹理单元进行挂钩
+			grassMat->m_diffuse->Bind();
+
+			shader->SetUniformInt("opacityMask", grassMat->m_opacityMask->GetUnit());
+			grassMat->m_opacityMask->Bind();
+
+			// mvp
+			shader->SetUniformMatrix4x4("modelMatrix", mesh->GetModelMatrix());
+			shader->SetUniformMatrix4x4("viewMatrix", camera->GetViewMatrix());
+			shader->SetUniformMatrix4x4("projectionMatrix", camera->GetProjectionMatrix());
+
+			// 不是实力绘制的时候，每一个都是drawcall时候，可以在c++中计算法线矩阵，然后传递给vs。再到fs中使用，从而做光照相关计算。
+			// 但是实力绘制的话，一次drawcall或者多个实例，不仅仅是统一的模型变化矩阵，每个实例都有自己的模型变化矩阵，所以c++中不好做，最好在vs中做。
+			//auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
+			//shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
+
+			// 光源参数的uniform更新
+			// directionalLight 的更新
+			shader->SetUniformVector3("directionalLight.color", dirLight->m_color);
+			shader->SetUniformVector3("directionalLight.direction", dirLight->m_direction);
+			shader->SetUniformFloat("directionalLight.specularIntensity", dirLight->m_specularIntensity);
+
+
+			shader->SetUniformFloat("shiness", grassMat->m_shiness);
+
+			shader->SetUniformVector3("ambientColor", ambLight->m_color);
+
+			// 相机信息更新
+			shader->SetUniformVector3("cameraPosition", camera->m_position);
+
+			// 透明度
+			shader->SetUniformFloat("opacity", material->m_opacity);
+
+			// 草地贴图特性
+			shader->SetUniformFloat("uvScale", grassMat->m_uvScale);
+			shader->SetUniformFloat("brightness", grassMat->m_brightness);
+			shader->SetUniformFloat("time", SDL_GetTicks()/1000.f);
+
+			// 风力
+			shader->SetUniformFloat("windScale", grassMat->m_windScale);
+			shader->SetUniformVector3("windDirection", grassMat->m_windDirection);
+			shader->SetUniformFloat("phaseScale", grassMat->m_phaseScale);
+
+			// 云层
+			shader->SetUniformInt("cloudMask", grassMat->m_cloudMask->GetUnit());
+			grassMat->m_cloudMask->Bind();
+			shader->SetUniformVector3("cloudWhiteColor", grassMat->m_cloudWhiteColor);
+			shader->SetUniformVector3("cloudBlackColor", grassMat->m_cloudBlackColor);
+			shader->SetUniformFloat("cloudUVScale", grassMat->m_cloudUVScale);
+			shader->SetUniformFloat("cloudSpeed", grassMat->m_cloudSpeed);
+			shader->SetUniformFloat("cloudLerp", grassMat->m_cloudLerp);
 		}
 		break;
 		default:

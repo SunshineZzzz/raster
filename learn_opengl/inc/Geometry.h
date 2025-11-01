@@ -15,6 +15,13 @@ public:
 		const std::vector<float>& uvs,
 		const std::vector<unsigned int>& indices
 	);
+	Geometry(
+		const std::vector<float>& positions,
+		const std::vector<float>& normals,
+		const std::vector<float>& uvs,
+		const std::vector<float>& colors,
+		const std::vector<unsigned int>& indices
+	);
 	~Geometry();
 
 	// 创建立方体，立方体中心在原点 
@@ -37,6 +44,8 @@ private:
 	// 顶点缓冲对象，用来存储顶点属性数据
 	// 顶点坐标vbo
 	GLuint m_posVbo{ 0 };
+	// 顶点颜色vbo
+	GLuint m_colorVbo{ 0 };
 	// 顶点uv坐标vbo
 	GLuint m_uvVbo{ 0 };
 	// 顶点法线vbo

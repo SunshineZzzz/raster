@@ -34,6 +34,8 @@
 #include "inc/PhongEnvMaterial.h"
 #include "inc/InstancedMesh.h"
 #include "inc/PhongInstanceMaterial.h"
+#include "inc/AssimpInstanceLoader.h.h"
+#include "inc/GrassInstanceMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -42,6 +44,8 @@ std::shared_ptr<Camera> camera = nullptr;
 std::unique_ptr<CameraControl> cameraControl = nullptr;
 std::unique_ptr<GLContext> glcontext = nullptr;
 glm::vec3 clearColor{};
+// 草地实例化材质
+GrassInstanceMaterial* grassMaterial = nullptr;
 
 void InitImGUI()
 {
@@ -53,6 +57,8 @@ void InitImGUI()
 	ImGui_ImplOpenGL3_Init("#version 460");
 }
 
+// 关闭模型内部的深度写入，防止模型之间相互遮挡，多个模型靠的是排序(优先不透明，再透明由远及近)
+// 这个注释是给模型加载补充的，这次上穿跟这个无关
 void SetModelBlend(Object* obj, bool blend, float opacity) {
 	if (obj->getType() == ObjectType::Mesh) 
 	{
@@ -67,6 +73,55 @@ void SetModelBlend(Object* obj, bool blend, float opacity) {
 	for (int i = 0; i < children.size(); i++) 
 	{
 		SetModelBlend(children[i], blend, opacity);
+	}
+}
+
+// 模型内部有很多mesh，这些mesh不做实例化渲染。多个相同模型，需要做实例化渲染
+// 这个函数目的是，把多个模型的模型变化矩阵写入到mesh中。index表示第几个模型
+void SetInstanceMatrix(Object* obj, int index, glm::mat4 matrix) 
+{
+	if (obj->getType() == ObjectType::InstancedMesh) 
+	{
+		InstancedMesh* im = (InstancedMesh*)obj;
+		im->m_instanceMatrices[index] = matrix;
+	}
+
+	auto children = obj->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
+	{
+		SetInstanceMatrix(children[i], index, matrix);
+	}
+}
+
+// 递归模型的mesh，写入实例化模型变化矩阵数据到显存空间
+void UpdateInstanceMatrix(Object* obj) 
+{
+	if (obj->getType() == ObjectType::InstancedMesh) 
+	{
+		InstancedMesh* im = (InstancedMesh*)obj;
+		im->UpdateMatrices();
+	}
+
+	auto children = obj->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
+	{
+		UpdateInstanceMatrix(children[i]);
+	}
+}
+
+// AssimpInstanceLoader::Load模型加载后，材质都是PhongInstanceMaterial，需要替换为grassMaterial
+void SetInstanceMaterial(Object* obj, Material* material) 
+{
+	if (obj->getType() == ObjectType::InstancedMesh) 
+	{
+		InstancedMesh* im = (InstancedMesh*)obj;
+		im->m_material.reset(material);
+	}
+
+	auto children = obj->GetChildren();
+	for (int i = 0; i < children.size(); i++) 
+	{
+		SetInstanceMaterial(children[i], material);
 	}
 }
 
@@ -86,19 +141,40 @@ void Prepare()
 	auto boxMesh = new Mesh(boxGeo, boxMat);
 	glcontext->m_scene->AddChild(boxMesh);
 
-	auto sphereGeo = Geometry::CreateSphere(4.0f);
-	auto sphereMat = new PhongInstanceMaterial();
-	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 0);
+	int rNum = 50;
+	int cNum = 50;
 
-	auto sphereMesh = new InstancedMesh(sphereGeo, sphereMat, 3);
-	glm::mat4 transform0 = glm::mat4(1.0f);
-	glm::mat4 transform1 = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f));
-	glm::mat4 transform2 = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 8.0f, 0.0f));
-	sphereMesh->m_instanceMatrices[0] = transform0;
-	sphereMesh->m_instanceMatrices[1] = transform1;
-	sphereMesh->m_instanceMatrices[2] = transform2;
-	sphereMesh->UpdateMatrices();
-	glcontext->m_scene->AddChild(sphereMesh);
+	auto grassModel = AssimpInstanceLoader::Load("assets/fbx/grassNew.obj", rNum * cNum);
+	glm::mat4 translate;
+	glm::mat4 rotate;
+	glm::mat4 transform;
+
+	srand(unsigned(SDL_GetTicks()));
+	for (int r = 0; r < rNum; r++) 
+	{
+		for (int c = 0; c < cNum; c++) 
+		{
+			translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.2 * r, 0.0f, 0.2 * c));
+			rotate = glm::rotate(glm::mat4(1.0f), glm::radians((float)(rand() % 90)), glm::vec3(0.0, 1.0, 0.0));
+			transform = translate * rotate;
+			SetInstanceMatrix(grassModel, r * cNum + c, transform);
+		}
+	}
+	UpdateInstanceMatrix(grassModel);
+	glcontext->m_scene->AddChild(grassModel);
+
+	auto house = AssimpLoader::Load("assets/fbx/house.fbx");
+	house->SetScale(glm::vec3(0.5f));
+	house->SetPosition(glm::vec3(rNum * 0.2f / 2.0f, 0.4, cNum * 0.2f / 2.0f));
+	glcontext->m_scene->AddChild(house);
+
+	grassMaterial = new GrassInstanceMaterial();
+	grassMaterial->m_diffuse = new Texture("assets/textures/GRASS.PNG", 0);
+	grassMaterial->m_opacityMask = new Texture("assets/textures/grassMask.png", 1);
+	grassMaterial->m_cloudMask = new Texture("assets/textures/CLOUD.PNG", 2);
+	grassMaterial->m_blend = true;
+	grassMaterial->m_depthWrite = false;
+	SetInstanceMaterial(grassModel, grassMaterial);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();
 	glcontext->m_dirLight->m_direction = glm::vec3(-1.0f);
@@ -231,9 +307,21 @@ void RenderIMGUI()
 
 	// 决定当前的GUI上面有哪些控件，从上到下
 	ImGui::Begin("Hello, world!");
-	ImGui::Text("ChangeColor Demo");
-	ImGui::Button("Test Button", ImVec2(40, 20));
-	ImGui::ColorEdit3("Clear Color", (float*)&clearColor);
+	ImGui::Text("GrassColor");
+	ImGui::SliderFloat("UVScale", &grassMaterial->m_uvScale, 0.0f, 100.0f);
+	ImGui::InputFloat("Brightness", &grassMaterial->m_brightness);
+	ImGui::Text("Wind");
+	ImGui::InputFloat("WindScale", &grassMaterial->m_windScale);
+	ImGui::InputFloat("PhaseScale", &grassMaterial->m_phaseScale);
+	ImGui::ColorEdit3("WindDirection", (float*)&grassMaterial->m_windDirection);
+	ImGui::Text("Cloud");
+	ImGui::ColorEdit3("CloudWhiteColor", (float*)&grassMaterial->m_cloudWhiteColor);
+	ImGui::ColorEdit3("CloudBlackColor", (float*)&grassMaterial->m_cloudBlackColor);
+	ImGui::SliderFloat("CloudUVScale", &grassMaterial->m_cloudUVScale, 0.0f, 100.0f);
+	ImGui::InputFloat("CloudSpeed", &grassMaterial->m_cloudSpeed);
+	ImGui::SliderFloat("CloudLerp", &grassMaterial->m_cloudLerp, 0.0f, 1.0f);
+	ImGui::Text("Light");
+	ImGui::InputFloat("Intensity", &glcontext->m_dirLight->m_intensity);
 	ImGui::End();
 
 	// 执行UI渲染

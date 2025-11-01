@@ -49,7 +49,7 @@
 	- [混合](#混合)
 		- [OpenGL开启混合](#opengl开启混合)
 		- [颜色混合为什么需要关闭深度写入(不是深度测试)](#颜色混合为什么需要关闭深度写入不是深度测试)
-	- [抖动](#抖动)
+		- [透明度蒙版](#透明度蒙版)
 	- [逻辑操作](#逻辑操作)
 - [GPU工作流程解析](#gpu工作流程解析)
 - [VBO](#vbo)
@@ -105,7 +105,9 @@
 	- [OpenGL开启面剔除](#opengl开启面剔除)
 - [立方体贴图](#立方体贴图)
 	- [立方体贴图实现环境光照](#立方体贴图实现环境光照)
-
+- [球型投影贴图](#球型投影贴图)
+- [实例绘制](#实例绘制)
+	- [实例绘制API](#实例绘制api)
 ### OpenGL 
 
 ​​`Khronos Group​​`制定和维护`OpenGL`​( ​​Open Graphics Library​​)​规范​​(Specification)，严格定义每个函数的输入、输出和行为。理论上任何人都可以按照这些规范实现一套`OpenGL`库，就像标准`C`库有很多不同的实现一样，比如`SwiftShader`就是一个基于`CPU`的纯软件的`OpenGL`实现。如果要想使用`GPU`硬件，一般是`GPU`设备制造商(NVIDIA, AMD, Intel)来实现这些`API`，这些库也被称为GPU驱动。
@@ -253,7 +255,7 @@ void DoScaleAndTranslateTransform(glm::mat4& oriM)
 
 #### 齐次坐标
 
-**对于向量，齐次坐标是在向量的末尾添加一个分量0，形成一个新的向量。**
+**对于向量，齐次坐标是在向量的末尾添加一个分量0，形成一个新的向量。如果应用了平移方向和大小就发生变化，向量失去了意义啊**
 **对于点，齐次坐标是在点的末尾添加一个分量1，形成一个新的点。**
 
 点代表空间中的一个位置。当 4×4 变换矩阵作用于一个点时，我们希望平移分量（矩阵的第四列）能够影响这个点的位置。
@@ -1023,6 +1025,11 @@ fs shader中全部给了0.3透明度
 ###### 透明度蒙版
 
 **草坪绘制需要法线都设置为(0,0,1)，要不然会出现明暗交替的情况**
+
+OpenGL/GLSL系统中RGBA的范围都是0.0f~1.0f，对于透明蒙版贴图而言，采样rgba人一个分量都行，一般采用r分量
+```glsl
+float alpha =  texture(opacityMask, uv).r;
+```
 
 ![alt text](img/OpenGL_Blending_mask1.png)
 
@@ -1827,7 +1834,6 @@ void main()
 
 ![alt text](img/OpenGL_CubeMapAmbient1.png)
 
-
 ### 球型投影贴图
 
 球型投影贴图(Spherical Projection Mapping)，是一种将二维纹理映射到三维球体表面的技术。通过将纹理坐标转换为球面坐标，实现纹理在球体表面的正确显示。
@@ -1850,6 +1856,27 @@ void main()
 
 实例绘制(Instanced Rendering)，是一种高效的渲染技术，用于在场景中绘制大量相似的物体。通过实例化技术，可以减少绘制调用次数，提高渲染性能。
 
+存在问题：
+
+1. 透明问题排序问题：
+
+也会出现透明问题排序问题，以前解决透明问题实例化，咱们自己排序，由远及近画。前面是多次调用drawcall。
+
+这里是调用一次drawcall，但是根据模型矩阵不同，画出来多个实例。所以排序问题还是得自己解决。
+
+opengl在vs中绘制的时候是按照实例顺序去绘的，0~m_instanceCount取得m_instanceMatrices[i]。
+
+让m_instanceMatrices数组进行排序，由远及近排序(摄像机坐标系下)即可。
+
+2. 法线矩阵问题：
+
+不是实力绘制的时候，每一个都是drawcall时候，可以在c++中计算法线矩阵，然后传递给vs。再到fs中使用，从而做光照相关计算。
+```C++
+auto normalMatrix = glm::mat3(glm::transpose(glm::inverse(mesh->GetModelMatrix())));
+shader->SetUniformMatrix3x3("normalMatrix", normalMatrix);
+```
+但是实力绘制的话，一次drawcall或者多个实例，不仅仅是统一的模型变化矩阵，每个实例都有自己的模型变化矩阵，所以c++中不好做，最好在vs中做。
+
 ![alt text](img/OpenGL_InstancedRendering1.png)
 
 ![alt text](img/OpenGL_InstancedRendering2.png)
@@ -1871,3 +1898,66 @@ void main()
 ![alt text](img/OpenGL_InstancedRenderAPI6.png)
 
 ![alt text](img/OpenGL_InstancedRenderAPI7.png)
+
+### 风吹动草原理
+
+顶点颜色和风力结合在一起，最顶点r=1,g=0,b=0，其他顶点r=0,g=0,b=0，插值以后中间像素0~1，风力假设是10，插值出中间风力0~10。
+
+下图反过来了
+
+![alt text](img/OpenGL_grasswithwind1.png)
+
+肯定是要搭配透明蒙版，自然法线都要一直朝上(0,0,1)，避免平行光阴影。
+
+![alt text](img/OpenGL_Blending_mask1.png)
+
+sin(time + 相位)，每个实例相位不同，实例随着时间，下面位置不变，上面就会随着风向和风力发生不同的变化。
+
+下图就是把投影长度作为相位了
+
+![alt text](img/OpenGL_grasswithwind3.png)
+
+![alt text](img/OpenGL_grasswithwind2.png)
+
+#### 整体贴图
+
+每个草都贴一样的贴图，整体就会很乱，颜色也很杂，最好是一个草坪整体进行贴一张图。就是在vs中将物体世界坐标传给fs中，再在fs中根据世界坐标计算uv坐标，在进行采样贴图。
+
+比如下面的代码：
+
+```GLSL
+//VS
+...
+out vec3 worldPosition;
+...
+void main()
+{
+	...
+	worldPosition = transformPosition.xyz;
+	...
+}
+...
+
+// FS
+...
+in vec3 worldPosition;
+// 草地贴图特性
+uniform float uvScale;
+...
+void main()
+{
+	...
+	// 草实例都在xz平面，每个随机在绕y轴旋转
+	vec2 worldXZ = worldPosition.xz;
+	// x为u，z为v。对的sampler对应的贴图越大，除于数字越大，uv自然越小。
+	// 除数交给外部来调整
+	vec2 worldUV = worldXZ / uvScale;
+	// sampler对应的贴图中进行整体贴图
+	vec3 objectColor  = texture(sampler, worldUV).xyz;
+	...
+}
+```
+
+![alt text](img/OpenGL_overalltexturemapping1.png)
+
+![alt text](img/OpenGL_overalltexturemapping2.png)

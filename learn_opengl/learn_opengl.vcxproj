@@ -140,6 +140,7 @@
     <ClCompile Include="imgui\imgui_impl_sdl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\AssimpInstanceLoader.cpp" />
     <ClCompile Include="src\AssimpLoader.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CameraControl.cpp" />
@@ -543,6 +544,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="inc\AssimpInstanceLoader.h.h" />
     <ClInclude Include="inc\AssimpLoader.h" />
     <ClInclude Include="inc\CubeMaterial.h" />
     <ClInclude Include="inc\DepthMaterial.h" />
@@ -555,6 +557,7 @@
     <ClInclude Include="inc\GameCameraControl.h" />
     <ClInclude Include="inc\Geometry.h" />
     <ClInclude Include="inc\GLContext.h" />
+    <ClInclude Include="inc\GrassInstanceMaterial.h" />
     <ClInclude Include="inc\InstancedMesh.h" />
     <ClInclude Include="inc\Light.h" />
     <ClInclude Include="inc\Material.h" />
@@ -720,6 +723,8 @@
     <None Include="assets\shaders\cube.vert" />
     <None Include="assets\shaders\depth.frag" />
     <None Include="assets\shaders\depth.vert" />
+    <None Include="assets\shaders\grassInstance.frag" />
+    <None Include="assets\shaders\grassInstance.vert" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\phong.vert" />
     <None Include="assets\shaders\phongEnv.frag" />
@@ -734,10 +739,14 @@
     <None Include="assets\shaders\white.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\bk.jpg" />
     <Image Include="assets\textures\box.png" />
+    <Image Include="assets\textures\defaultTexture.jpg" />
     <Image Include="assets\textures\earth.png" />
     <Image Include="assets\textures\goku.jpg" />
     <Image Include="assets\textures\grass.jpg" />
+    <Image Include="assets\textures\GRASS.PNG" />
+    <Image Include="assets\textures\grassMask.png" />
     <Image Include="assets\textures\hinata.jpg" />
     <Image Include="assets\textures\land.jpg" />
     <Image Include="assets\textures\luffy.jpg" />
@@ -748,6 +757,7 @@
     <Image Include="assets\textures\skybox\left.jpg" />
     <Image Include="assets\textures\skybox\right.jpg" />
     <Image Include="assets\textures\skybox\top.jpg" />
+    <Image Include="assets\textures\sphericalMap.png" />
     <Image Include="assets\textures\sp_mask.png" />
     <Image Include="assets\textures\wall.jpg" />
     <Image Include="assets\textures\window.png" />

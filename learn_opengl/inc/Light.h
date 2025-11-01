@@ -13,4 +13,6 @@ public:
 	glm::vec3 m_color{ 1.0f };
 	// 镜面反射光斑亮度
 	float m_specularIntensity{ 1.0f };
+	// 光的强度
+	float m_intensity{ 1.0 };
 };
