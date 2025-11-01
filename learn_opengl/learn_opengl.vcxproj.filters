@@ -1389,6 +1389,12 @@
     <ClInclude Include="inc\PhongEnvMaterial.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\InstancedMesh.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PhongInstanceMaterial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\phong.frag">
@@ -1845,6 +1851,12 @@
       <Filter>assets\shaders</Filter>
     </None>
     <None Include="assets\shaders\phongEnv.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\phongInstance.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\phongInstance.vert">
       <Filter>assets\shaders</Filter>
     </None>
   </ItemGroup>

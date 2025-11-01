@@ -32,6 +32,8 @@
 #include "inc/ScreenMaterial.h"
 #include "inc/CubeMaterial.h"
 #include "inc/PhongEnvMaterial.h"
+#include "inc/InstancedMesh.h"
+#include "inc/PhongInstanceMaterial.h"
 
 auto nWidth = 900;
 auto nHeight = 800;
@@ -78,17 +80,24 @@ void Prepare()
 	glcontext->m_offscreenScene = std::make_shared<Scene>();
 	glcontext->m_offscreenFB = std::make_shared<FrameBuffer>(nWidth, nHeight);
 
-
-	auto boxGeo = Geometry::CreateSphere(1.0f);
+	auto boxGeo = Geometry::CreateBox(1.0f);
 	auto boxMat = new CubeMaterial();
-	boxMat->m_diffuse = new Texture("assets/textures/sphericalMap.png", 0);
+	boxMat->m_diffuse = new Texture("assets/textures/bk.jpg", 0);
 	auto boxMesh = new Mesh(boxGeo, boxMat);
 	glcontext->m_scene->AddChild(boxMesh);
 
-	auto sphereGeo = Geometry::CreateBox(4.0f);
-	auto sphereMat = new PhongMaterial();
+	auto sphereGeo = Geometry::CreateSphere(4.0f);
+	auto sphereMat = new PhongInstanceMaterial();
 	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 0);
-	auto sphereMesh = new Mesh(sphereGeo, sphereMat);
+
+	auto sphereMesh = new InstancedMesh(sphereGeo, sphereMat, 3);
+	glm::mat4 transform0 = glm::mat4(1.0f);
+	glm::mat4 transform1 = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f));
+	glm::mat4 transform2 = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 8.0f, 0.0f));
+	sphereMesh->m_instanceMatrices[0] = transform0;
+	sphereMesh->m_instanceMatrices[1] = transform1;
+	sphereMesh->m_instanceMatrices[2] = transform2;
+
 	glcontext->m_scene->AddChild(sphereMesh);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();

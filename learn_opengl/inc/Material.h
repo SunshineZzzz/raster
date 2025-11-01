@@ -19,6 +19,8 @@ enum class MaterialType
 	CubeMaterial,
 	// 天空盒环境光照
 	PhongEnvMaterial,
+	// 实例化冯氏光照模型
+	PhongInstanceMaterial
 };
 
 class Material 

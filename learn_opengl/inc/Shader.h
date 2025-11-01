@@ -24,6 +24,7 @@ public:
 	void SetUniformVector3(const std::string& name, const glm::vec3 value);
 	void SetUniformInt(const std::string& name, int value);
 	void SetUniformMatrix4x4(const std::string& name, glm::mat4 value);
+	void SetUniformMatrix4x4Array(const std::string& name, glm::mat4* value, int count);
 	void SetUniformMatrix3x3(const std::string& name, glm::mat3 value);
 
 private:

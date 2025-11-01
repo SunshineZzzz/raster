@@ -5,9 +5,14 @@
 
 enum class ObjectType 
 {
+	// 空间中的物体，没有几何体，没有材质
 	Object,
+	// 网格，几何体和材质
 	Mesh,
-	Scene
+	// 场景，都不在空间中，作为父亲节点
+	Scene,
+	// 实例网格，多个几何和材质相同的网格，模型变化矩阵不同
+	InstancedMesh,
 };
 
 class Object 

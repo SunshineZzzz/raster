@@ -1836,8 +1836,6 @@ void main()
 
 ![alt text](img/OpenGL_SphereMap2.png)
 
-![alt text](img/OpenGL_SphereMap3.png)
-
 ![alt text](img/OpenGL_SphereMap4.png)
 
 **先在xy平面画一个半圆，所以经线弧度范围[-Π/2, Π/2]，再绕着y轴旋转360度，就可以得到一个完整的球体。纬线弧度范围[-Π, Π]**
@@ -1847,3 +1845,19 @@ void main()
 一直viewDir向量，归一化以后(单位球，坐标)，就可以知道经线弧度角和纬线弧度角，就可以求UV坐标了
 
 ![alt text](img/OpenGL_SphereMap6.png)
+
+### 实例绘制
+
+实例绘制(Instanced Rendering)，是一种高效的渲染技术，用于在场景中绘制大量相似的物体。通过实例化技术，可以减少绘制调用次数，提高渲染性能。
+
+![alt text](img/OpenGL_InstancedRendering1.png)
+
+![alt text](img/OpenGL_InstancedRendering2.png)
+
+#### 实例绘制API
+
+![alt text](img/OpenGL_InstancedRenderAPI1.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI2.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI3.png)

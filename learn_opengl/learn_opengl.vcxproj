@@ -555,6 +555,7 @@
     <ClInclude Include="inc\GameCameraControl.h" />
     <ClInclude Include="inc\Geometry.h" />
     <ClInclude Include="inc\GLContext.h" />
+    <ClInclude Include="inc\InstancedMesh.h" />
     <ClInclude Include="inc\Light.h" />
     <ClInclude Include="inc\Material.h" />
     <ClInclude Include="inc\Mesh.h" />
@@ -563,6 +564,7 @@
     <ClInclude Include="inc\PerspectiveCamera.h" />
     <ClInclude Include="inc\Object.h" />
     <ClInclude Include="inc\PhongEnvMaterial.h" />
+    <ClInclude Include="inc\PhongInstanceMaterial.h" />
     <ClInclude Include="inc\PhongMaterial.h" />
     <ClInclude Include="inc\PointLight.h" />
     <ClInclude Include="inc\Renderer.h" />
@@ -722,6 +724,8 @@
     <None Include="assets\shaders\phong.vert" />
     <None Include="assets\shaders\phongEnv.frag" />
     <None Include="assets\shaders\phongEnv.vert" />
+    <None Include="assets\shaders\phongInstance.frag" />
+    <None Include="assets\shaders\phongInstance.vert" />
     <None Include="assets\shaders\phongOpacityMask.frag" />
     <None Include="assets\shaders\phongOpacityMask.vert" />
     <None Include="assets\shaders\screen.frag" />
