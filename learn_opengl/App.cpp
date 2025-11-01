@@ -78,30 +78,16 @@ void Prepare()
 	glcontext->m_offscreenScene = std::make_shared<Scene>();
 	glcontext->m_offscreenFB = std::make_shared<FrameBuffer>(nWidth, nHeight);
 
-	std::vector<std::string> paths = 
-	{
-		"assets/textures/skybox/right.jpg",
-		"assets/textures/skybox/left.jpg",
-		"assets/textures/skybox/top.jpg",
-		"assets/textures/skybox/bottom.jpg",
-		"assets/textures/skybox/back.jpg",
-		"assets/textures/skybox/front.jpg"
-	};
 
-	auto boxGeo = Geometry::CreateBox(1.0f);
+	auto boxGeo = Geometry::CreateSphere(1.0f);
 	auto boxMat = new CubeMaterial();
-	boxMat->m_diffuse = new Texture(paths, 0);
-	// 因为vs中没有把天空盒子搞到远平面，所以他先绘制，就遮挡了后面的球体，球体的深度大一些
-	// 所以需要关闭深度检测。其实关了也没用，如果先绘制球，就又出了同样的问题了。
-	// 正确的做法是天空盒vs中搞到远平面！
-	// boxMat->m_depthWrite = false;
+	boxMat->m_diffuse = new Texture("assets/textures/sphericalMap.png", 0);
 	auto boxMesh = new Mesh(boxGeo, boxMat);
 	glcontext->m_scene->AddChild(boxMesh);
 
-	auto sphereGeo = Geometry::CreateSphere(4.0f);
-	auto sphereMat = new PhongEnvMaterial();
-	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 1);
-	sphereMat->m_env = boxMat->m_diffuse;
+	auto sphereGeo = Geometry::CreateBox(4.0f);
+	auto sphereMat = new PhongMaterial();
+	sphereMat->m_diffuse = new Texture("assets/textures/earth.png", 0);
 	auto sphereMesh = new Mesh(sphereGeo, sphereMat);
 	glcontext->m_scene->AddChild(sphereMesh);
 

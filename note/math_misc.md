@@ -1,4 +1,5 @@
 - [偏导数](#偏导数)
+- [反函数](#反函数)
 
 ### 偏导数
 
@@ -11,3 +12,21 @@
 ![alt text](img/partial_derivative2.png)
 
 ![alt text](img/partial_derivative3.png)
+
+### 反函数
+
+![alt text](img/inverse_function1.png)
+
+![alt text](img/inverse_function2.png)
+
+![alt text](img/inverse_function3.png)
+
+#### 反三角函数
+
+![alt text](img/inverse_trigonometric_function1.png)
+
+![alt text](img/inverse_trigonometric_function2.png)
+
+![alt text](img/inverse_trigonometric_function3.png)
+
+![alt text](img/inverse_trigonometric_function4.png)

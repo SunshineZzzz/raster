@@ -1826,3 +1826,24 @@ void main()
 说明这个点对顶点环境光影响最强。**视线方向 => 反射方向 => 采样天空盒哪一格像素。** 
 
 ![alt text](img/OpenGL_CubeMapAmbient1.png)
+
+
+### 球型投影贴图
+
+球型投影贴图(Spherical Projection Mapping)，是一种将二维纹理映射到三维球体表面的技术。通过将纹理坐标转换为球面坐标，实现纹理在球体表面的正确显示。
+
+![alt text](img/OpenGL_SphereMap1.png)
+
+![alt text](img/OpenGL_SphereMap2.png)
+
+![alt text](img/OpenGL_SphereMap3.png)
+
+![alt text](img/OpenGL_SphereMap4.png)
+
+**先在xy平面画一个半圆，所以经线弧度范围[-Π/2, Π/2]，再绕着y轴旋转360度，就可以得到一个完整的球体。纬线弧度范围[-Π, Π]**
+
+![alt text](img/OpenGL_SphereMap5.png)
+
+一直viewDir向量，归一化以后(单位球，坐标)，就可以知道经线弧度角和纬线弧度角，就可以求UV坐标了
+
+![alt text](img/OpenGL_SphereMap6.png)

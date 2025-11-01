@@ -106,7 +106,7 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	// 自动生成mipmap
-	glGenerateMipmap(GL_TEXTURE_2D);
+	// glGenerateMipmap(GL_TEXTURE_2D);
 
 	// 释放数据
 	stbi_image_free(data);
@@ -118,7 +118,7 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	// GL_TEXTURE_MAG_FILTER (放大过滤)
 	// 发生时机：屏幕像素 > 纹理像素 (纹理被拉伸)
 	// 描述：屏幕上需要的像素比实际纹理对象像素多，采用线性过滤
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// GL_TEXTURE_MIN_FILTER (缩小过滤)
 	// 发生时机：屏幕像素 < 纹理像素 (纹理被压缩)
 	// 描述：屏幕上需要的像素比实际纹理对象像素少，采用临近过滤
@@ -126,7 +126,11 @@ Texture::Texture(const std::string& path, unsigned int unit)
 	// GL_LINEAR_MIPMAP_LINEAR: 在单个mipmap上采用线性采样，在两层mipmap LOD之间(比如L=1.3,L1,L2之间)采用线性过滤来获取纹理像素
 	// GL_NEAREST_MIPMAP_NEAREST: 在单个mipmap上采用临近采样，在两层mipmap LOD之间(比如L=1.3,L1,L2之间)采用临近过滤来获取纹理像素
 	// 还有其他的组合方式，比如GL_LINEAR_MIPMAP_NEAREST，GL_NEAREST_MIPMAP_LINEAR等
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+
+	// 球星投影贴图需要改一下，要不然会有虚线
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	// 设置纹理的包裹方式
 	// u纹理坐标超出[0,1]范围，采用重复模式

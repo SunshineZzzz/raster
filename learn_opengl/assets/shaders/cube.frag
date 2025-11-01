@@ -1,11 +1,19 @@
 ﻿#version 460 core
 out vec4 FragColor;
 in vec3 uvw;
-uniform samplerCube cubeSampler;
+uniform sampler2D sphericalSampler;
+const float PI = 3.1415926535897932384626433832795;
+vec2 uvwToUv(vec3 uvwN)
+{
+	float phi = asin(uvwN.y);
+	float theta = atan(uvwN.z, uvwN.x);
+	float u = theta / (2.0 * PI) + 0.5;
+	float v = phi / PI + 0.5;
+	return vec2(u, v);
+}
 void main()
 {
-	// 片段着色器 (Fragment Shader) 的主要输出颜色
-	// 还要经历：模板测试，深度测试，颜色混合，最终写入颜色缓冲区，显示在屏幕
-	// 进行天空盒颜色采样
-	FragColor = texture(cubeSampler, uvw);
+	vec3 uvwN = normalize(uvw);
+	vec2 uv = uvwToUv(uvwN);
+	FragColor = texture(sphericalSampler, uv);
 }

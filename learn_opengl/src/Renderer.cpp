@@ -283,7 +283,7 @@ void Renderer::RenderObject(
 			shader->SetUniformInt("sampler", phongMat->m_diffuse->GetUnit());
 			phongMat->m_diffuse->Bind();
 
-			shader->SetUniformInt("envSampler", phongMat->m_env->GetUnit());
+			shader->SetUniformInt("sphericalSampler", phongMat->m_env->GetUnit());
 			phongMat->m_env->Bind();
 
 			// mvp
