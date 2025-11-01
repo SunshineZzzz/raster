@@ -97,7 +97,7 @@ void Prepare()
 	sphereMesh->m_instanceMatrices[0] = transform0;
 	sphereMesh->m_instanceMatrices[1] = transform1;
 	sphereMesh->m_instanceMatrices[2] = transform2;
-
+	sphereMesh->UpdateMatrices();
 	glcontext->m_scene->AddChild(sphereMesh);
 
 	glcontext->m_dirLight = std::make_shared<DirectionalLight>();

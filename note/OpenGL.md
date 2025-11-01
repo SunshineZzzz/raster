@@ -1856,8 +1856,18 @@ void main()
 
 #### 实例绘制API
 
+分为uniform和attribute两种方式：
+
 ![alt text](img/OpenGL_InstancedRenderAPI1.png)
 
 ![alt text](img/OpenGL_InstancedRenderAPI2.png)
 
 ![alt text](img/OpenGL_InstancedRenderAPI3.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI4.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI5.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI6.png)
+
+![alt text](img/OpenGL_InstancedRenderAPI7.png)

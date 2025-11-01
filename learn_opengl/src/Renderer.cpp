@@ -354,7 +354,7 @@ void Renderer::RenderObject(
 			shader->SetUniformFloat("opacity", material->m_opacity);
 
 			// ********传输uniform类型的矩阵变换数组*********/
-			shader->SetUniformMatrix4x4Array("matrices", im->m_instanceMatrices, im->m_instanceCount);
+			// shader->SetUniformMatrix4x4Array("matrices", im->m_instanceMatrices, im->m_instanceCount);
 		}
 		break;
 		default:
