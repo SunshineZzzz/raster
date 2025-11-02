@@ -27,6 +27,18 @@ bool GLContext::InitGLAttributes()
         return false;
     }
 
+    //// 开启多重采样缓冲区
+    //if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1))
+    //{
+    //    return false;
+    //}
+
+    //// 设置每像素的采样点数量
+    //if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4))
+    //{
+    //    return false;
+    //}
+
     return true;
 }
 

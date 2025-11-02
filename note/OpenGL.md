@@ -33,6 +33,7 @@
      - [几何着色器](#几何着色器)
   - [图元装配](#图元装配)
   - [剪裁剔除](#剪裁剔除)
+  - [提前深度测试](#提前深度测试)
   - [光栅化](#光栅化)
   - [片元着色器](#片元着色器)
   - [混合与测试](#混合与测试)
@@ -108,6 +109,30 @@
 - [球型投影贴图](#球型投影贴图)
 - [实例绘制](#实例绘制)
 	- [实例绘制API](#实例绘制api)
+- [高级数据](#高级数据)
+	- [向buffer当中进行定点数据拷贝](#向buffer当中进行定点数据拷贝)
+		- [glBufferSubData](#glbuffersubdata)
+		- [glMapBuffer](#glmapbuffer)
+	- [不同的数据打包方式](#不同的数据打包方式)
+	- [在不同的Buffer之间拷贝数据](#在不同的buffer之间拷贝数据)
+		- [glCopyBufferSubData](#glcopybuffersubdata)
+- [高级GLSL](#高级glsl)
+	- [gl_PointSize](#gl_pointsize)
+	- [gl_VertexID](#gl_vertexid)
+	- [gl_FragCoord](#gl_fragcoord)
+	- [gl_FrontFacing](#gl_frontfacing)
+	- [gl_FragDepth](#gl_fragdepth)
+	- [接口块](#接口块)
+	- [UBO](#ubo)
+- [抗锯齿](#抗锯齿)
+	- [超采样抗锯齿](#超采样抗锯齿)
+	- [多重采样抗锯齿](#多重采样抗锯齿)
+		- [OpenGL开启多重采样抗锯齿](#opengl开启多重采样抗锯齿)
+		- [离屏MSAA](#离屏msaa)
+				- [纹理附件](#纹理附件)
+				- [渲染缓冲附件](#渲染缓冲附件)
+				- [渲染到多重采样帧缓冲](#渲染到多重采样帧缓冲)
+
 ### OpenGL 
 
 ​​`Khronos Group​​`制定和维护`OpenGL`​( ​​Open Graphics Library​​)​规范​​(Specification)，严格定义每个函数的输入、输出和行为。理论上任何人都可以按照这些规范实现一套`OpenGL`库，就像标准`C`库有很多不同的实现一样，比如`SwiftShader`就是一个基于`CPU`的纯软件的`OpenGL`实现。如果要想使用`GPU`硬件，一般是`GPU`设备制造商(NVIDIA, AMD, Intel)来实现这些`API`，这些库也被称为GPU驱动。
@@ -716,15 +741,65 @@ $$
 
 ![alt text](img/render_pipeline3_1.png)
 
-##### 几何着色器
-
-几何着色器(geometry shader)，**可选**，**可编程​**，核心目的是在GPU上实现几何体的动态、运行时修改和生成，从而提高渲染的灵活性和效率。
-
 #### 图元装配
 
 图元组装(primitive setup)，将输入的顶点组装成指定的图元。
 
 ![alt text](img/render_pipeline4.png)
+
+##### 几何着色器
+
+几何着色器(geometry shader)，**可选**，**可编程​**，核心目的是在GPU上实现几何体的动态、运行时修改和生成，从而提高渲染的灵活性和效率。
+
+![alt text](img/render_pipeline_geometryshader1.png)
+
+![alt text](img/render_pipeline_geometryshader2.png)
+
+![alt text](img/render_pipeline_geometryshader3.png)
+
+`gl_in`是GLSL几何着色器(Geometry Shader)中一个特殊的内置输入变量。它代表了从管线的上一个阶段(图元装配)传递给几何着色器的完整图元数据。
+
+```glsl
+#version 330 core
+// 声明输入图元类型为点 (points)。这意味着 gl_in 数组长度为 1。
+layout (points) in;
+// 声明输出图元类型为线带 (line_strip)，并且最大输出顶点数为 2。
+layout (line_strip, max_vertices = 2) out;
+
+void main() {    
+    // ---------------------- 1. 生成线段的起点 ----------------------
+    // 取出输入的唯一顶点的裁剪空间位置 (gl_in[0].gl_Position)。
+    // 将其在 X 轴上向左平移 0.1 个单位（在裁剪空间内）。
+    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0); 
+    
+    // 提交第一个顶点，作为线段的起点。
+    EmitVertex();
+
+    // ---------------------- 2. 生成线段的终点 ----------------------
+    // 将输入的顶点位置在 X 轴上向右平移 0.1 个单位。
+    gl_Position = gl_in[0].gl_Position + vec4( 0.1, 0.0, 0.0, 0.0);
+    
+    // 提交第二个顶点，作为线段的终点。
+    EmitVertex();
+
+    // ---------------------- 3. 结束图元 ----------------------
+    // 通知管线：一个完整的图元（线段）已生成并结束。
+    EndPrimitive();
+}
+// **功能总结:** 该着色器将 CPU 传入的每一个点，都转换成一条以该点为中心、总长度为 0.2 个裁剪空间单位的水平线段。
+```
+
+这个输入布局修饰符可以从顶点着色器接收下列任何一个图元值：
+1. points：绘制GL_POINTS图元时（1）。
+2. lines：绘制GL_LINES或GL_LINE_STRIP时（2）
+3. lines_adjacency：GL_LINES_ADJACENCY或GL_LINE_STRIP_ADJACENCY（4）
+4. triangles：GL_TRIANGLES、GL_TRIANGLE_STRIP或GL_TRIANGLE_FAN（3）
+5. triangles_adjacency：GL_TRIANGLES_ADJACENCY或GL_TRIANGLE_STRIP_ADJACENCY（6）
+
+输出布局修饰符也可以接受几个图元值：
+1. points
+2. line_strip
+3. triangle_strip
 
 #### 剪裁剔除
 
@@ -737,6 +812,24 @@ $$
 光栅化(rasterization)，经过图元组装以及屏幕映射阶段后，我们将物体坐标变换到了窗口坐标。光栅化是个离散化的过程，将3D连续的物体转化为离散屏幕像素点的过程。包括三角形组装和三角形遍历两个阶段。光栅化会确定图元所覆盖的片段，利用顶点属性插值得到片段的属性信息。
 
 ![alt text](img/render_pipeline6.png)
+
+#### 提前深度测试
+
+现在大部分的GPU都提供一个叫做提前深度测试(Early Depth Testing)的硬件特性。提前深度测试允许深度测试在片段着色器之前运行。只要我们清楚一个片段永远不会是可见的（它在其他物体之后），我们就能提前丢弃这个片段。
+
+我们在片段着色器中对gl_FragDepth进行写入，OpenGL就会禁用所有的提前深度测试(Early Depth Testing)。它被禁用的原因是，OpenGL无法在片段着色器运行之前得知片段将拥有的深度值，因为片段着色器可能会完全修改这个深度值。
+
+然而，从OpenGL 4.2起，我们仍可以对两者进行一定的调和，在片段着色器的顶部使用深度条件(Depth Condition)重新声明gl_FragDepth变量：
+
+```glsl
+// FS
+layout (depth_<condition>) out float gl_FragDepth;
+```
+condition可以为下面的值：
+1. any，默认值。提前深度测试是禁用的，你会损失很多性能
+2. greater，你只能让深度值比gl_FragCoord.z更大
+3. less，你只能让深度值比gl_FragCoord.z更小
+4. unchanged，如果你要写入gl_FragDepth，你将只能写入gl_FragCoord.z的值
 
 #### 片元着色器
 
@@ -1961,3 +2054,219 @@ void main()
 ![alt text](img/OpenGL_overalltexturemapping1.png)
 
 ![alt text](img/OpenGL_overalltexturemapping2.png)
+
+### 高级数据
+
+#### 向buffer当中进行定点数据拷贝
+
+##### glBufferSubData
+
+![alt text](img/OpenGL_AdvancedDataCopy1.png)
+
+##### glMapBuffer
+
+![alt text](img/OpenGL_AdvancedDataCopy2.png)
+
+#### 不同的数据打包方式
+
+![alt text](img/OpenGL_AdvancedDataPacking1.png)
+
+#### 在不同的Buffer之间拷贝数据
+
+##### glCopyBufferSubData
+
+![alt text](img/OpenGL_AdvancedDataCopyBetweenBuffer1.png)
+
+### 高级GLSL
+
+#### gl_PointSize
+
+gl_PointSize，FS，是一个内置变量，用于指定点的大小。默认值是1.0。
+
+![alt text](img/OpenGL_AdvancedGLSL_PointSize1.png)
+
+#### gl_VertexID
+
+gl_VertexID，VS，获取当前正在执行的顶点的ID，如果使用glDrawElements，那么返回的就是当前顶点的index。如果是glDrawArrays，那么返回的就是当前顶点的数组排序序号。
+
+![alt text](img/OpenGL_AdvancedGLSL_VertexID1.png)
+
+#### gl_FragCoord
+
+gl_FragCoord，FS，在屏幕坐标系(视口控件)坐标和当前片元的z深度。
+
+![alt text](img/OpenGL_AdvancedGLSL_FragCoord1.png)
+
+#### gl_FrontFacing
+
+gl_FrontFacing，FS，用于判断当前片元是正面片元还是背面片元。如果是正面片元，那么值为true，否则为false。
+
+![alt text](img/OpenGL_AdvancedGLSL_FrontFacing1.png)
+
+#### gl_FragDepth
+
+gl_FragDepth，FS，表示某一个片元的深度值，在FS之后，会对此变量赋值。如果赋值，则会保持此深度值，否则会使用gl_FragCoord.z进行赋值。
+
+现在大部分的GPU都提供一个叫做提前深度测试(Early Depth Testing)的硬件特性。提前深度测试允许深度测试在片段着色器之前运行。只要我们清楚一个片段永远不会是可见的（它在其他物体之后），我们就能提前丢弃这个片段。
+
+我们在片段着色器中对gl_FragDepth进行写入，OpenGL就会禁用所有的提前深度测试(Early Depth Testing)。它被禁用的原因是，OpenGL无法在片段着色器运行之前得知片段将拥有的深度值，因为片段着色器可能会完全修改这个深度值。
+
+然而，从OpenGL 4.2起，我们仍可以对两者进行一定的调和，在片段着色器的顶部使用深度条件(Depth Condition)重新声明gl_FragDepth变量：
+
+```glsl
+// FS
+layout (depth_<condition>) out float gl_FragDepth;
+```
+condition可以为下面的值：
+1. any，默认值。提前深度测试是禁用的，你会损失很多性能
+2. greater，你只能让深度值比gl_FragCoord.z更大
+3. less，你只能让深度值比gl_FragCoord.z更小
+4. unchanged，如果你要写入gl_FragDepth，你将只能写入gl_FragCoord.z的值
+
+#### 接口块
+
+接口块(Interface Block)，是一种组织和传递数据的方式。通过接口块，可以将多个相关的变量打包在一起，方便在不同的着色器阶段之间传递数据。
+
+![alt text](img/OpenGL_AdvancedGLSL_InterfaceBlock1.png)
+
+#### UBO
+
+Uniform缓冲对象(Uniform Buffer Object)，是一种用于存储和管理uniform变量的缓冲区对象。通过Uniform缓冲对象，可以将多个uniform变量打包在一起，方便在不同的着色器阶段之间传递数据。
+
+```glsl
+layout (std140) uniform ExampleBlock
+{
+                     // 基准对齐量       // 对齐偏移量
+    float value;     // 4               // 0 
+    vec3 vector;     // 16              // 16  (必须是16的倍数，所以 4->16)
+    mat4 matrix;     // 16              // 32  (列 0)
+                     // 16              // 48  (列 1)
+                     // 16              // 64  (列 2)
+                     // 16              // 80  (列 3)
+    float values[3]; // 16              // 96  (values[0])
+                     // 16              // 112 (values[1])
+                     // 16              // 128 (values[2])
+    bool boolean;    // 4               // 144
+    int integer;     // 4               // 148
+}; 
+```
+
+可以同过下面函数获取显存大小和每个元素占用大小。
+
+![alt text](img/OpenGL_AdvancedGLSL_UBO1.png)
+
+UBO生成
+
+![alt text](img/OpenGL_AdvancedGLSL_UBO2.png)
+
+在OpenGL上下文中，定义了一些绑定点(Binding Point)，我们可以将一个Uniform缓冲链接至它。在创建Uniform缓冲之后，我们将它绑定到其中一个绑定点上，并将着色器中的Uniform块绑定到相同的绑定点，把它们连接到一起。下面的这个图示展示了这个：
+
+![alt text](img/OpenGL_AdvancedGLSL_UBO3.png)
+
+shader绑定UBO
+
+```C++
+// 将着色器程序A中的名为"Lights"的统一块，绑定到全局的绑定点2上
+unsigned int lights_index = glGetUniformBlockIndex(shaderA.ID, "Lights");   
+glUniformBlockBinding(shaderA.ID, lights_index, 2);
+```
+
+绑定Uniform缓冲对象到相同的绑定点上
+
+```C++
+glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboExampleBlock); 
+// 或
+glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboExampleBlock, 0, 152);
+```
+
+更新Uniform缓冲对象
+```C++
+glBindBuffer(GL_UNIFORM_BUFFER, uboExampleBlock);
+int b = true; // GLSL中的bool是4字节的，所以我们将它存为一个integer
+// 可以使用 glActiveUniformsiv 获取每个元素占有大小
+glBufferSubData(GL_UNIFORM_BUFFER, 144, 4, &b); 
+glBindBuffer(GL_UNIFORM_BUFFER, 0);
+```
+
+### 抗锯齿
+
+模型边缘有锯齿的情况。这些锯齿边缘(Jagged Edges)的产生和光栅器将顶点数据转化为片段的方式有关。你能够清楚看见形成边缘的像素。这种现象被称之为走样(Aliasing)。有很多种抗锯齿（Anti-aliasing，也被称为反走样）的技术能够帮助我们缓解这种现象，从而产生更**平滑**的边缘。
+
+#### 超采样抗锯齿
+
+超采样抗锯齿(Super Sample Anti-aliasing, SSAA)的技术，它会使用比正常分辨率更高的分辨率（即超采样）来渲染场景，当图像输出在帧缓冲中更新时，分辨率会被下采样(Downsample)至正常的分辨率。这些额外的分辨率会被用来防止锯齿边缘的产生。虽然它确实能够解决走样的问题，但是由于这样比平时要绘制更多的片段，它也会带来很大的性能开销。所以这项技术只拥有了短暂的辉煌。
+
+#### 多重采样抗锯齿
+
+多重采样抗锯齿(Multisample Anti-aliasing, MSAA)。它借鉴了SSAA背后的理念，但却以更加高效的方式实现了抗锯齿。
+
+光栅器会将一个图元的所有顶点作为输入，并将它转换为一系列的片段。顶点坐标理论上可以取任意值，但片段不行，因为它们受限于你窗口的分辨率。顶点坐标与片段之间几乎永远也不会有一对一的映射，所以光栅器必须以某种方式来决定每个顶点最终所在的片段/屏幕坐标。
+
+![alt text](img/OpenGL_Advanced_MSAA1.png)
+
+这里我们可以看到一个屏幕像素的网格，每个像素的中心包含有一个采样点(Sample Point)，它会被用来决定这个三角形是否遮盖了某个像素。图中红色的采样点被三角形所遮盖，在每一个遮住的像素处都会生成一个片段。虽然三角形边缘的一些部分也遮住了某些屏幕像素，但是这些像素的采样点并没有被三角形内部所遮盖，所以它们不会受到片段着色器的影响。
+
+你现在可能已经清楚走样的原因了。完整渲染后的三角形在屏幕上会是这样的：
+
+![alt text](img/OpenGL_Advanced_MSAA2.png)
+
+由于屏幕像素总量的限制，有些边缘的像素能够被渲染出来，而有些则不会。结果就是我们使用了不光滑的边缘来渲染图元，导致之前讨论到的锯齿边缘。
+
+多重采样所做的正是将单一的采样点变为多个采样点（这也是它名称的由来）。我们不再使用像素中心的单一采样点，取而代之的是以特定图案排列的4个子采样点(Subsample)。我们将用这些子采样点来决定像素的遮盖度。
+
+![alt text](img/OpenGL_Advanced_MSAA3.png)
+
+上图的左侧展示了正常情况下判定三角形是否遮盖的方式。在例子中的这个像素上不会运行片段着色器（所以它会保持空白）。因为它的采样点并未被三角形所覆盖。上图的右侧展示的是实施多重采样之后的版本，每个像素包含有4个采样点。这里，只有两个采样点遮盖住了三角形。
+
+采样点的数量可以是任意的，更多的采样点能带来更精确的遮盖率。
+
+MSAA真正的工作方式是，无论三角形遮盖了多少个子采样点，（每个图元中）每个像素只运行一次片段着色器。片段着色器使用插值到像素中心的顶点数据，然后，MSAA使用更大的深度/模板缓冲区来确定子采样点的覆盖率。被覆盖的子采样点数量将决定了像素颜色对帧缓冲的影响程度。因为上图的4个采样点中只有2个被遮盖住了，所以三角形的颜色会有一半与帧缓冲区的颜色（在这里是无色）进行混合，最终形成一种淡蓝色。
+
+![alt text](img/OpenGL_Advanced_MSAA4.png)
+
+简单来说，一个像素中如果有更多的采样点被三角形遮盖，那么这个像素的颜色就会更接近于三角形的颜色。如果我们给上面的三角形填充颜色，就能得到以下的效果：
+
+![alt text](img/OpenGL_Advanced_MSAA5.png)
+
+##### opengl开启多重采样抗锯齿
+
+如果我们想要在OpenGL中使用MSAA，我们必须要使用一个能在每个像素中存储大于1个颜色值的颜色缓冲（因为多重采样需要我们为每个采样点都储存一个颜色）。所以，我们需要一个新的缓冲类型，来存储特定数量的多重采样样本，它叫做多重采样缓冲(Multisample Buffer)。这也意味着所有缓冲的大小都增长了4倍。
+
+```C++
+// 开启多重采样缓冲区
+SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1)
+// 设置每像素的采样点数量
+SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4)
+// 开启多重采样抗锯齿
+glEnable(GL_MULTISAMPLE);
+```
+
+#### 离屏MSAA
+
+创建多重采样缓冲，启用MSAA非常简单。然而，如果我们想要使用我们自己的帧缓冲来进行离屏渲染，那么我们就必须要自己动手生成多重采样缓冲了。现在，我们确实需要自己创建多重采样缓冲区。
+
+有两种方式可以创建多重采样缓冲，将其作为帧缓冲的附件：纹理附件和渲染缓冲附件，这和在帧缓冲教程中所讨论的普通附件很相似。
+
+##### 纹理附件
+
+```C++
+glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
+glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width, height, GL_TRUE);
+glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0);
+```
+
+##### 渲染缓冲附件
+
+```C++
+glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
+```
+
+##### 渲染到多重采样帧缓冲
+
+```C++
+glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFBO);
+glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+```
