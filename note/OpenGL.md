@@ -943,12 +943,6 @@ GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
 ![alt text](img/OpenGL_EnableDepthTest1.png)
 
-![alt text](img/OpenGL_EnableDepthTest2.png)
-
-![alt text](img/OpenGL_EnableDepthTest3.png)
-
-![alt text](img/OpenGL_EnableDepthTest4.png)
-
 ###### 深度数学讨论
 
 **下图的核心就是：正交投影中，深度值和物体与摄像机的距离是线性的。而透视投影中，深度值得到过程和物体与摄像机的距离非线性，我们需要一个公式将深度值转换为真实距离。**	
@@ -1086,6 +1080,12 @@ $$
 ###### opengl开启混合
 
 ![alt text](img/OpenGL_EnableBlending1.png)
+
+![alt text](img/OpenGL_EnableBlending2.png)
+
+![alt text](img/OpenGL_EnableBlending3.png)
+
+![alt text](img/OpenGL_EnableBlending4.png)
 
 ###### 颜色混合为什么需要关闭深度写入(不是深度测试)
 
