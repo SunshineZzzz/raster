@@ -132,6 +132,7 @@
 				- [纹理附件](#纹理附件)
 				- [渲染缓冲附件](#渲染缓冲附件)
 				- [渲染到多重采样帧缓冲](#渲染到多重采样帧缓冲)
+- [字体烘焙](#字体烘焙)
 
 ### OpenGL 
 
@@ -2270,3 +2271,7 @@ glBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFBO);
 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 ```
+
+### 字体烘焙
+
+字体烘培(Font Baking), 是指将字体的每个字符渲染为一个纹理, 然后将这些纹理打包到一个大的纹理中, 最后在渲染时, 从这个大的纹理中采样出对应的字符纹理进行渲染.
