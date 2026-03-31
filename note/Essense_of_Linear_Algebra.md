@@ -207,7 +207,7 @@ $
 
 #### 矩阵乘法
 
-我的理解，i帽和j帽经过M1线性变化后对应的是M1矩阵第一列和M2矩阵线性变化第二列，同理，再次经过M2线性变化，i帽撇为:
+我的理解，i帽和j帽经过M1线性变化后对应的是M1矩阵第一列和第二列，同理，再次经过M2线性变化，i帽撇为:
 
 ![alt text](img/matrix_multiplication1.png)
 
@@ -218,6 +218,10 @@ j帽撇为:
 性质:
 
 1. 矩阵乘法不满足交换律，即 $AB \neq BA$
+
+旋转矩阵 $R$ 为：$$R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$$
+
+剪切矩阵 $S$ 为：$$S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$$
 
 ![alt text](img/matrix_multiplication3.png)
 
