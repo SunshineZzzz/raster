@@ -970,7 +970,25 @@ GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
 ![alt text](img/OpenGL_MathDepthTest3.png)
 
+图中展示了 $z_{ndc}$ 的计算公式：$$z_{ndc} = \frac{f+n}{f-n} + \frac{2fn}{f-n} \cdot \frac{1}{z}$$ 这里有一个致命的数学特征：$z_{ndc}$ 与相机空间的 $z$ 成反比关系（$1/z$）。
+
+线性 vs 非线性： 如果是线性的，距离增加 1 米，深度值也该均匀增加。
+
+非线性： 因为有了 $\frac{1}{z}$，深度值在靠近 **近裁剪面(Near)时变化极快，而在靠近远裁剪面(Far)** 时变化极其缓慢。
+
+其实就是反比例函数与，反比例函数就是一种“你大我就小”的关系。
+ 
 ![alt text](img/OpenGL_MathDepthTest4.png)
+
+移项：$$z_{ndc} - \frac{f+n}{f-n} = \frac{2fn}{f-n} \cdot \frac{1}{z}$$通分左边：$$\frac{z_{ndc}(f-n) - (f+n)}{f-n} = \frac{2fn}{(f-n) \cdot z}$$两边同时消去分母 $(f-n)$：$$z_{ndc}(f-n) - (f+n) = \frac{2fn}{z}$$把 $z$ 换到左边：$$z = \frac{2fn}{z_{ndc}(f-n) - (f+n)}$$
+
+因为 $z$ 是负数（比如 $-5$ 米），我们在 Shader 里通常想要正数距离（$5$ 米）。令 $z_{view} = -z$：$$z_{view} = - \frac{2fn}{z_{ndc}(f-n) - (f+n)}$$分母变号：$$z_{view} = \frac{2fn}{f+n - z_{ndc}(f-n)}$$
+
+这几个公式串联起来构成了一个完整的还原路径：
+1. 采样获取： 你从显卡里拿到 depth ($0 \dots 1$)。
+2. 坐标转换： 利用 $z_{ndc} = 2 \cdot depth - 1$ 把范围转回 $-1 \dots 1$。
+3. 距离还原： 把算出的 $z_{ndc}$ 代入你现在的这个终极公式 $z_{view} = \frac{2fn}{f+n - z_{ndc}(f-n)}$。
+4. 最终结果： 得到的 $z_{view}$ 就是该像素点距离相机的真实物理长度（比如 5.2 米）。
 
 ###### Z-Fighting
 
