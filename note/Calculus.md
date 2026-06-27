@@ -16,6 +16,11 @@
         - [三角函数差角公式](#三角函数差角公式)
         - [三角函数和角公式](#三角函数和角公式)
         - [三角函数倍角公式](#三角函数倍角公式)
+    - [极限](#极限)
+        - [极限的直观理解](#极限的直观理解)
+        - [极限的函数例子](#极限的函数例子)
+        - [双侧极限不存在](#双侧极限不存在)
+        - [极限不存在例子](#极限不存在例子)
 
 ## 函数
 
@@ -90,6 +95,10 @@
 ### 线性函数
 
 ![alt text](img/calculus_function24.png)
+
+斜率 = 向右移动 1 个单位时，y 方向变化多少
+
+斜率 = Δy / Δx
 
 ![alt text](img/calculus_function25.png)
 
@@ -313,3 +322,137 @@
 ![alt text](img/calculus_trigonometric_doubleformula8.png)
 
 ![alt text](img/calculus_trigonometric_doubleformula9.png)
+
+## 极限
+
+### 极限的直观理解
+
+![alt text](img/calculus_limitIntuitive1.png)
+
+![alt text](img/calculus_limitIntuitive2.png)
+
+让P点在抛物线上滑动，不断的向Q点靠近，**割线PQ**的斜率在不断地变化，P距离Q越近，割线的斜率就越靠近一个特定的值，当P无限趋近Q时，割线的斜率就会无限趋近于Q点的切线的斜率。
+
+**这个无限趋近但不等于的过程，就是极限的直观含义。**
+
+![alt text](img/calculus_limitIntuitive3.png)
+
+### 极限的函数例子
+
+![alt text](img/calculus_limitfunctionexample1.png)
+
+**极限的数学符号**
+
+若当自变量 $x$ 趋近于常数 $x_0$ 时，函数 $f(x)$ 趋近于一个确定的常数 $L$，我们记作：
+
+$$\lim_{x \to x_0} f(x) = L$$
+
+或者写作：
+
+$$f(x) \to L \quad (\text{当 } x \to x_0 \text{ 时})$$
+
+$\lim$：是英文 Limit（极限）的缩写。
+
+$x \to x_0$：表示自变量 $x$ 无限趋近于 $x_0$，但 $x \neq x_0$。
+
+$L$：是函数在该点处的极限值。
+
+![alt text](img/calculus_limitfunctionexample2.png)
+
+![alt text](img/calculus_limitfunctionexample3.png)
+
+![alt text](img/calculus_limitfunctionexample4.png)
+
+![alt text](img/calculus_limitfunctionexample5.png)
+
+左极限，右极限
+
+![alt text](img/calculus_limitfunctionexample6.png)
+
+![alt text](img/calculus_limitfunctionexample7.png)
+
+### 双侧极限不存在
+
+![alt text](img/calculus_limitfunctionexample8.png)
+
+![alt text](img/calculus_limitfunctionexample9.png)
+
+### 极限不存在例子
+
+![alt text](img/calculus_nolimitexample1.png)
+
+![alt text](img/calculus_nolimitexample2.png)
+
+在图像中，左右两边最外侧的“波峰”（高度为 $1$）和“波谷”（高度为 $-1$）对应的 $x$ 坐标分别是：
+
+$$\frac{1}{x} = \frac{\pi}{2} \implies x = \frac{2}{\pi} \approx 0.637$$
+
+$$\frac{1}{x} = -\frac{\pi}{2} \implies x = -\frac{2}{\pi} \approx -0.637$$
+
+在正实数范围内，要让正弦值等于 $1$，括号里的“角度” $\frac{1}{x}$ 最小也必须达到 $\frac{\pi}{2}$：
+
+$$\frac{1}{x} \ge \frac{\pi}{2}$$
+
+现在，我们把这个不等式两边取倒数（因为两边都是正数，取倒数要改变不等号方向）：
+
+$$x \le \frac{2}{\pi}$$
+
+这个简单的代数推导给出了一个硬性铁律：只有当 $x \le \frac{2}{\pi}$ 时，函数值才有机会达到 $1$。
+
+![alt text](img/calculus_nolimitexample3.png)
+
+![alt text](img/calculus_nolimitexample4.png)
+
+$(k \in \mathbb{Z})$ 在数学语言里表示 “$k$ 是一个整数”。
+
+我们希望找一堆特殊的 $x$ 坐标，让函数值在这些点上全部等于 1（波峰）。
+
+1. 寻找角度公式
+
+要让正弦值等于 $1$，角度必须满足：
+
+$$\theta = \frac{\pi}{2} + 2k\pi \quad (k \in \mathbb{Z})$$
+
+2. 对应到我们的自变量 $x$
+
+因为函数是 $\sin(1/x)$，所以令括号里的角度 $\frac{1}{x} = \frac{\pi}{2} + 2k\pi$（这就是图片左上角第一步）：
+
+
+$$\text{令 } \frac{1}{x} = \frac{\pi}{2} + 2k\pi$$
+
+3. 解出这些特殊的 $x$ 坐标（记为 $x_k$）
+
+把等式两边取倒数，得到第 $k$ 个波峰对应的 $x$ 坐标（图片左侧第二步）：
+
+
+$$x_k = \frac{1}{\frac{\pi}{2} + 2k\pi}$$
+
+4. 让这些点向 $0$ 靠拢
+
+现在，我们让 $k$ 越来越大，大到无穷大（$k \to \infty$）。
+因为分母上有 $2k\pi$，分母会爆炸式变大，所以这些坐标值 $x_k$ 必然无限趋近于 $0$（图片左下角第三步）：
+
+
+$$\text{当 } k \to \infty \text{ 时}，x_k \to 0$$
+
+5. 计算这一路上的函数值极限
+
+无论 $k$ 是多少，由于我们选的 $x_k$ 刚好都是波峰位置，所以代入函数后，所有的值都雷打不动地等于 $1$（图片右侧公式）：
+
+
+$$\sin\left(\frac{1}{x_k}\right) = \sin\left(\frac{\pi}{2} + 2k\pi\right) = 1 \quad (\forall k)$$
+
+因此，当这群点 $x_k$ 趋近于 $0$ 时，它们的函数值极限也必然是 $1$：
+
+
+$$\lim_{k \to \infty} \sin\left(\frac{1}{x_k}\right) = 1$$
+
+![alt text](img/calculus_nolimitexample5.png)
+
+![alt text](img/calculus_nolimitexample6.png)
+
+左右极限是“左边一路人马，右边一路人马，看两路人马是否在终点相遇”。
+
+子序列法则是在“单侧（甚至全在右边）派出多路人马，结果发现光是右边的队伍自己内部就打起来了，各执一词”。
+
+![alt text](img/calculus_nolimitexample7.png)
