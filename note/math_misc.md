@@ -138,7 +138,11 @@ $$\frac{dz}{dt} = \frac{\partial z}{\partial x} \cdot \frac{dx}{dt} + \frac{\par
 1. 因为 $z$ 的变化由两条路径传来（一条通过 $x$，一条通过 $y$），所以要相加。
 2. 对 $x$ 的偏导，乘上 $x$ 对 $t$ 的导数；对 $y$ 同理。
 
-偏导和全导要分清：当最终变量只有一个时（如 $t$），用 $\frac{d}{dt}$；当最终变量有多个时（如 $s, t$），用 $\frac{\partial}{\partial s}$。
+偏导和全导要分清：
+1. 当最终变量只有一个时（如 $t$），用 $\frac{d}{dt}$；
+2. 当最终变量有多个时（如 $s, t$），用 $\frac{\partial}{\partial s}$。
+
+举个例子：
 
 想象你的幸福感 $z$ 取决于工资 $x$ 和健康 $y$。而工资和健康又都取决于时间 $t$（加班工资涨但健康降）。那么幸福感随时间的总变化率就是：
 
@@ -434,17 +438,10 @@ $$= |\nabla f(a, b)| \cdot \cos \phi$$
     - 几何意义： 这是你当前决定行走的“方向”。
     - 调节功能： 当你移动滑块时，这个向量会旋转，改变你相对于梯度（红色）的出发角度。
 
-3. 深绿色向量 (The Dark Green Vector)：方向导数的几何投影这是最让你困惑的向量，它是“导数值”的几何化。
-    
-水平距离 $\Delta s$ 是多少？亮绿色向量 $\mathbf{u} = (u_1, u_2)$ 是一个单位向量。它的模长（在地面上走过的水平总距离）是：
-
-$$\Delta s = \Vert{}\mathbf{u}\Vert{} = \sqrt{u_1^2 + u_2^2} = 1$$
-    
-高度变化量 $\Delta z$ 是多少？沿切线方向的高度变化等于 斜率（导数）$\times$ 水平距离：
-
-$$\Delta z = \text{导数} \times \Delta s = D_{\mathbf{u}}f(a) \times 1 = D_{\mathbf{u}}f(a)$$
-
-把水平移动距离控制为了 $1$ 个单位，所以 $\text{导数} \times 1$ 就直接等于了高度的变化量 $\Delta z$！
+3. 深绿色向量 (The Dark Green Vector)：
+    - 水平距离 $\Delta s$ 是多少？亮绿色向量 $\mathbf{u} = (u_1, u_2)$ 是一个单位向量。它的模长（在地面上走过的水平总距离）是：$$\Delta s = \Vert{}\mathbf{u}\Vert{} = \sqrt{u_1^2 + u_2^2} = 1$$
+    - 高度变化量 $\Delta z$ 是多少？沿切线方向的高度变化等于 斜率（导数）$\times$ 水平距离：$$\Delta z = \text{导数} \times \Delta s = D_{\mathbf{u}}f(a) \times 1 = D_{\mathbf{u}}f(a)$$
+    - 把水平移动距离控制为了 $1$ 个单位，所以 $\text{导数} \times 1$ 就直接等于了高度的变化量 $\Delta z$！
     
 总结三维坐标 $(u_1, \; u_2, \; D_{\mathbf{u}}f(a))$ 的本质这个向量其实就是你在切平面上迈出的 “单位步长切线向量”
 
