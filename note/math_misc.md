@@ -324,6 +324,16 @@ $$\Delta y \approx dy = f'(x) \cdot dx$$
 
 ![alt text](img/differential_geometry1.png)
 
+切线方程公式
+
+假设曲线上有一个已知切点 $(x_0, y_0)$，其中 $y_0 = f(x_0)$：
+
+1. 求斜率 $k$：计算切点处的导数 $k = f'(x_0)$。
+2. 点斜式公式：$y - y_0 = k(x - x_0)$
+3. 切线方程：$$y = f'(x_0)(x - x_0) + f(x_0)$$
+
+这也叫函数在 $x_0$ 处的“一阶泰勒展开”或“局部线性近似”。
+
 ![alt text](img/differential_geometry2.png)
 
 正确的数学术语
