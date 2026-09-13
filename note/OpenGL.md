@@ -1481,6 +1481,68 @@ EBO(Element/Index Buffer Object)，元素缓冲对象/索引缓冲对象，用�
 
 ![alt text](img/ebo_render1.png)
 
+```C++
+// 1. 定义 4 个不重复的顶点（矩形的 4 个角）
+float vertices[] = {
+    // 位置 (X, Y, Z)        // 颜色 (R, G, B)
+     0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,  // 0: 右上角 (红)
+     0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,  // 1: 右下角 (绿)
+    -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,  // 2: 左下角 (蓝)
+    -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f   // 3: 左上角 (黄)
+};
+
+// 2. 定义顶点索引（用 4 个顶点拼成 2 个三角形）
+unsigned int indices[] = {
+    0, 1, 3,  // 第一个三角形：右上 -> 右下 -> 左上
+    1, 2, 3   // 第二个三角形：右下 -> 左下 -> 左上
+};
+
+// 3. 创建 VAO, VBO, EBO 句柄
+GLuint VAO, VBO, EBO;
+glGenVertexArrays(1, &VAO);
+glGenBuffers(1, &VBO);
+glGenBuffers(1, &EBO); // 生成 EBO
+
+// 4. 绑定 VAO（开始录制配置）
+glBindVertexArray(VAO);
+
+// 5. 配置 VBO（上传顶点属性）
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+// 6. 配置 EBO（上传索引数据）
+// 注意：目标卡槽是 GL_ELEMENT_ARRAY_BUFFER
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+// 7. 设置顶点属性指针（以 Interleaved 交错布局为例）
+// 位置属性 (Location = 0)
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+
+// 颜色属性 (Location = 1)
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+glEnableVertexAttribArray(1);
+
+// 8. 解绑 VAO（注意：解绑前不要解绑 EBO！）
+glBindVertexArray(0);
+
+// ---------------- 渲染循环 (Render Loop) ----------------
+while (!glfwWindowShouldClose(window)) {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+
+    // 使用 glDrawElements 替代 glDrawArrays 进行索引绘制
+    // 参数含义：图元类型, 索引总个数, 索引数据类型, 偏移量
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+```
+
 ### FBO
 
 FBO(Frame Buffer Object)，帧缓冲对象，OpenGL允许我们定义我们自己的帧缓冲，也就是说我们能够定义我们自己的颜色缓冲，甚至是深度缓冲和模板缓冲。
@@ -1506,6 +1568,76 @@ RBO(Render Buffer Object)，渲染缓冲对象附件，组成一帧缓冲中，�
 ![alt text](img/fbo_use2.png)
 
 ![alt text](img/fbo_use3.png)
+
+```C++
+// ---------------- 1. 创建并配置 Framebuffer ----------------
+GLuint fbo;
+glGenFramebuffers(1, &fbo);
+glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+// ---------------- 2. 创建颜色附件（Color Attachment 纹理） ----------------
+GLuint textureColorbuffer;
+glGenTextures(1, &textureColorbuffer);
+glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+// 开辟内存（大小与窗口一致，比如 800x600），数据指针传 NULL 表示只分配内存不传初始像素
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+// 将该纹理附加到当前的 Framebuffer 的颜色槽 0 上
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+// ---------------- 3. 创建渲染缓冲区对象（RBO）作为深度和模板附件 ----------------
+GLuint rbo;
+glGenRenderbuffers(1, &rbo);
+glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+// 分配深度和模板组合格式的内存空间 (24位深度 + 8位模板)
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+
+// 将 RBO 附加到 FBO 的深度/模板附件槽
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+// ---------------- 4. 检查 Framebuffer 是否完整 ----------------
+if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+}
+
+// 解绑 FBO，恢复默认绘制到屏幕（0 号 Framebuffer）
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+// ---------------- 渲染循环 (Render Loop) ----------------
+while (!glfwWindowShouldClose(window)) {
+
+    // === 第一步：绑定自定义 FBO，将场景绘制到离屏纹理中 ===
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glEnable(GL_DEPTH_TEST); // 开启深度测试
+    
+    // 清空 FBO 的颜色和深度缓冲
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // 绘制你的 3D 场景（比如立方体、角色模型等）
+    shader.use();
+    drawScene();
+
+    // === 第二步：切回默认帧缓冲（屏幕），将生成的纹理画到一个全屏矩形上 ===
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST); // 2D 后处理贴图不需要深度测试
+    
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // 绑定刚才绘制好的颜色纹理
+    screenShader.use();
+    glBindVertexArray(quadVAO); // 绑全屏 2D 矩形的 VAO
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制全屏矩形
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+```
 
 #### 卷积操作
 
@@ -1582,6 +1714,82 @@ UV坐标是二维纹理映射坐标系，以U(水平)、V(垂直)轴定位图像
 ![alt text](img/texture_unit3.png)
 
 ![alt text](img/texture_unit4.png)
+
+```C++
+// ==================== 1. 创建并加载纹理对象 ====================
+GLuint texWall, texFace;
+glGenTextures(1, &texWall);
+glGenTextures(1, &texFace);
+
+// 配置第 1 张纹理 (墙壁)
+glBindTexture(GL_TEXTURE_2D, texWall);
+// 设置环绕与过滤参数...
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+// 开辟内存并上传图像数据 (假设 wallData 已经通过 stb_image 加载)
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, wallData);
+glGenerateMipmap(GL_TEXTURE_2D);
+
+// 配置第 2 张纹理 (笑脸)
+glBindTexture(GL_TEXTURE_2D, texFace);
+// 设置环绕与过滤参数...
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE, faceData);
+glGenerateMipmap(GL_TEXTURE_2D);
+
+
+// ==================== 2. 设置 Shader 采样器对应的纹理单元编号 ====================
+ourShader.use();
+// 告诉 Shader 中的 ourTexture1 绑定到 0 号纹理单元，ourTexture2 绑定到 1 号纹理单元
+glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture1"), 0);
+glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture2"), 1);
+
+
+// ==================== 3. 渲染循环 (Render Loop) ====================
+while (!glfwWindowShouldClose(window)) {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // 【对应图中重点】：先激活纹理单元，再绑定纹理对象！
+    
+    // 1) 激活 0 号单元，并挂载墙壁纹理
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texWall);
+
+    // 2) 激活 1 号单元，并挂载笑脸纹理
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texFace);
+
+    // 绘制图形
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+```
+
+```GLSL
+#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoord;
+
+// 对应 C++ 中设置的 0 号和 1 号纹理单元
+uniform sampler2D ourTexture1; // 墙壁
+uniform sampler2D ourTexture2; // 笑脸
+
+void main() {
+    // 采样两张纹理并按 8:2 的比例混合
+    vec4 col1 = texture(ourTexture1, TexCoord);
+    vec4 col2 = texture(ourTexture2, TexCoord);
+    FragColor = mix(col1, col2, 0.2);
+}
+```
 
 #### 纹理过滤
 
