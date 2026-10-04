@@ -19,6 +19,7 @@
         - [向量叉积应用](#向量叉积应用)
           - [两个向量叉乘可以产生垂直于二者的法向量](#两个向量叉乘可以产生垂直于二者的法向量)
           - [判断点是否在三角形内](#判断点是否在三角形内)
+      - [Span补充](#Span补充)
 - [矩阵](#矩阵)
   - [复合变换](#复合变换)
   - [矩阵乘法](#矩阵乘法)
@@ -36,6 +37,17 @@
     - [任意轴旋转推导](#任意轴旋转推导)
 - [向量点积](#向量点积)
 - [向量叉积](#向量叉积)
+- [基变换](#基变换)
+  - [使用不同的基向量](#使用不同的基向量)
+  - [如何在不同坐标系之间进行转化](#如何在不同坐标系之间进行转化)
+  - [基向量切换导致矩阵表示改变](#基向量切换导致矩阵表示改变)
+- [特征向量与特征值](#特征向量与特征值)
+  - [特征值与特征向量的用途](#特征值与特征向量的用途)
+  - [特征值与特征向量的求解](#特征值与特征向量的求解)
+  - [二维线性变化不一定有特征向量](#二维线性变化不一定有特征向量)
+  - [只有一个特征值存在多个特征向量](#只有一个特征值存在多个特征向量)
+  - [特征基](#特征基)
+  - [矩阵对角化](#矩阵对角化)
 
 ### 向量
 
@@ -192,6 +204,30 @@ $
 ##### 判断点是否在三角形内
 
 ![alt text](img/vector_cross_product_apply2.png)
+
+#### Span补充
+
+Span 并不局限于“两个”向量，它可以针对任意数量的向量集合（哪怕只有 1 个向量，甚至 0 个向量）。
+
+什么是单向量的 Span？
+
+对于单个非零向量 $\mathbf{v}$，它的 Span（张成空间） 定义为该向量的所有标量乘积（线性组合）组成的集合：
+
+$$\text{Span}(\mathbf{v}) = \{ c \cdot \mathbf{v} \mid c \in \mathbb{R} \}$$
+
+几何意义：标量 $c$ 在实数范围内任意变动时，向量 $c \cdot \mathbf{v}$ 的终点就会在空间中拉伸、缩放、反向，从而延伸出一条穿过原点和该向量尖端的直线。
+
+不同数量向量的 Span 几何直观：
+
+### 2. 不同数量向量的 Span 几何直观
+
+| 向量集合 | 几何特征（二维/三维空间中） | 说明 |
+| :--- | :--- | :--- |
+| **单个零向量** $\{\mathbf{0}\}$ | **原点**（单点） | $c \cdot \mathbf{0} = \mathbf{0}$，只能停在原点。 |
+| **单个非零向量** $\{\mathbf{v}\}$ | **穿过原点的直线** | 图中的情况，缩放该向量得到一条线。 |
+| **两个线性无关的二维向量** $\{\mathbf{v}_1, \mathbf{v}_2\}$ | **整个二维平面** | $c_1\mathbf{v}_1 + c_2\mathbf{v}_2$ 可以到达平面内的任意一点。 |
+| **两个共线的向量** | **穿过原点的直线** | 因为它们方向相同或相反，组合起来依然跑不出那条直线。 |
+
 
 ### 矩阵
 
@@ -601,5 +637,336 @@ $
 = \hat i (v2 w3 - w2 v3) - \hat j (v3 w1 - w3 v1) + \hat k (v1 w2 - w1 v2)
 $
 
-
 ![alt text](img/cross_product6.png)
+
+### 基变换
+
+![alt text](img/base_change1.png)
+
+![alt text](img/base_change2.png)
+
+![alt text](img/base_change3.png)
+
+![alt text](img/base_change4.png)
+
+![alt text](img/base_change5.png)
+
+#### 使用不同的基向量
+
+![alt text](img/usedifferentbasevector1.png)
+
+![alt text](img/usedifferentbasevector3.png)
+
+![alt text](img/usedifferentbasevector2.png)
+
+![alt text](img/usedifferentbasevector4.png)
+
+![alt text](img/usedifferentbasevector5.png)
+
+![alt text](img/usedifferentbasevector6.png)
+
+#### 如何在不同坐标系之间进行转化
+
+网格：
+
+1. 网格只是一个框架，提供了一种将坐标系可视化的途径。
+2. 因此它依赖于我们对基的选择
+3. 空间本身没有网格
+4. 不同坐标系的基不同，原点可以重合，因为大家在坐标（0，0）的含义上达成了共识。它就是任何向量乘以O时你所得到的坐标。
+
+![alt text](img/differentcoordinatesystem_switch1.png)
+
+![alt text](img/differentcoordinatesystem_switch2.png)
+
+![alt text](img/differentcoordinatesystem_switch3.png)
+
+一个矩阵的列为詹妮弗的基向量，这个矩阵可以看作一个线性变换。
+
+它将我们的基向量帽和j帽，也就是我们眼中的（1，0）和（0，1）变换为詹妮弗的基向量，也就是她眼中的（1，0）和（0，1）。
+
+![alt text](img/differentcoordinatesystem_switch4.png)
+
+简单来说，中间这个矩阵 $P = \begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix}$ 是一台“语言翻译机”。   
+
+1. 矩阵里的数字是哪里来的？矩阵的每一列，其实是用我们的标准坐标系（Our language）去描述詹妮弗（Jennifer）的基向量：   
+  - 第一列 $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$：詹妮弗的第一个基向量 $\vec{b}_1$，在我们的坐标系里看，是向右 2、向上 1。   
+  - 第二列 $\begin{bmatrix} -1 \\ 1 \end{bmatrix}$：詹妮弗的第二个基向量 $\vec{b}_2$，在我们的坐标系里看，是向左 1、向上 1。   
+
+2. 为什么说它是“翻译机”？（看图中的箭头方向）重点看图中的箭头：詹妮弗的语言 $\longrightarrow$ 我们的语言。如果你把詹妮弗坐标系下的向量（比如上一图求出的 $\begin{bmatrix} -1 \\ 2 \end{bmatrix}$）乘以这个矩阵：$$\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \end{bmatrix} = -1 \cdot \begin{bmatrix} 2 \\ 1 \end{bmatrix} + 2 \cdot \begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} -4 \\ 1 \end{bmatrix}$$
+  - 输入：詹妮弗语言里的坐标 $\begin{bmatrix} -1 \\ 2 \end{bmatrix}$。   
+  - 输出：在我们语言里的坐标 $\begin{bmatrix} -4 \\ 1 \end{bmatrix}$。   
+
+3. 一句话总结矩阵的作用：
+  - 把“詹妮弗坐标系下的坐标”翻译成“我们标准坐标系下的坐标”。   
+  - 构造方法：只需把对方的基向量写在我们坐标系下的数值，依次拼成矩阵的每一列即可。  
+
+上面是输入詹妮弗语言里的坐标 转化成 在我们语言里的坐标。
+
+那如何把我们的语言里的坐标 转化成 在詹妮弗语言里的坐标。
+
+![alt text](img/differentcoordinatesystem_switch5.png)
+
+![alt text](img/differentcoordinatesystem_switch6.png)
+
+#### 基向量切换导致矩阵表示改变
+
+![alt text](img/differentcoordinatesystem_matrix1.png)
+
+![alt text](img/differentcoordinatesystem_matrix2.png)
+
+![alt text](img/differentcoordinatesystem_matrix3.png)
+
+![alt text](img/differentcoordinatesystem_matrix4.png)
+
+![alt text](img/differentcoordinatesystem_matrix5.png)
+
+![alt text](img/differentcoordinatesystem_matrix6.png)
+
+### 特征向量与特征值
+
+![alt text](img/eigenvalueandeigenvector1.png)
+
+![alt text](img/eigenvalueandeigenvector2.png)
+
+![alt text](img/eigenvalueandeigenvector3.png)
+
+![alt text](img/eigenvalueandeigenvector4.png)
+
+![alt text](img/eigenvalueandeigenvector5.png)
+
+![alt text](img/eigenvalueandeigenvector6.png)
+
+![alt text](img/eigenvalueandeigenvector7.png)
+
+![alt text](img/eigenvalueandeigenvector8.png)
+
+![alt text](img/eigenvalueandeigenvector9.png)
+
+![alt text](img/eigenvalueandeigenvector10.png)
+
+![alt text](img/eigenvalueandeigenvector11.png)
+
+![alt text](img/eigenvalueandeigenvector12.png)
+
+![alt text](img/eigenvalueandeigenvector13.png)
+
+![alt text](img/eigenvalueandeigenvector14.png)
+
+![alt text](img/eigenvalueandeigenvector15.png)
+
+![alt text](img/eigenvalueandeigenvector16.png)
+
+![alt text](img/eigenvalueandeigenvector17.png)
+
+图中各部分的逻辑拆解如下：
+
+1. 矩阵（线性变换），左上角给出的矩阵是：$$A = \begin{bmatrix} 0.5 & -1.0 \\ -1.0 & 0.5 \end{bmatrix}$$ 矩阵在线性代数里代表一个空间变换（比如拉伸、翻折或旋转）。大部分向量在乘以这个矩阵后，方向都会发生偏转。   
+
+2. 黄色向量（特征向量），图中黄色的向量是 $\mathbf{v} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$。当我们把这个向量代入矩阵乘以向量的计算：$$A \mathbf{v} = \begin{bmatrix} 0.5 & -1.0 \\ -1.0 & 0.5 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 0.5 - 1.0 \\ -1.0 + 0.5 \end{bmatrix} = \begin{bmatrix} -0.5 \\ -0.5 \end{bmatrix}$$
+
+3. 特征值 $-\frac{1}{2}$ 的几何含义比较变换前后的向量：$$\begin{bmatrix} -0.5 \\ -0.5 \end{bmatrix} = -\frac{1}{2} \cdot \begin{bmatrix} 1 \\ 1 \end{bmatrix}$$
+  - 什么是特征向量：黄色向量经过矩阵变换后，依然停留在原本贯穿它的那条粉红色斜线上（方向没有偏离这条直线）。这种在变换中“保持在原直线上”的向量就叫特征向量。   
+  - 什么是特征值（$-\frac{1}{2}$）：它代表了这个向量在变换过程中的缩放倍数。 
+    - 负号（$-$）：代表向量被调转了方向（原本指向右上角，变换后指到了左下角）。   
+    - 数值（$\frac{1}{2}$）：代表向量长度被压缩为原来的 $1/2$。   
+  
+这正是底部字幕所解释的：“意味着这个向量被反向，并且被压缩为原来的 1/2”。   
+
+#### 特征值与特征向量的用途
+
+![alt text](img/eigenvalueandeigenvector_use1.png)
+
+![alt text](img/eigenvalueandeigenvector_use2.png)
+
+![alt text](img/eigenvalueandeigenvector_use3.png)
+
+![alt text](img/eigenvalueandeigenvector_use4.png)
+
+三维旋转变换中特征向量与特征值的几何本质！
+
+结合刚才讨论的三维空间必有实特征向量的规律，拆解如下：
+
+1. 旋转轴就是“特征向量”，在三维空间中，无论你如何绕着原点旋转这个立方体：
+  - 立方体上的绝大多数点（向量）在旋转后，方向都发生了改变。
+  - 唯独沿着“旋转轴（粉色粉红箭头方向）”上的所有向量，在旋转过程中方向完全没有被偏转！
+  - 因为它们始终留在原本的那条直线上，所以旋转轴的方向恰好就是该旋转变换的特征向量。
+
+2. 特征值是多少？因为旋转轴上的向量不仅方向没变，长度也完全没有发生变化（没有被缩放或反向）：
+  - 变换前后的关系是 $A\mathbf{v} = 1 \cdot \mathbf{v}$。
+  - 所以，对于三维旋转变换，旋转轴对应的特征值就是 $\lambda = 1$。
+
+3. 一句话总结，如果你计算一个三维旋转矩阵的特征值和特征向量，解出来特征值 $\lambda = 1$ 对应的那个特征向量，在几何上就是这个旋转动作的“旋转轴”！
+
+![alt text](img/eigenvalueandeigenvector_use5.png)
+
+![alt text](img/eigenvalueandeigenvector_use6.png)
+
+![alt text](img/eigenvalueandeigenvector_use7.png)
+
+![alt text](img/eigenvalueandeigenvector_use8.png)
+
+![alt text](img/eigenvalueandeigenvector_use9.png)
+
+![alt text](img/eigenvalueandeigenvector_use10.png)
+
+![alt text](img/eigenvalueandeigenvector_use11.png)
+
+为什么在求解特征值时，必须把标量 $\lambda$ 改写成矩阵 $\lambda I$。拆解其核心逻辑如下：
+
+1. 矛盾点：矩阵和标量不能直接相减，在特征向量定义式 $A\vec{v} = \lambda\vec{v}$ 中：
+  - 左边是矩阵乘以向量 $A\vec{v}$ 
+  - 右边是标量（纯数）乘以向量 $\lambda\vec{v}$   
+  - 如果我们想把右项移到左边变成 $(A - \lambda)\vec{v} = \vec{0}$，在数学上是无效的——因为一个矩阵 $A$ 不能直接减去一个纯数 $\lambda$！
+  
+2. 图中的提问：“与数 $\lambda$ 相乘”等价于“与哪个矩阵相乘”？图中问的就是：如何把“乘以标量 $\lambda$”这个动作，包装成一个矩阵？
+  - 标量乘法 $\lambda\vec{v}$ 的几何意义：把空间里的每一个基向量都均匀拉伸（或缩放）$\lambda$ 倍。
+  - 构造对应的矩阵（正如底部字幕所说：“这个矩阵的列代表着变换后的基向量”）：
+    - 第 1 个基向量 $\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}$ 变成了 $\begin{bmatrix} \lambda \\ 0 \\ 0 \end{bmatrix}$
+    - 第 2 个基向量 $\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}$ 变成了 $\begin{bmatrix} 0 \\ \lambda \\ 0 \end{bmatrix}$
+    - 第 3 个基向量 $\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$ 变成了 $\begin{bmatrix} 0 \\ 0 \\ \lambda \end{bmatrix}$   
+    - 所以，填满图中带问号的矩阵后，得到的就是对角矩阵：$$\begin{bmatrix} \lambda & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix} = \lambda \cdot I$$
+
+3. 最终目的，把 $\lambda$ 转化为缩放矩阵 $\lambda I$ 后，定义式就可以规范地写作：$$A\vec{v} = (\lambda I)\vec{v} \implies (A - \lambda I)\vec{v} = \vec{0}$$   这样一来，矩阵 $A$ 减去的也是同维度的矩阵 $\lambda I$，代数运算完全合理，随后就能通过求 $\det(A - \lambda I) = 0$ 来计算特征值了！
+
+![alt text](img/eigenvalueandeigenvector_use12.png)
+
+![alt text](img/eigenvalueandeigenvector_use13.png)
+
+![alt text](img/eigenvalueandeigenvector_use14.png)
+
+把这个过程拆解开来，逻辑是这样的：
+
+1. 目标：找到一个“非零”的特征向量 $\vec{v}$，在方程 $(A - \lambda I)\vec{v} = \vec{0}$ 中：   
+  - 如果 $\vec{v} = \vec{0}$（零向量），那么无论 $\lambda$ 是什么，等式永远成立（因为任何矩阵乘以零向量都是零向量）。
+  - 但零向量没有几何意义，我们需要的是一个非零向量 $\vec{v} \neq \vec{0}$。   
+
+2. 几何思考：什么情况下“非零向量”乘以矩阵会变成“零向量”？看一下这个方程的含义：
+  - 把一个非零向量 $\vec{v}$，经过矩阵 $(A - \lambda I)$ 变换后，结果变成了零向量 $\vec{0}$。   
+  - 如果矩阵没有压缩空间（即行列式 $\det \neq 0$）：
+    - 变换是可逆的，空间里的每一个点都和变换后的点一一对应。只有原点 $\vec{0}$ 会留在原点，任何非零向量变换后都不可能变成零向量。此时方程只有唯一零解 $\vec{v} = \vec{0}$。
+  - 如果矩阵把空间压缩到了低维（即行列式 $\det = 0$）：
+    - 如底部字幕所说：“当且仅当矩阵所代表的变换将空间压缩到更低的维度时”，原本非零的一些向量，会在压缩过程中“挤压”掉，落到原点 $\vec{0}$ 上。
+
+3. 结论：必须令 $\det(A - \lambda I) = 0$，为了确保存在非零向量 $\vec{v}$ 被压成零向量，矩阵 $(A - \lambda I)$ 必须具有压缩空间的能力。在线性代数中，“把空间压缩到更低维度”的数学充要条件就是：$$\det(A - \lambda I) = 0$$，这就是图中气泡里写着 “我们需要 $\det(A - \lambda I) = 0$” 的真正原因！通过解这个关于 $\lambda$ 的方程，我们就能算出特征值 $\lambda$，进而求出对应的特征向量 $\vec{v}$。
+
+![alt text](img/eigenvalueandeigenvector_use15.png)
+
+![alt text](img/eigenvalueandeigenvector_use16.png)
+
+![alt text](img/eigenvalueandeigenvector_use17.png)
+
+![alt text](img/eigenvalueandeigenvector_use18.png)
+
+#### 特征值与特征向量的求解
+
+![alt text](img/eigenvalueandeigenvector_solve1.png)
+
+![alt text](img/eigenvalueandeigenvector_solve2.png)
+
+![alt text](img/eigenvalueandeigenvector_solve3.png)
+
+![alt text](img/eigenvalueandeigenvector_solve4.png)
+
+在已知特征值 $\lambda = 2$ 后，具体求解对应特征向量 $\vec{v}$ 的最后一步。
+
+它把代数方程组的解与几何图像完全对应了起来，逻辑拆解如下：
+
+1. 代数过程：代入 $\lambda = 2$ 算矩阵，假设原矩阵是 $A = \begin{bmatrix} 3 & 1 \\ 0 & 2 \end{bmatrix}$。当我们求出特征值 $\lambda = 2$ 后，将其代入方程 $(A - \lambda I)\vec{v} = \vec{0}$：$$\begin{bmatrix} 3-\mathbf{2} & 1 \\ 0 & 2-\mathbf{2} \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix} \implies \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$$ 展开得到方程：$$1 \cdot x + 1 \cdot y = 0 \implies x = -y$$这个方程有无数组解，只要满足 $x$ 和 $y$ 互为相反数 即可，比如 $\begin{bmatrix} -1 \\ 1 \end{bmatrix}$、$\begin{bmatrix} -2 \\ 2 \end{bmatrix}$、$\begin{bmatrix} 1.5 \\ -1.5 \end{bmatrix}$ 等等。
+
+2. 几何过程：张成的特征空间（Eigenspace）
+  - 解的几何轨迹：所有满足 $x = -y$ 的向量（解），在平面直角坐标系中画出来，正好就是过原点、倾角为 $135^\circ$ 的斜对角线（也就是图中黄色箭头所在的橙色直线）。
+  - 张成（Span）的含义：正如底部字幕所说，“所有的解全部落在由向量 $(-1, 1)$ 张成的对角线上”。这意味着只要确定了一个基础特征向量 $\begin{bmatrix} -1 \\ 1 \end{bmatrix}$，沿这条直线上的任何非零向量全都是特征值 $\lambda = 2$ 对应的特征向量！   
+
+3. 一句话总结这张图演示了如何把解出来的特征值 $\lambda$ 代回方程，通过解齐次线性方程组，在几何上找到整条由特征向量组成的特征直线（特征空间）。
+
+#### 二维线性变化不一定有特征向量
+
+![alt text](img/eigenvalueandeigenvector_hasnoeigenvector1.png)
+
+![alt text](img/eigenvalueandeigenvector_hasnoeigenvector2.png)
+
+![alt text](img/eigenvalueandeigenvector_hasnoeigenvector3.png)
+
+#### 只有一个特征值存在多个特征向量
+
+![alt text](img/eigenvalueandeigenvector_onelambdamultieigenvector1.png)
+
+![alt text](img/eigenvalueandeigenvector_onelambdamultieigenvector2.png)
+
+任意形如 $\begin{bmatrix} c & 0 \\ 0 & c \end{bmatrix}$ 的缩放矩阵（比如你说的 $\begin{bmatrix} n & 0 \\ 0 & n \end{bmatrix}$，其中 $c, n \neq 0$），全平面的每一个非零向量都是它的特征向量。
+
+缩放矩阵：$\begin{bmatrix} k & 0 \\ 0 & k \end{bmatrix}$（$k$ 为任意实数）
+
+对于矩阵 $A = \begin{bmatrix} k & 0 \\ 0 & k \end{bmatrix}$：它的作用：
+
+1. 把平面上的所有向量统一沿原方向伸缩 $k$ 倍（即均匀缩放）。   
+2. 特征值：解方程 $\det(A - \lambda I) = (k - \lambda)^2 = 0$，得到重特征值 $\lambda = k$（单特征值）。
+3. 特征向量：因为对于平面上任意非零向量 $\mathbf{v}$，都有：$$A \mathbf{v} = k \mathbf{v}$$这意味着整个二维平面上的所有方向全都是特征方向！它的特征空间（Eigen-space）是整个二维平面。所以无论是 $\begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}$、$\begin{bmatrix} 5 & 0 \\ 0 & 5 \end{bmatrix}$ 还是 $\begin{bmatrix} -3 & 0 \\ 0 & -3 \end{bmatrix}$，道理完全一致。
+
+#### 特征基
+
+![alt text](img/eigenbasis1.png)
+
+这张图引出了线性代数里极其重要的一个概念——对角化（Diagonalization）。
+
+视频通过“提出一个假设”来展示特征向量最完美的理想状态，拆解如下：
+
+1. 假设：如果坐标轴的基向量本身就是特征向量？一般情况下，基向量 $\hat{i}$ 和 $\hat{j}$ 经过矩阵变换后会偏折到奇怪的位置。但如果坐标系的基向量刚好就是特征向量：
+  - 第一个基向量 $\hat{i}$：变换后只在原来的水平线上伸缩或反向（比如图中的绿箭头被反向变成了 $-1$ 倍，即变成 $\begin{bmatrix} -1 \\ 0 \end{bmatrix}$）。
+  - 第二个基向量 $\hat{j}$：变换后只在原来的垂直线上伸缩（比如图中的红箭头被拉伸成了 $2$ 倍，即变成 $\begin{bmatrix} 0 \\ 2 \end{bmatrix}$）。
+
+2. 这个矩阵会变成什么样？把变换后的基向量按列写成矩阵：$$\begin{bmatrix} \mathbf{-1} & 0 \\ 0 & \mathbf{2} \end{bmatrix}$$ 你会发现：这个矩阵变成了一个对角矩阵（Diagonal Matrix）！
+  - 非对角线元素全为 $0$。
+  - 对角线上的数值，正好就是各自的特征值（$\lambda_1 = -1, \lambda_2 = 2$）！
+
+3. 为什么对角矩阵是“终极梦想”？对角矩阵是线性代数里最容易计算的矩阵：
+  - 几何上：变换极度简单，只是单纯地沿着各个坐标轴方向进行独立拉伸/反向，没有任何倾斜或旋转。   
+  - 计算上：如果要算矩阵的高次方（比如 $A^{100}$），普通的矩阵非常难算，而对角矩阵只需把对角线上的数字直接乘方：$$\begin{bmatrix} -1 & 0 \\ 0 & 2 \end{bmatrix}^{100} = \begin{bmatrix} (-1)^{100} & 0 \\ 0 & 2^{100} \end{bmatrix}$$
+  
+**一句话总结“如果基向量都是特征向量，描述这个变换的矩阵就会变成对角矩阵，对角线上的数字就是特征值。”**
+
+如果原本的坐标系不是这样也没关系——我们只需要选择特征向量作为新的基向量（建立新坐标系），就能把复杂的矩阵转化为极致简便的对角矩阵，这就是矩阵对角化！
+
+![alt text](img/eigenbasis2.png)
+
+![alt text](img/eigenbasis3.png)
+
+![alt text](img/eigenbasis4.png)
+
+![alt text](img/eigenbasis5.png)
+
+#### 矩阵对角化
+
+矩阵对角化（Diagonalization），本质上就是：找到一个最优雅的视角（坐标系），让复杂的矩阵变换退化成最简单的“沿坐标轴缩放”。
+
+**能否成功进行“矩阵对角化”的核心前提条件：特征向量必须能够张成全空间（Eigenvectors span space）。**
+
+![alt text](img/diagonalization1.png)
+
+这幅图的几何含义和代数逻辑如下：
+
+1. 图中的几何关系矩阵，$A = \begin{bmatrix} 3 & 1 \\ 0 & 2 \end{bmatrix}$ 在这个二维平面上有两条非常特殊的特征直线：
+  - 水平 $X$ 轴（绿色箭头）：
+    - 对应特征值 $\lambda_1 = 3$。
+    - 沿着 $X$ 轴的所有向量，经过变换后都停留在 $X$ 轴上，只是被放大了 3 倍。   
+  - 斜对角线（黄色/橙色箭头）：
+    - 对应特征值 $\lambda_2 = 2$（也就是我们刚才算过的 $x = -y$ 那条线）。   
+    - 沿着这条斜线的所有向量，经过变换后都停留在斜线上，只是被放大了 2 倍。   
+
+2. 为什么说“能张成全空间”？
+  - 不共线：绿色直线（$X$ 轴）和橙色斜线不平行/不共线。
+  - 组合出整个平面：从这两条线上各挑选出一个基础特征向量（比如 $\vec{v}_1 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 和 $\vec{v}_2 = \begin{bmatrix} -1 \\ 1 \end{bmatrix}$），这两个向量线性无关，它们的线性组合可以覆盖（张成）整个 2D 平面的任意一点。   
+
+3. 这意味着什么？（承上启下），因为这两个特征向量能张成全空间，我们就可以把它们选作新的“基向量”（建立新坐标系）：   
+  - 在原本的标准坐标系里：描述变换的矩阵是带有非对角元素的 $A = \begin{bmatrix} 3 & 1 \\ 0 & 2 \end{bmatrix}$。   
+  - 在以特征向量为基的新坐标系里：变换矩阵就会变成极致简单的对角矩阵 $\begin{bmatrix} 3 & 0 \\ 0 & 2 \end{bmatrix}$！   
+  - 这就是著名的相似对角化公式：$$P^{-1} A P = D = \begin{bmatrix} \lambda_1 & 0 \\ 0 & \lambda_2 \end{bmatrix}$$ 其中 $P$ 的每一列就是这两个能张成全空间的特征向量 $\begin{bmatrix} \vec{v}_1 & \vec{v}_2 \end{bmatrix}$。  
+
+一句话总结只有当一个矩阵拥有足够多、能铺满整个空间的独立特征向量时，我们才能通过“换一套基向量（坐标系）”，把这个复杂的矩阵转化为最简便的对角矩阵！   
+
+![alt text](img/diagonalization2.png)
+
+![alt text](img/diagonalization3.png)
+
+**并非所有矩阵都能对角化**
+
