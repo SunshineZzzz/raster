@@ -51,7 +51,9 @@
     - [加4次幂项近似有用](#加4次幂项近似有用)
     - [余弦函数的泰勒多项式](#余弦函数的泰勒多项式)
     - [任何函数的泰勒多项式](#任何函数的泰勒多项式)
+    - [泰勒级数麦克劳林级数n阶泰勒展开](#泰勒级数麦克劳林级数n阶泰勒展开)
     - [二阶泰勒展开](#二阶泰勒展开)
+    - [多元函数n阶泰勒展开](#多元函数n阶泰勒展开)
 - [正定和负定和不定矩阵](#正定和负定和不定矩阵)
 
 ### 欧拉数
@@ -1255,11 +1257,62 @@ $$c_n = \frac{f^{(n)}(0)}{n!}$$
 
 ![alt text](img/TaylorSeriesForAnyF6.png)
 
+#### 泰勒级数麦克劳林级数n阶泰勒展开
+
+1. 泰勒级数（一般情况），在任意指定的点 $x = a$ 处对函数进行展开。$$f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \frac{f'''(a)}{3!}(x-a)^3 + \dots$$
+    - 几何直观：以 $x = a$ 为观察基准点（“大本营”），用周围各个阶数的导数去逼近 $x$ 处的函数值。
+2. 麦克劳林级数（特殊情况），直接把基准点选在原点 $x = 0$（即令 $a = 0$）。$$f(x) = f(0) + f'(0)x + \frac{f''(0)}{2!}x^2 + \frac{f'''(0)}{3!}x^3 + \dots$$
+
+3. 函数 $f(x)$ 在点 $x = a$ 附近的 $n$ 阶泰勒展开式为：$$f(x) = \underbrace{f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \dots + \frac{f^{(n)}(a)}{n!}(x-a)^n}_{P_n(x)\text{ （}n\text{ 阶泰勒多项式）}} + \underbrace{R_n(x)}_{\text{余项（误差）}}$$ 公式拆分为两大部分：
+    - $P_n(x)$（前 $n$ 项近似值）：这是一个简单易算的多项式，包含了函数在 $a$ 点的前 $n$ 阶导数信息。
+    - $R_n(x)$（余项 / 误差）：用来衡量“用前 $n$ 项代替原函数时，到底丢掉了多少精度”。
+
+**如何在某一点附近，用一个“好算的多项式”去逼近（甚至精确表示）一个复杂光滑函数 $f(x)$**
+
+在某点 $a$ 附近用多项式逼近复杂函数 $f(x)$，每一个阶数（$n=0, 1, 2, 3, \dots, \infty$）都代表了拟合精度的一次升级。
+1. 0 阶展开（$n = 0$）：点对齐
+    - 多项式：$P_0(x) = f(a)$
+    - 几何图形：水平直线 $y = c$
+    - 逼近含义：只保证在 $a$ 点处的位置（高度）与原函数一致。
+    - 物理直观：静态快照。只知道物体在 $a$ 时刻在哪里，完全不知道接下来会怎么走。
+2. 1 阶展开（$n = 1$）：切线对齐
+    - 多项式：$P_1(x) = f(a) + f'(a)(x-a)$
+    - 几何图形：倾斜的切线（平直的直线） $y = kx + b$
+    - 逼近含义：保证了 $a$ 点处的高度和变化趋势（斜率/一阶导数）与原函数一致。
+    - 物理直观：匀速运动。假设物体按当前的瞬时速度做直线运动。
+    - 局限：线是直的，完全无法感知曲线是向上弯还是向下弯。
+3. 2 阶展开（$n = 2$）：曲率对齐
+    - 多项式：$P_2(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2$
+    - 几何图形：弯曲的抛物线（二次曲线） $y = Ax^2 + Bx + C$
+    - 逼近含义：不仅对齐了高度和斜率，还保证了 $a$ 点处的弯曲方向与剧烈程度（曲率/二阶导数）与原函数一致。
+    - 物理直观：匀加速运动。考虑了速度也在变化（加速度）。
+    - 作用：能够判断极值点（开口向上是谷底，开口向下是山顶）。
+4. 3 阶展开（$n = 3$）：曲率的变化率对齐
+    - 多项式：$P_3(x) = P_2(x) + \frac{f'''(a)}{3!}(x-a)^3$
+    - 几何图形：S 型三次曲线
+    - 逼近含义：加入了三阶导数，保证了曲线“弯曲度发生改变的速度”也与原函数一致。
+    - 作用：能够拟合出函数的拐点（曲线从凹变凸或从凸变凹的地方）。
+5. $n$ 阶展开（有限阶）：局部高精度多项式
+    - 多项式：$P_n(x) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(x-a)^k$
+    - 几何图形：$n$ 次多项式曲线
+    - 逼近含义：保证原函数在 $a$ 点处的前 $n$ 阶导数与多项式完全一致。
+    - 工程实用性：阶数 $n$ 越高，在 $a$ 点附近的逼近范围越大、误差越小（误差由余项 $R_n(x)$ 控制）。这就是计算器算出 $\sin(x)$ 或 $e^x$ 的底层算法。
+6. $\infty$ 阶（无穷阶，即泰勒级数）：完全还原
+    - 多项式：$P_\infty(x) = \sum_{k=0}^{\infty} \frac{f^{(k)}(a)}{k!}(x-a)^k$
+    - 几何图形：与原函数完全重合的曲线
+    - 逼近含义：在收敛域内，有限的多项式变成了无穷级数，误差归零（$R_\infty(x) \to 0$），多项式从“逼近”升级为了与原函数“完全相等”。
+
 #### 二阶泰勒展开
 
 为什么不直接算 $f(x)$，非要用泰勒展开？
 
-核心一句话：“能直接算 $f(x)$”本身就是一个奢侈的错觉——绝大多数真实场景里，你要么根本拿不到 $f$ 的完整公式，要么直接算成本极高，而泰勒展开是唯一能用“少量局部信息”撬动附近近似值的方法。
+如果你只知道一个复杂函数在点 $a$ 处的：
+1. 函数值 $f(a)$
+2. 斜率 $f'(a)$
+3. 弯曲程度 $f''(a)$
+那二阶泰勒就能告诉你：在 $a$ 附近，这个函数大概长什么样。
+
+它不会精确等于原函数整体，但在 $a$ 的“小邻域”里，它是你能得到的最好的抛物线近似。
 
 如果定义 $f_{\text{area}}(x)$ 为曲线下从起点到 $x$ 的累积面积：
 
@@ -1276,6 +1329,34 @@ $$c_n = \frac{f^{(n)}(0)}{n!}$$
         - $\text{高（斜率增加总量）} = \underbrace{\frac{d^2 f}{dx^2}(a)}_{\text{每走 1 单位距离，斜率增加多少}} \quad \times \quad \underbrace{(x - a)}_{\text{一共走了多少单位距离}}$
     - 三角形面积公式：$\frac{1}{2} \times \text{底} \times \text{高} = \frac{1}{2} \frac{d^2 f_{\text{area}}}{dx^2}(a) (x - a)^2$
 
+为什么a点的一阶导数是高度？
+
+这里 $y$ 不是普通曲线高度，而是累积面积
+
+定义
+
+$$A(x)=\int_0^x g(t)\,dt$$
+
+自变量 $x$：积分右边界的位置（横轴）
+
+因变量 $y=A(x)$：从 $0$ 积到 $x$ 的“面积总量”
+
+现在看导数：
+
+$$A'(x)=\lim_{h\to0}\frac{A(x+h)-A(x)}{h}$$
+
+分子 $A(x+h)-A(x)=\int_x^{x+h}g(t)\,dt$ = $x$ 到 $x+h$ 之间那一窄条的面积
+
+分母 $h$ = 这一窄条的宽度
+
+所以：
+
+$$\frac{\Delta(\text{面积})}{\Delta(\text{宽度})}=\frac{\text{窄条面积}}{\text{窄条宽}}=\text{这一窄条的“平均高度”}$$
+
+$h\to0$ 时，窄条极薄，平均高度→$g(x)$（被积曲线在那点的高度）。
+
+$$\boxed{A'(x)=g(x)=\text{该处竖线的物理高度}}$$
+
 ![alt text](img/2nd-orderTaylorExpansion1.png)
 
 二阶泰勒展开式（在展开点 $x=a$ 处）就是只保留到二次项：
@@ -1286,11 +1367,36 @@ $$f(x)\approx P_2(x)=f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2$$
 
 $$\boxed{f(x)\approx f(a)+f'(a)(x-a)+\frac{1}{2}f''(a)(x-a)^2}$$
 
+#### 多元函数n阶泰勒展开
+
+多元函数的 $n$ 阶泰勒展开式（Taylor Expansion）是将一个高维光滑函数在指定点附近用 $n$ 次多项式 进行局部逼近的核心工具。
+
+1. 一元泰勒展开（回顾），一元函数 $f(x)$ 在 $x_0$ 处的 $n$ 阶泰勒展开为：$$f(x) = \sum_{k=0}^{n} \frac{f^{(k)}(x_0)}{k!} (x - x_0)^k + R_n(x)$$若设增量 $\Delta x = x - x_0$，可等价写作：$$f(x_0 + \Delta x) = f(x_0) + f'(x_0)\Delta x + \frac{1}{2!}f''(x_0)\Delta x^2 + \dots + \frac{1}{n!}f^{(n)}(x_0)\Delta x^n + R_n$$
+
+2. 多元函数的 $n$ 阶泰勒展开公式，设 $f(\mathbf{x}): \mathbb{R}^d \to \mathbb{R}$ 在点 $\mathbf{x}_0$ 的某个邻域内具有连续的 $n+1$ 阶偏导数。引入自变量增量向量 $\boldsymbol{\Delta x} = \mathbf{x} - \mathbf{x}_0 = (\Delta x_1, \Delta x_2, \dots, \Delta x_d)^T$。多元函数的 $n$ 阶泰勒展开通式可表示为：$$f(\mathbf{x}_0 + \boldsymbol{\Delta x}) = \sum_{k=0}^{n} \frac{1}{k!} \left( \boldsymbol{\Delta x} \cdot \nabla \right)^k f(\mathbf{x}_0) + R_n(\boldsymbol{\Delta x})$$
+    - $\mathbf{x}$ 是 $m$ 维向量自变量。
+    - $\mathbf{x}_0$ 是展开点，$\boldsymbol{\Delta x}=(\Delta x_1,\dots,\Delta x_m)$ 是自变量的增量。
+    - $\nabla$（nabla/梯度算子）是一个“向量微分算子”：$$\nabla=\left(\frac{\partial}{\partial x_1},\frac{\partial}{\partial x_2},\dots,\frac{\partial}{\partial x_m}\right)$$
+        - 第 $1$ 个分量 $\frac{\partial}{\partial x_1}$：沿 $x_1$ 轴正方向 的偏导数。
+        - 第 $2$ 个分量 $\frac{\partial}{\partial x_2}$：沿 $x_2$ 轴正方向 的偏导数。
+        - ...
+        - 第 $m$ 个分量 $\frac{\partial}{\partial x_m}$：沿 $x_m$ 轴正方向 的偏导数。
+        - 把这 $m$ 个沿标准基向量方向的变化率拼在一起，就构成了梯度向量。
+    - $\boldsymbol{\Delta x}\cdot\nabla$ 是向量点积，得到一个标量微分算子：$$\boldsymbol{\Delta x}\cdot\nabla=\Delta x_1\frac{\partial}{\partial x_1}+\Delta x_2\frac{\partial}{\partial x_2}+\cdots+\Delta x_m\frac{\partial}{\partial x_m}$$它其实就是沿方向 $\boldsymbol{\Delta x}$ 的方向导数算子。
+        - $\boldsymbol{\Delta x} \cdot \nabla$ 本身只是一个空的动作指令，就像一个“绞肉机”：$$\boldsymbol{\Delta x} \cdot \nabla = \Delta x_1 \frac{\partial}{\partial x_1} + \Delta x_2 \frac{\partial}{\partial x_2} + \dots + \Delta x_m \frac{\partial}{\partial x_m}$$ 你看看这个算子里面：$\frac{\partial}{\partial x_1}$ 只是“对 $x_1$ 求导”的动作，它根本没有求导的对象！所以，必须把函数 $f(\mathbf{x}_0)$ 贴在算子后面，把“肉”（函数）喂给“绞肉机”（算子）：
+    - $(\boldsymbol{\Delta x}\cdot\nabla)^k$ 表示这个算子连续作用 $k$ 次（幂次表示复合）。
+    - $\dfrac{1}{k!}(\boldsymbol{\Delta x}\cdot\nabla)^k f(\mathbf{x}_0)$ 就是泰勒展开的 $k$ 阶项。
+    - $R_n(\boldsymbol{\Delta x})$ 是 $n$ 阶余项（类似一元的 $o(\|\Delta\mathbf x\|^n)$ 或拉格朗日型余项）。
+
+3. 举个二元例子（$m=2$），设 $f(x,y)$，$\mathbf{x}_0=(a,b)$，$\boldsymbol{\Delta x}=(h,k)$。则 $\boldsymbol{\Delta x}\cdot\nabla = h\frac{\partial}{\partial x}+k\frac{\partial}{\partial y}$。
+    - $k=0$: $f(a,b)$
+    - $k=1$: $\left(h\partial_x+k\partial_y\right)f = h f_x + k f_y$
+    - $k=2$: $\left(h\partial_x+k\partial_y\right)^2 f = h^2 f_{xx}+2hk f_{xy}+k^2 f_{yy}$
+    - 于是二元泰勒展开前几项：$$f(a+h,b+k)=f +\big(hf_x+kf_y\big)+\frac12\big(h^2f_{xx}+2hkf_{xy}+k^2f_{yy}\big)+\cdots+R_n$$
+
 ### 正定和负定和不定矩阵
 
 要透彻理解正定矩阵（Positive Definite）、负定矩阵（Negative Definite） 和 不定矩阵（Indefinite），最好的方式就是把它们跟高数里的“曲面凹凸性”和“多元函数的极值”结合起来。
-
-其实你刚讨论完的“一阶/二阶导数与函数凹凸性”，就是理解定性矩阵的完美钥匙！
 
 一、 核心直觉：多元函数的“二阶导数”
 
@@ -1337,3 +1443,69 @@ $g_{xx} = 0$ 和 $g_{yy} = 0$ 只能说明“在正东-正西、正南-正北这
 
 如果只看这两个数据，你甚至连这到底是一个平平无奇的“平面”，还是一个剧烈扭曲的“马鞍面”，都分不出来。
 
+多元函数在某点 $\mathbf x_0$ 附近的局部行为（曲面形状、走向、弯曲方式），可以用以 $\mathbf x_0$ 为中心的 N 阶泰勒多项式来任意精度地局部逼近；阶数越高，能刻画的局部几何细节越多。
+
+直接使用多元泰勒公式的推导过程，根据标准的多元泰勒展开公式，任意多元函数 $f(\mathbf{x})$ 在基准点 $\mathbf{x}_0$ 附近的展开式为：
+
+$$f(\mathbf{x}_0 + \boldsymbol{\Delta x}) = f(\mathbf{x}_0) + \underbrace{(\boldsymbol{\Delta x} \cdot \nabla) f(\mathbf{x}_0)}_{\text{一阶增量}} + \underbrace{\frac{1}{2!} (\boldsymbol{\Delta x} \cdot \nabla)^2 f(\mathbf{x}_0)}_{\text{二阶增量}} + \dots + R_n$$
+
+把右边的 $f(\mathbf{x}_0)$ 移到等式左边，得到高度差 $\Delta z$ 的展开式：
+
+$$\Delta z = f(\mathbf{x}_0 + \boldsymbol{\Delta x}) - f(\mathbf{x}_0) = (\boldsymbol{\Delta x} \cdot \nabla) f(\mathbf{x}_0) + \frac{1}{2!} (\boldsymbol{\Delta x} \cdot \nabla)^2 f(\mathbf{x}_0) + \dots$$
+
+当你在研究函数的极值点（驻点）时，极值点满足一阶梯度为零：
+
+$$\nabla f(\mathbf{x}_0) = \mathbf{0}$$
+
+此时，一阶项直接变成了零：
+
+$$(\boldsymbol{\Delta x} \cdot \nabla) f(\mathbf{x}_0) = \Delta x_1 \underbrace{\frac{\partial f}{\partial x_1}(\mathbf{x}_0)}_{0} + \dots + \Delta x_m \underbrace{\frac{\partial f}{\partial x_m}(\mathbf{x}_0)}_{0} = 0$$
+
+一阶项抹去后，剩下的首项就是二阶项，所以高度差近似表达为：
+
+$$\Delta z \approx \frac{1}{2!} (\boldsymbol{\Delta x} \cdot \nabla)^2 f(\mathbf{x}_0)$$
+
+将二阶方向微分算子按乘法展开，作用于函数 $f$ 并代入基准点 $\mathbf{x}_0$：
+
+$$\frac{1}{2!} (\boldsymbol{\Delta x} \cdot \nabla)^2 f(\mathbf{x}_0) = \frac{1}{2} \left( \Delta x \frac{\partial}{\partial x} + \Delta y \frac{\partial}{\partial y} \right)^2 f(\mathbf{x}_0)$$
+
+利用二项式展开展开算子：
+
+$$= \frac{1}{2} \left[ (\Delta x)^2 \frac{\partial^2 f}{\partial x^2} + 2 \Delta x \Delta y \frac{\partial^2 f}{\partial x \partial y} + (\Delta y)^2 \frac{\partial^2 f}{\partial y^2} \right]_{ \mathbf{x} = \mathbf{x}_0 }$$
+
+为了方便书写，我们将代入点 $\mathbf{x}_0$ 后的二阶偏导数简写为：
+
+1. $f_{xx} = \frac{\partial^2 f}{\partial x^2}(\mathbf{x}_0)$
+2. $f_{xy} = \frac{\partial^2 f}{\partial x \partial y}(\mathbf{x}_0)$ （假设二阶连续可微，根据 Schwarz 定理有 $f_{xy} = f_{yx}$）
+    - $f_{xy}$ 就是“先对 $x$ 求一次偏导，再对结果关于 $y$ 求一次偏导”。
+3. $f_{yy} = \frac{\partial^2 f}{\partial y^2}(\mathbf{x}_0)$
+
+将式子拆开重组：
+
+$$= \frac{1}{2} \left[ f_{xx} (\Delta x)^2 + f_{xy} \Delta x \Delta y + f_{yx} \Delta y \Delta x + f_{yy} (\Delta y)^2 \right]$$
+
+仔细观察上面方括号里的四项相加，利用线性代数中矩阵与向量乘法的规则：
+
+$$\begin{aligned} f_{xx} (\Delta x)^2 + f_{xy} \Delta x \Delta y + f_{yx} \Delta y \Delta x + f_{yy} (\Delta y)^2  &= \Delta x \left( f_{xx} \Delta x + f_{xy} \Delta y \right) + \Delta y \left( f_{yx} \Delta x + f_{yy} \Delta y \right) \\ &= \begin{bmatrix} \Delta x & \Delta y \end{bmatrix} \begin{bmatrix} f_{xx} \Delta x + f_{xy} \Delta y \\ f_{yx} \Delta x + f_{yy} \Delta y \end{bmatrix} \\ &= \begin{bmatrix} \Delta x & \Delta y \end{bmatrix} \begin{bmatrix} f_{xx} & f_{xy} \\ f_{yx} & f_{yy} \end{bmatrix} \begin{bmatrix} \Delta x \\ \Delta y \end{bmatrix} \end{aligned}$$
+
+我们定义由所有二阶偏导数构成的对称矩阵为 Hessian 矩阵（海森矩阵）：
+
+$$H = \nabla^2 f(\mathbf{x}_0) = \begin{bmatrix} \frac{\partial^2 f}{\partial x^2} & \frac{\partial^2 f}{\partial x \partial y} \\ \frac{\partial^2 f}{\partial y \partial x} & \frac{\partial^2 f}{\partial y^2} \end{bmatrix}_{\mathbf{x}=\mathbf{x}_0} = \begin{bmatrix} f_{xx} & f_{xy} \\ f_{yx} & f_{yy} \end{bmatrix}$$
+
+将列向量 $\boldsymbol{\Delta x} = \begin{bmatrix} \Delta x \\ \Delta y \end{bmatrix}$ 与行向量（转置） $\boldsymbol{\Delta x}^T = \begin{bmatrix} \Delta x & \Delta y \end{bmatrix}$ 代入，即得到：
+
+$$\frac{1}{2!} (\boldsymbol{\Delta x} \cdot \nabla)^2 f(\mathbf{x}_0) = \frac{1}{2} \boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}$$
+
+$m$ 维空间下的完整二阶泰勒展开式把一阶项和二阶项放在一起，任意 $m$ 维空间中的二阶泰勒展开式写成矩阵形式就是：$$f(\mathbf{x}_0 + \boldsymbol{\Delta x}) \approx f(\mathbf{x}_0) + \underbrace{\nabla f(\mathbf{x}_0)^T \boldsymbol{\Delta x}}_{\text{一阶梯度项（一阶导）}} + \underbrace{\frac{1}{2} \boldsymbol{\Delta x}^T H(\mathbf{x}_0) \boldsymbol{\Delta x}}_{\text{二阶 Hessian 二次型（二阶导）}}$$若在驻点 $\mathbf{x}_0$ 处（一阶梯度 $\nabla f(\mathbf{x}_0) = \mathbf{0}$），一阶项消失，高度差即为：$$\Delta z \approx \mathbf{\frac{1}{2} \boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}}$$
+
+因为在驻点处，高度差完全由二阶项决定：
+
+$$\Delta z \approx \frac{1}{2} \boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}$$
+
+这里的系数 $\frac{1}{2}$ 是一个正常数，不会改变正负号。因此，任意移动方向 $\boldsymbol{\Delta x}$ 带来的高度变化 $\Delta z$ 的正负，完全取决于二次型 $\boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}$ 的符号：
+
+| $H$ 的正定性 | 二次型 $\boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}$ 的符号 | 高度变化 $\Delta z$ | 几何形态 | 极值结论 |
+| :--- | :--- | :--- | :--- | :--- |
+| **正定（Positive Definite）** | 对任意非零 $\boldsymbol{\Delta x}$，均为 $>0$ | 朝任何方向走，高度都**上升** | 碗状凹陷（Bowl shape） | **严格局部极小值** |
+| **负定（Negative Definite）** | 对任意非零 $\boldsymbol{\Delta x}$，均为 $<0$ | 朝任何方向走，高度都**下降** | 倒扣的碗（Cap shape） | **严格局部极大值** |
+| **不定（Indefinite）** | 有的方向 $>0$，有的方向 $<0$ | 有的方向上升，有的方向下降 | 马鞍面（Saddle shape） | **鞍点（不是极值点）** |

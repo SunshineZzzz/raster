@@ -719,7 +719,40 @@ $
 
 ![alt text](img/differentcoordinatesystem_matrix4.png)
 
+$$A \mathbf{x} = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \end{bmatrix}$$
+
+1. 最右边的向量 $\begin{bmatrix} -1 \\ 2 \end{bmatrix}$（詹妮的语言）
+  - 这是“别人”（假设叫詹妮）在她自己的坐标系下描述的一个向量。
+2. 中间的矩阵 $\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix}$（语言翻译官 / 基变换矩阵 $P$）
+  - 这个矩阵的作用是把詹妮语言里的向量，翻译成我们语言里的向量。   
+  - 它的第一列 $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$ 和第二列 $\begin{bmatrix} -1 \\ 1 \end{bmatrix}$，分别就是詹妮的两个基向量在我们坐标系下的坐标。
+  - 乘完前两项后，$\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \end{bmatrix}$ 得到的就是用我们的语言（标准坐标系）描述的那个未变换的向量。   
+  - 最左边的矩阵 $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$（我们语言里的变换矩阵 $M$）
+    - 这是在我们坐标系下施加的线性变换（比如这里是一个逆时针旋转 $90^\circ$ 的变换）。
+    - 当把最左边的矩阵乘上去后，就得到了图中大括号标注的：“用我们的语言描述的变换后的向量”。  
+
 ![alt text](img/differentcoordinatesystem_matrix5.png)
+
+按照从右往左的四连乘顺序来看，整个逻辑彻底闭环了：
+
+$$\underbrace{ \begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix}^{-1} }_{\text{逆翻译官 } P^{-1}} \quad \underbrace{ \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} }_{\text{变换矩阵 } M} \quad \underbrace{ \begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} }_{\text{翻译官 } P} \quad \underbrace{ \begin{bmatrix} -1 \\ 2 \end{bmatrix} }_{\text{詹妮的向量 } \mathbf{v}_{\text{詹}}}$$
+
+1. 第一步（右边两项）：$\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \end{bmatrix}$
+  - 把詹妮描述的输入向量，翻译成我们坐标系下的向量。
+2. 第二步（右边三项）：加上最左边的旋转矩阵 $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$
+  - 在我们坐标系下施加旋转变换（得到上一张图的结果）。
+3. 第三步（完整的四项，即这张图新增的步骤）：乘以最左边的基变换逆矩阵 $P^{-1}$
+  - 因为第二步算出的结果是用我们的语言描述的，詹妮看不懂。
+  - 乘以 $P^{-1}$ 的作用就是“逆向翻译”——把我们坐标系下变换后的向量，重新翻译回用詹妮的语言（她的基向量）描述的向量！   
+
+几何本质：从向量变换到矩阵变换（相似变换），把输入向量 $\begin{bmatrix} -1 \\ 2 \end{bmatrix}$ 拿掉，剩下的三个矩阵相乘：
+
+$$M_{\text{詹妮}} = P^{-1} M_{\text{我们}} P$$
+
+这就是线性代数中最经典的 相似矩阵（Similar Matrices）/ 相似变换公式：
+
+1. $P$：将詹妮世界的内容，翻译到我们的世界。
+2. $M_{\text{我们}}$：在我们的世界里完成变换。   $P^{-1}$：把结果翻译回詹妮的世界。   
 
 ![alt text](img/differentcoordinatesystem_matrix6.png)
 
