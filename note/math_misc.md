@@ -33,9 +33,11 @@
 - [伯努利分布](#伯努利分布)
 - [Hadamard积](#hadamard积)
 - [L2 范数](#l2-范数)
+- [Frobenius 范数](#frobenius-范数)
 - [二阶导数](#二阶导数)
 - [导数家族](#导数家族)
 - [实对称矩阵](#实对称矩阵)
+- [正交矩阵](#正交矩阵)
 - [二次型](#二次型)
 - [矩阵的特征值和特征向量](#矩阵的特征值和特征向量)
 - [积分](#积分)
@@ -55,6 +57,7 @@
     - [二阶泰勒展开](#二阶泰勒展开)
     - [多元函数n阶泰勒展开](#多元函数n阶泰勒展开)
 - [正定和负定和不定矩阵](#正定和负定和不定矩阵)
+- [向量外积](#向量外积)
 
 ### 欧拉数
 
@@ -727,6 +730,22 @@ $$\vert{}\vert{}x\vert{}\vert{}_2 = \sqrt{\sum_{i=1}^{n} x_i^2} = \sqrt{x_1^2 + 
 2. 在二维空间（平面上）：点 $(x, y)$ 到原点 $(0,0)$ 的距离，根据勾股定理就是 $\sqrt{x^2 + y^2}$。
 3. 在高维空间（机器学习模型中）：模型里有成千上万个参数（权重），把这些参数排成一个超高维向量 $w = [w_1, w_2, \dots, w_n]$，它的 L2 范数就是所有参数平方相加再开根号。
 
+### Frobenius 范数
+
+Frobenius 范数（简称 F-范数），就是将矩阵“展开/拉直”成一个长向量后，计算出的欧氏距离（L2 范数）。
+
+它是线性代数中用来衡量一个矩阵整体“大小”或“模长”最常用的一种方式。
+
+1. 计算公式，假设有一个 $m \times n$ 的矩阵 $A$（比如我们在 PyTorch 里形状为 [128, 100] 的梯度矩阵）：$$A = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix}$$它的 Frobenius 范数计算步骤极其简单直接：$$\Vert{}A\Vert{}_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} \vert{}a_{ij}\vert{}^2}$$
+    - 第一步：把矩阵里的每一个元素 $a_{ij}$ 都取平方。
+    - 第二步：把所有平方后的结果全部加起来。
+    - 第三步：对总和开平方根。
+
+2. 在 PyTorch 代码里的对应，代码中这一行：```param_norm = p.weight.grad.norm(2).item()```
+    - p.weight.grad 是一个二维 Tensor（矩阵）。
+    - 当你对一个二维/高维 Tensor 调用 .norm(2) 时，PyTorch 默认进行的就是 Frobenius 范数 计算。
+    - 它的作用就是把矩阵里所有 12,800 个梯度值合成一个代表“整层网络整体坡度”的标量数值
+
 ### 二阶偏导数
 
 二阶偏导数，简单来说就是：对一个多变量函数，先求一次偏导数，再求一次偏导数。
@@ -842,6 +861,20 @@ $$\vert{}\vert{}x\vert{}\vert{}_2 = \sqrt{\sum_{i=1}^{n} x_i^2} = \sqrt{x_1^2 + 
 2. 第 1 行 2 列是 $\color{red}{2}$，第 2 行 1 列也是 $\color{red}{2}$。
 3. 第 1 行 3 列是 $\color{blue}{3}$，第 3 行 1 列也是 $\color{blue}{3}$。
 4. 沿对角线折叠，数字完全重合。
+
+### 正交矩阵
+
+正交矩阵 $Q$ 就是满足
+
+$$Q^T Q = I \quad\Longleftrightarrow\quad Q^T = Q^{-1}$$
+
+的方阵。
+
+直观理解
+
+1. $Q$ 的列向量两两正交，且每个长度都等于 1（标准正交基）；
+2. 作为线性变换，$Q$ 相当于整体旋转或反射：不改变向量长度，不改变向量间夹角；
+3. 所以 $Q$ 就像是“换坐标系”的旋转器：$y=Q^Tx$ 把原坐标转成特征基下的坐标，$Qy$ 再转回去。
 
 ### 二次型
 
@@ -1509,3 +1542,77 @@ $$\Delta z \approx \frac{1}{2} \boldsymbol{\Delta x}^T H \boldsymbol{\Delta x}$$
 | **正定（Positive Definite）** | 对任意非零 $\boldsymbol{\Delta x}$，均为 $>0$ | 朝任何方向走，高度都**上升** | 碗状凹陷（Bowl shape） | **严格局部极小值** |
 | **负定（Negative Definite）** | 对任意非零 $\boldsymbol{\Delta x}$，均为 $<0$ | 朝任何方向走，高度都**下降** | 倒扣的碗（Cap shape） | **严格局部极大值** |
 | **不定（Indefinite）** | 有的方向 $>0$，有的方向 $<0$ | 有的方向上升，有的方向下降 | 马鞍面（Saddle shape） | **鞍点（不是极值点）** |
+
+对角化的充要条件
+
+$n\times n$ 矩阵 $A$ 可对角化 $\iff$ 有 $n$ 个线性无关的特征向量
+
+对 $H$ 进行正交对角化
+
+已知 $H$ 是实对称矩阵，根据线性代数对角化定理，存在正交矩阵 $Q$（满足 $Q^T Q = I$），使得 $H$ 可以被对角化为对角矩阵 $\Lambda$：
+
+$$Q^T H Q = \Lambda = \begin{bmatrix} \lambda_1 & 0 & \dots & 0 \\ 0 & \lambda_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda_m \end{bmatrix}$$
+
+在等式两边同时左乘 $Q$、右乘 $Q^T$，把 $H$ 解出来：
+
+$$H = Q \Lambda Q^T$$
+
+把对角化后的 $H$ 直接代入原式，把 $H = Q \Lambda Q^T$ 替换掉二次型里的 $H$：
+
+$$\boldsymbol{\Delta x}^T H \boldsymbol{\Delta x} = \boldsymbol{\Delta x}^T (Q \Lambda Q^T) \boldsymbol{\Delta x}$$
+
+结合律变形与坐标变量代换，利用矩阵乘法的结合律，把括号重新组合：
+
+$$\boldsymbol{\Delta x}^T (Q \Lambda Q^T) \boldsymbol{\Delta x} = (\boldsymbol{\Delta x}^T Q) \cdot \Lambda \cdot (Q^T \boldsymbol{\Delta x})$$
+
+根据矩阵转置性质 $(\mathbf{A}\mathbf{B})^T = \mathbf{B}^T \mathbf{A}^T$，有 $(\boldsymbol{\Delta x}^T Q) = (Q^T \boldsymbol{\Delta x})^T$，所以原式变成：
+
+$$= (Q^T \boldsymbol{\Delta x})^T \, \Lambda \, (Q^T \boldsymbol{\Delta x})$$
+
+此时，我们设一个新的向量变量 $\boldsymbol{y}$ 为：
+
+$$\boldsymbol{y} = Q^T \boldsymbol{\Delta x} = \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_m \end{bmatrix}$$
+
+这里的每一个分量 $y_i = \mathbf{q}_i^T \boldsymbol{\Delta x}$，本质上就是向量点积（投影）：
+
+1. $\boldsymbol{\Delta x}$：你在原坐标系（如 $x_1, x_2$ 轴）下实际迈出的位移步骤。
+2. $y_i$：把你的位移 $\boldsymbol{\Delta x}$，投影到第 $i$ 个特征向量（主曲率轴）方向上的长度！
+
+
+展开成极简的对角和形式，把 $\boldsymbol{y}$ 代入上式，整个二次型就变成了对角矩阵 $\Lambda$ 的二次型：
+
+$$\boldsymbol{\Delta x}^T H \boldsymbol{\Delta x} = \boldsymbol{y}^T \Lambda \boldsymbol{y}$$
+
+展开矩阵乘法：
+
+$$\begin{bmatrix} y_1 & y_2 & \dots & y_m \end{bmatrix} \begin{bmatrix} \lambda_1 & 0 & \dots & 0 \\ 0 & \lambda_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda_m \end{bmatrix} \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_m \end{bmatrix} = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \dots + \lambda_m y_m^2$$
+
+最终推导结论，带回最开始的二阶泰勒展开高度差公式：
+
+$$\Delta z \approx \frac{1}{2} \boldsymbol{\Delta x}^T H \boldsymbol{\Delta x} = \mathbf{\frac{1}{2} \left( \lambda_1 y_1^2 + \lambda_2 y_2^2 + \dots + \lambda_m y_m^2 \right)}$$
+
+| 所有特征值的正负组合 | 局部几何形态 | 弯曲特征描述 | 极值结论 |
+| :--- | :--- | :--- | :--- |
+| **全部 $\lambda_i > 0$** | **碗状凹陷（Bowl shape）** | 所有主轴方向均向上弯曲升高 | **严格局部极小值** |
+| **全部 $\lambda_i < 0$** | **倒扣的碗（Cap shape）** | 所有主轴方向均向下弯曲降低 | **严格局部极大值** |
+| **特征值有正有负** | **马鞍面（Saddle shape）** | 某些方向向上弯曲，某些方向向下弯曲 | **鞍点（不是极值点）** |
+| **存在 $\lambda_i = 0$（其余非负/非正）** | **退化/退化槽面（Degenerate）** | 沿着零特征值对应的方向，地形不发生变化 | **无法单纯凭二阶信息判定（退化点）** |
+
+### 向量外积
+
+外积（Outer Product）是线性代数中的一种向量乘法运算。与我们常见的“点积（内积）”不同，外积的结果不是一个单一的数字（标量），而是一个矩阵。
+
+1. 内积 vs 外积的本质区别假设有两个向量 $u$ 和 $v$：
+    - 内积（Inner Product / Dot Product）：
+        - 运算：$u^T v$
+        - 结果：一个标量（数字）。它把两个向量融合成一个值，常用于计算投影、夹角或相似度。
+    - 外积（Outer Product）：
+        - 运算：$u v^T$
+        - 结果：一个矩阵。它把两个向量“扩充”开，捕捉它们所有分量之间的两两组合关系。
+
+2. 用一个简单的例子看外积是怎么算的
+    - 假设：
+        - 向量 $u = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$ （形状为 $2 \times 1$）
+        - 向量 $v = \begin{bmatrix} 3 & 4 & 5 \end{bmatrix}$ （形状为 $1 \times 3$）
+    - 它们的外积 $u v^T$ 的计算方式，就是用 $u$ 的每一个元素去乘以 $v$ 的每一个元素，排成一个矩阵：$$u v^T = \begin{bmatrix} 1 \\ 2 \end{bmatrix} \begin{bmatrix} 3 & 4 & 5 \end{bmatrix} = \begin{bmatrix} 1 \times 3 & 1 \times 4 & 1 \times 5 \\ 2 \times 3 & 2 \times 4 & 2 \times 5 \end{bmatrix} = \begin{bmatrix} 3 & 4 & 5 \\ 6 & 8 & 10 \end{bmatrix}$$
+    - 维度变化：一个 $2 \times 1$ 的向量和一个 $1 \times 3$ 的向量做外积，撑出了一个 $2 \times 3$ 的矩阵。
